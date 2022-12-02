@@ -1,9 +1,12 @@
+; Create as much sections as needed
 [lms1]
 url=
 user=
 password=
+service=moodle_mobile_app
 
 [lms2]
 url=
 user=
 password=
+service=
