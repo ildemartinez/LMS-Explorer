@@ -1,46 +1,80 @@
 {
 	"info": {
-		"_postman_id": "9e45d763-f39d-49d8-8536-e46232e033f1",
+		"_postman_id": "15fe3b00-b82a-4fad-ac80-18f45ba77c24",
 		"name": "Moodle",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9518133"
 	},
 	"item": [
 		{
-			"name": "New Request",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "https://localhost/webservice/rest/server.php?moodlewsrestformat=json",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"path": [
-						"webservice",
-						"rest",
-						"server.php"
-					],
-					"query": [
-						{
-							"key": "moodlewsrestformat",
-							"value": "json"
+			"name": "core_course",
+			"item": [
+				{
+					"name": "get_gategories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/webservice/rest/server.php?wstoken={{token}}&moodlewsrestformat=json&wsfunction=core_course_get_categories",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"webservice",
+								"rest",
+								"server.php"
+							],
+							"query": [
+								{
+									"key": "wstoken",
+									"value": "{{token}}"
+								},
+								{
+									"key": "moodlewsrestformat",
+									"value": "json"
+								},
+								{
+									"key": "wsfunction",
+									"value": "core_course_get_categories"
+								}
+							]
 						}
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "Gettoken",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"token\", jsonData[\"token\"]);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost/login/token.php?username=admin&password=password&service=moodle_mobile_app",
-					"protocol": "https",
+					"raw": "{{host}}/login/token.php?username=admin&password=1Password.-&service=moodle_mobile_app",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
 					"path": [
 						"login",
@@ -53,7 +87,7 @@
 						},
 						{
 							"key": "password",
-							"value": "password"
+							"value": "1Password.-"
 						},
 						{
 							"key": "service",
@@ -63,6 +97,38 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
