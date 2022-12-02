@@ -1,0 +1,68 @@
+{
+	"info": {
+		"_postman_id": "9e45d763-f39d-49d8-8536-e46232e033f1",
+		"name": "Moodle",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://localhost/webservice/rest/server.php?moodlewsrestformat=json",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"webservice",
+						"rest",
+						"server.php"
+					],
+					"query": [
+						{
+							"key": "moodlewsrestformat",
+							"value": "json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Gettoken",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost/login/token.php?username=admin&password=password&service=moodle_mobile_app",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"login",
+						"token.php"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						},
+						{
+							"key": "service",
+							"value": "moodle_mobile_app"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
