@@ -16,7 +16,6 @@ type
     { Private declarations }
   public
     { Public declarations }
-    aLMSNetwork: tlmsnetwork;
     aLMSNetworkTreeView: TLMSNetworkTreeView;
 
     constructor Create(Owner: Tcomponent); override;
@@ -49,8 +48,6 @@ begin
     Align := alleft;
   end;
 
-  aLMSNetwork := tlmsnetwork.Create;
-
   aLMSNetworkTreeView := TLMSNetworkTreeView.Create(self);
   aLMSNetworkTreeView.parent := self;
   aLMSNetworkTreeView.Align := alleft;
@@ -72,22 +69,28 @@ begin
       aSectionName := 'lms' + inttostr(k);
       if aIniFile.SectionExists(aSectionName) then
       begin
-        if aIniFile.ValueExists(aSectionName, 'url') then
-        begin
-          showmessage(aSectionName);
-        end;
+        var
+          aLMS: TLMS := TLMS.Create;
+
+        aLMS.id := aSectionName;
+
+        aLMS.user := aIniFile.ReadString(aSectionName, 'user', '');
+        aLMS.password := aIniFile.ReadString(aSectionName, 'password', '');
+        aLMS.service := aIniFile.ReadString(aSectionName, 'service', '');
+
+        GetGlobalNetwork.add(aLMS);
+
+        aLMS.Free;
       end;
     end;
 
   end;
 
-  aLMSNetworkTreeView.LMSNetwork := aLMSNetwork;
+  aLMSNetworkTreeView.LMSNetwork := GetGlobalNetwork;
 end;
 
 destructor TMainForm.Destroy;
 begin
-
-  aLMSNetwork.free;
 
   inherited;
 end;
