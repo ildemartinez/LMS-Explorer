@@ -8,10 +8,11 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkTreeViewUnit,
   lmsnetworkunit,
-  Vcl.ExtCtrls;
+  Vcl.ExtCtrls, Vcl.ComCtrls;
 
 type
   TMainForm = class(TForm)
+    StatusBar1: TStatusBar;
   private
     { Private declarations }
   public

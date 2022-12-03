@@ -14,4 +14,14 @@ object MainForm: TMainForm
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 523
+    Width = 1002
+    Height = 19
+    Panels = <>
+    ExplicitLeft = 280
+    ExplicitTop = 328
+    ExplicitWidth = 0
+  end
 end
