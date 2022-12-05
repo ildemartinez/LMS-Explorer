@@ -12,6 +12,7 @@ object MainForm: TMainForm
   Font.Style = []
   FormStyle = fsMDIForm
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object StatusBar1: TStatusBar
@@ -40,6 +41,17 @@ object MainForm: TMainForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
+  end
+  object Memo1: TMemo
+    Left = 0
+    Top = 434
+    Width = 1002
+    Height = 89
+    Align = alBottom
+    TabOrder = 2
+    ExplicitLeft = 408
+    ExplicitTop = 352
+    ExplicitWidth = 185
   end
   object ActionManager1: TActionManager
     ActionBars = <

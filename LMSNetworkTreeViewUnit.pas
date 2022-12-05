@@ -20,23 +20,31 @@ uses
   LMSPopupMenuUnit;
 
 type
-  TNodeTypes = (ntLMS);
+  TNodeTypes = (ntLMS, ntCategory);
 
   TTreeData = { packed } record
+    node_type: TNodeTypes;
+    aLMS: tlms;
+    aCategory : TLMSCategory;
+  end;
+
+//    TTreeData = { packed } record
     // node_type: TNodeTypes;
-    case node_type: TNodeTypes of
+  {  case node_type: TNodeTypes of
       ntLMS:
         (aLMS: tlms);
-  end;
+      ntCategory:
+        (aCategory: TLMSCategory);
+  end;}
 
   PTreeData = ^TTreeData;
 
   TLMSNetworkTreeView = class(TCustomVirtualStringTree)
     // , INetworkObserver,    INodeObserver)
   private
-    fAsTree: boolean;
+    // fAsTree: boolean;
     fLMSNetwork: TLMSNetwork;
-    fPopupMenu: TLMSPopupMenu;
+    // fPopupMenu: TLMSPopupMenu;
     procedure setLMSNetwork(const Value: TLMSNetwork);
     // fCryptonetwork: TBTCNetwork;
     // procedure SetAsTree(const Value: boolean);
@@ -61,8 +69,9 @@ type
       TextType: TVSTTextType);
     { procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
-      var ImageIndex: TImageIndex);
-      procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+      var ImageIndex: TImageIndex); }
+    procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+    {
       procedure Notification(AComponent: TComponent;
       Operation: TOperation); override; }
   public
@@ -77,14 +86,13 @@ type
 
   end;
 
-  // procedure Register;
-
 implementation
 
 uses
   vcl.Graphics,
   vcl.ImgList,
-  dialogs;
+  dialogs,
+  LMSFormUnit;
 // NodeFormUnit,
 // networkformunit,
 // st4makers.Util.ImageListFromResource;
@@ -120,12 +128,12 @@ begin
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
+  OnNodeDblClick := NodeDblClick;
+  OnPaintText := MyDoPaintText;
+
   {
     OnGetPopupMenu := MyDoGetPopupmenu;
-    OnNodeDblClick := NodeDblClick; }
-
-  OnPaintText := MyDoPaintText;
-  { OnGetImageIndex := MyGetImageIndex;
+    OnGetImageIndex := MyGetImageIndex;
 
     Images := GetGlobalImageListFromResource(); }
 end;
@@ -144,63 +152,77 @@ begin
     begin
       data^.node_type := ntLMS;
       data^.aLMS := fLMSNetwork.item[Node.Index];
-      // Node.States := Node.States + [vsHasChildren, vsExpanded];
+
+      data^.aLMS.getcategories;
+
+      if data^.aLMS.categories.count > 0 then
+        Node.States := Node.States + [vsHasChildren, vsExpanded]
     end
-    { else
+    else
       case parentdata^.node_type of
-      { ntroot:
+        ntLMS:
+          begin
+            data^.node_type := ntCategory;
+            data^.aCategory := parentdata^.aLMS.getcategorynbydepth(Node.Index,1);
+            Node.States := Node.States + [vsHasChildren, vsExpanded];
+          end;
+        ntCategory:
+          begin
+            data^.node_type := ntCategory;
+            // data^.aCategory := parentdata^.acategory.categories[node.index];
+            // data^.networkdata := self.fCryptonetwork;
+            Node.States := Node.States + [vsHasChildren, vsExpanded];
+          end;
+
+        { ntnetwork:
+          begi
+          data^.node_type := ntnode;
+          data^.nodedata := CryptoNetwork.nodes[Node.Index];
+          AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
+          end; }
+        // end;
+      end
+    { else
       begin
-      data^.node_type := ntnetwork;
-      data^.networkdata := self.fCryptonetwork;
-      Node.States := Node.States + [vsHasChildren, vsExpanded];
-      end;
-      ntnetwork:
+      if parentdata = nil then
+      begin
+      RootNodeCount := self.fCryptonetwork.count;
+
+      if RootNodeCount > 0 then
       begin
       data^.node_type := ntnode;
       data^.nodedata := CryptoNetwork.nodes[Node.Index];
       AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
-      end; }
-    // end;
-  end
-  { else
-    begin
-    if parentdata = nil then
-    begin
-    RootNodeCount := self.fCryptonetwork.count;
+      end;
+      end
+      end;
+    }
+  end;
 
-    if RootNodeCount > 0 then
+  {
+    procedure TCryptoNetworkTreeView.DoNotify(const msgtype: TMSGType;
+    const aNode: INode);
+    var
+    aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+    data: PTreeData;
     begin
-    data^.node_type := ntnode;
-    data^.nodedata := CryptoNetwork.nodes[Node.Index];
-    AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
+    // todo optimizar la salida
+    aVirtualNodeEnumerator := nodes.GetEnumerator;
+
+    while aVirtualNodeEnumerator.MoveNext do
+    begin
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    if data^.node_type = ntnode then
+    begin
+    if data^.nodedata.PeerIp = aNode.GetIP then
+    InvalidateNode(aVirtualNodeEnumerator.Current)
     end;
-    end
+    end;
+
     end;
   }
 end;
 
-{
-  procedure TCryptoNetworkTreeView.DoNotify(const msgtype: TMSGType;
-  const aNode: INode);
-  var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-  begin
-  // todo optimizar la salida
-  aVirtualNodeEnumerator := nodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-  data := GetNodeData(aVirtualNodeEnumerator.Current);
-  if data^.node_type = ntnode then
-  begin
-  if data^.nodedata.PeerIp = aNode.GetIP then
-  InvalidateNode(aVirtualNodeEnumerator.Current)
-  end;
-  end;
-
-  end;
-}
 procedure TLMSNetworkTreeView.MenuItemClick(Sender: TObject);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
@@ -312,7 +334,12 @@ begin
 
     case data^.node_type of
       ntLMS:
-        ChildCount := 0;
+        ChildCount := data^.aLMS.CategoriesLevel(0);
+      ntCategory:
+        begin
+       //   ChildCount := data^.aLMS.CategoriesLevel(data^.aCategory.id);
+        end;
+
       { ntnetwork:
         if CryptoNetwork <> nil then
         ChildCount := CryptoNetwork.count;
@@ -334,7 +361,7 @@ begin
   case data^.node_type of
     ntLMS:
       begin
-        if not data^.alms.connected then
+        if not data^.aLMS.connected then
         begin
           TargetCanvas.Font.Color := clGray;
           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
@@ -349,6 +376,7 @@ begin
       end
   end;
 end;
+
 {
   if data^.nodedata.Connected then
   begin
@@ -424,39 +452,40 @@ end;
   begin
 
   end;
+}
 
-  procedure TCryptoNetworkTreeView.NodeDblClick(Sender: TBaseVirtualTree;
+procedure TLMSNetworkTreeView.NodeDblClick(Sender: TBaseVirtualTree;
   const HitInfo: THitInfo);
-  var
+var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
-  begin
+begin
   aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
 
   while aVirtualNodeEnumerator.MoveNext do
   begin
-  data := GetNodeData(aVirtualNodeEnumerator.Current);
-  if data^.node_type = ntnode then
-  begin
-  with TNodeForm.Create(self) do
-  begin
-  Node := data^.nodedata;
-  show();
-  end;
-  end
-  else if data^.node_type = ntnetwork then
-  begin
-  with TNetworkForm.Create(self) do
-  begin
-  Network := data^.networkdata;
-  show();
-  end;
-  end;
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    if data^.node_type = ntLMS then
+    begin
+      with TLMSForm.Create(self) do
+      begin
+        LMS := data^.aLMS;
+        show();
+      end;
+    end
+    { else if data^.node_type = ntnetwork then
+      begin
+      with TNetworkForm.Create(self) do
+      begin
+      Network := data^.networkdata;
+      show();
+      end;
+      end; }
 
   end;
 
-  end;
-
+end;
+{
   procedure TCryptoNetworkTreeView.Notification(AComponent: TComponent;
   Operation: TOperation);
   begin

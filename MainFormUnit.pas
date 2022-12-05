@@ -13,14 +13,21 @@ uses
   Vcl.PlatformDefaultStyleActnCtrls, REST.Types, REST.Client,
   Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls;
 
+const
+  WM_AFTER_SHOW = WM_USER + 300;
+
 type
   TMainForm = class(TForm)
     StatusBar1: TStatusBar;
     ActionMainMenuBar1: TActionMainMenuBar;
     ActionManager1: TActionManager;
     Action1: TAction;
+    Memo1: TMemo;
+
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
+    procedure WmAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
   public
     { Public declarations }
     aLMSNetworkTreeView: TLMSNetworkTreeView;
@@ -37,15 +44,11 @@ implementation
 {$R *.dfm}
 
 uses
-  inifiles, system.JSON;
+  inifiles, System.JSON,
+  lmslogUnit;
 
 constructor TMainForm.Create(Owner: Tcomponent);
-var
-  aIniFile: TIniFile;
-  aIniFilePath: string;
-  aStrings: TStrings;
-  k: Integer;
-  aSectionName: string;
+
 begin
   inherited;
 
@@ -59,25 +62,45 @@ begin
   aLMSNetworkTreeView.parent := self;
   aLMSNetworkTreeView.Align := alleft;
 
+end;
+
+destructor TMainForm.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  PostMessage(self.Handle, WM_AFTER_SHOW, 0, 0);
+end;
+
+procedure TMainForm.WmAfterShow(var Msg: TMessage);
+var
+  aIniFile: TIniFile;
+  aIniFilePath: string;
+  k: Integer;
+  aSectionName: string;
+begin
   aIniFilePath := ExtractFilePath(ParamStr(0)) + 'config.ini';
+  log('Trying to load ' + aIniFilePath);
 
   if not FileExists(aIniFilePath) then
   begin
-    showmessage
-      ('Please, create the config.ini file to continue. You can use the config.ini_dist as template');
-    Application.Terminate;
+    log('Please, create the config.ini file to continue. You can use the config.ini_dist as template');
   end
   else
   begin
     aIniFile := TIniFile.Create(aIniFilePath);
+    log('Config file loaded');
 
-    for k := 0 to 100 do
+    for k := 0 to 100 do // refactor
     begin
       aSectionName := 'lms' + inttostr(k);
       if aIniFile.SectionExists(aSectionName) then
       begin
         var
-          aLMS: TLMS := TLMS.Create;
+          aLMS: TLMS := TLMS.Create(self);
 
         aLMS.id := aSectionName;
 
@@ -90,15 +113,9 @@ begin
       end;
     end;
 
+    aLMSNetworkTreeView.LMSNetwork := GetGlobalNetwork;
   end;
 
-  aLMSNetworkTreeView.LMSNetwork := GetGlobalNetwork;
-end;
-
-destructor TMainForm.Destroy;
-begin
-
-  inherited;
 end;
 
 end.
