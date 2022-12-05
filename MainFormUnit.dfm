@@ -20,8 +20,47 @@ object MainForm: TMainForm
     Width = 1002
     Height = 19
     Panels = <>
-    ExplicitLeft = 280
-    ExplicitTop = 328
-    ExplicitWidth = 0
+  end
+  object ActionMainMenuBar1: TActionMainMenuBar
+    Left = 0
+    Top = 0
+    Width = 1002
+    Height = 25
+    UseSystemFont = False
+    ActionManager = ActionManager1
+    Caption = 'ActionMainMenuBar1'
+    Color = clMenuBar
+    ColorMap.DisabledFontColor = 7171437
+    ColorMap.HighlightColor = clWhite
+    ColorMap.BtnSelectedFont = clBlack
+    ColorMap.UnusedColor = clWhite
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    Spacing = 0
+  end
+  object ActionManager1: TActionManager
+    ActionBars = <
+      item
+        Items = <
+          item
+            Items = <
+              item
+                Action = Action1
+                Caption = '&About'
+              end>
+            Caption = '&Help'
+          end>
+        ActionBar = ActionMainMenuBar1
+      end>
+    Left = 296
+    Top = 48
+    StyleName = 'Platform Default'
+    object Action1: TAction
+      Category = 'Help'
+      Caption = 'About'
+    end
   end
 end

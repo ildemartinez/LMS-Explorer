@@ -8,11 +8,17 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkTreeViewUnit,
   lmsnetworkunit,
-  Vcl.ExtCtrls, Vcl.ComCtrls;
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Menus, System.Actions, Vcl.ActnList,
+  Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, Vcl.ActnMenus,
+  Vcl.PlatformDefaultStyleActnCtrls, REST.Types, REST.Client,
+  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls;
 
 type
   TMainForm = class(TForm)
     StatusBar1: TStatusBar;
+    ActionMainMenuBar1: TActionMainMenuBar;
+    ActionManager1: TActionManager;
+    Action1: TAction;
   private
     { Private declarations }
   public
@@ -31,7 +37,7 @@ implementation
 {$R *.dfm}
 
 uses
-  inifiles;
+  inifiles, system.JSON;
 
 constructor TMainForm.Create(Owner: Tcomponent);
 var
@@ -75,13 +81,12 @@ begin
 
         aLMS.id := aSectionName;
 
+        aLMS.url := aIniFile.ReadString(aSectionName, 'url', '');
         aLMS.user := aIniFile.ReadString(aSectionName, 'user', '');
         aLMS.password := aIniFile.ReadString(aSectionName, 'password', '');
         aLMS.service := aIniFile.ReadString(aSectionName, 'service', '');
 
         GetGlobalNetwork.add(aLMS);
-
-        aLMS.Free;
       end;
     end;
 

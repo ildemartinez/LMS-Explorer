@@ -3,27 +3,39 @@ unit LMSNetworkUnit;
 interface
 
 uses
-  Generics.Collections, dialogs, sysutils;
+  System.Classes,
+  Generics.Collections, dialogs, sysutils, LMSRestmoodleunit;
 
 type
 
-  TLMS = class
+  TLMS = class(TComponent)
   public
     id: string;
     url: string;
     user: string;
     password: string;
     service: string;
+
+    connected: boolean;
+
+    aLMSConnection: TLMSRestMoodle;
+
+    constructor create;
+    procedure Connect;
+
   end;
 
   TLMSNetwork = class
   private
     fLMSList: TList<TLMS>;
+    function GetLMS(index: integer): TLMS;
   public
-    constructor Create;
+    constructor create;
     destructor Destroy; override;
     procedure add(aLMS: TLMS);
-    function count : cardinal;
+    function count: cardinal;
+
+    property item[index: integer]: TLMS read GetLMS;
   end;
 
 function GetGlobalNetwork: TLMSNetwork;
@@ -36,7 +48,7 @@ var
 function GetGlobalNetwork: TLMSNetwork;
 begin
   if _GlobalLMSNetWork = nil then
-    _GlobalLMSNetWork := TLMSNetwork.Create;
+    _GlobalLMSNetWork := TLMSNetwork.create;
 
   result := _GlobalLMSNetWork
 end;
@@ -50,12 +62,12 @@ end;
 
 function TLMSNetwork.count: cardinal;
 begin
-  result := fLMSList.Count;
+  result := fLMSList.count;
 end;
 
-constructor TLMSNetwork.Create;
+constructor TLMSNetwork.create;
 begin
-  fLMSList := TList<TLMS>.Create;
+  fLMSList := TList<TLMS>.create;
 end;
 
 destructor TLMSNetwork.Destroy;
@@ -63,6 +75,24 @@ begin
   fLMSList.free;
 
   inherited;
+end;
+
+function TLMSNetwork.GetLMS(index: integer): TLMS;
+begin
+  result := fLMSList.items[index];
+end;
+
+{ TLMS }
+
+procedure TLMS.Connect;
+begin
+  self.aLMSConnection.Connect;
+  self.connected := true;
+end;
+
+constructor TLMS.create;
+begin
+  aLMSConnection := TLMSRestMoodle.create(self);
 end;
 
 end.

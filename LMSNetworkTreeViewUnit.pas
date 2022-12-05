@@ -14,15 +14,19 @@ uses
     CryptoNetworkPopupMenuUnit,
     NodeObserverPattern,
     ipeernodeunit,*}
-  VirtualTrees, lmsnetworkunit;
+  VirtualTrees,
+
+  lmsnetworkunit,
+  LMSPopupMenuUnit;
 
 type
-
   TNodeTypes = (ntLMS);
 
-  TTreeData = record
-    node_type: TNodeTypes;
-    Text: String;
+  TTreeData = { packed } record
+    // node_type: TNodeTypes;
+    case node_type: TNodeTypes of
+      ntLMS:
+        (aLMS: tlms);
   end;
 
   PTreeData = ^TTreeData;
@@ -32,29 +36,30 @@ type
   private
     fAsTree: boolean;
     fLMSNetwork: TLMSNetwork;
+    fPopupMenu: TLMSPopupMenu;
     procedure setLMSNetwork(const Value: TLMSNetwork);
     // fCryptonetwork: TBTCNetwork;
     // procedure SetAsTree(const Value: boolean);
-    // fPopupMenu: TCryptoNetworkPopupMenu;
+
     // procedure setCryptoNetwork(const Value: TBTCNetwork);
-    { protected
-      procedure DoInitNode(Parent, Node: PVirtualNode;
+  protected
+    procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
-      procedure MenuItemClick(Sender: TObject);
-      procedure MenuItemClickGetPeers(Sender: TObject);
+    procedure MenuItemClick(Sender: TObject);
+    { procedure MenuItemClickGetPeers(Sender: TObject);
       procedure MyDoGetPopupmenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; const P: TPoint; var AskParent: boolean;
       var PopupMenu: TPopupMenu);
     }
     procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    {
-      procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
+
+    procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
       var ChildCount: Cardinal);
-      procedure MyDoPaintText(Sender: TBaseVirtualTree;
+    procedure MyDoPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
-      procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
+    { procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
       var ImageIndex: TImageIndex);
       procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
@@ -92,16 +97,15 @@ begin
 
   NodeDataSize := SizeOf(TTreeData);
 
-  {
-    PopupMenu := TCryptoNetworkPopupMenu.Create(self);
-    // por el momento ponemos aquí las acciones
-    aMenuItem := TMenuItem.Create(self);
-    aMenuItem.caption := 'Connect';
-    aMenuItem.OnClick := MenuItemClick;
-    PopupMenu.items.add(aMenuItem);
-    //
+  PopupMenu := TLMSPopupMenu.Create(self);
+  // por el momento ponemos aquí las acciones
+  aMenuItem := TMenuItem.Create(self);
+  aMenuItem.caption := 'Connect';
+  aMenuItem.OnClick := MenuItemClick;
+  PopupMenu.items.add(aMenuItem);
+  //
 
-    // por el momento ponemos aquí las acciones
+  { // por el momento ponemos aquí las acciones
     aMenuItem := TMenuItem.Create(self);
     aMenuItem.caption := 'Get Peers';
     aMenuItem.OnClick := MenuItemClickGetPeers;
@@ -115,64 +119,67 @@ begin
   tomultiselect, toSiblingSelectConstraint];
 
   OnGetText := MyDoGetText;
-  { OnInitChildren := MyDoInitChildren;
+  OnInitChildren := MyDoInitChildren;
+  {
     OnGetPopupMenu := MyDoGetPopupmenu;
-    OnNodeDblClick := NodeDblClick;
-    OnPaintText := MyDoPaintText;
-    OnGetImageIndex := MyGetImageIndex;
+    OnNodeDblClick := NodeDblClick; }
+
+  OnPaintText := MyDoPaintText;
+  { OnGetImageIndex := MyGetImageIndex;
 
     Images := GetGlobalImageListFromResource(); }
 end;
 
-{
-  procedure TCryptoNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode;
+procedure TLMSNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode;
   var InitStates: TVirtualNodeInitStates);
-  var
+var
   data, parentdata: PTreeData;
-  begin
+begin
   data := GetNodeData(Node);
   parentdata := GetNodeData(Parent);
 
-  if fAsTree then
+  // if fAsTree then
   begin
-  if parentdata = nil then
-  begin
-  data^.node_type := ntroot;
-  Node.States := Node.States + [vsHasChildren, vsExpanded];
+    if parentdata = nil then
+    begin
+      data^.node_type := ntLMS;
+      data^.aLMS := fLMSNetwork.item[Node.Index];
+      // Node.States := Node.States + [vsHasChildren, vsExpanded];
+    end
+    { else
+      case parentdata^.node_type of
+      { ntroot:
+      begin
+      data^.node_type := ntnetwork;
+      data^.networkdata := self.fCryptonetwork;
+      Node.States := Node.States + [vsHasChildren, vsExpanded];
+      end;
+      ntnetwork:
+      begin
+      data^.node_type := ntnode;
+      data^.nodedata := CryptoNetwork.nodes[Node.Index];
+      AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
+      end; }
+    // end;
   end
-  else
-  case parentdata^.node_type of
-  ntroot:
-  begin
-  data^.node_type := ntnetwork;
-  data^.networkdata := self.fCryptonetwork;
-  Node.States := Node.States + [vsHasChildren, vsExpanded];
-  end;
-  ntnetwork:
-  begin
-  data^.node_type := ntnode;
-  data^.nodedata := CryptoNetwork.nodes[Node.Index];
-  AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
-  end;
-  end;
-  end
-  else
-  begin
-  if parentdata = nil then
-  begin
-  RootNodeCount := self.fCryptonetwork.count;
+  { else
+    begin
+    if parentdata = nil then
+    begin
+    RootNodeCount := self.fCryptonetwork.count;
 
-  if RootNodeCount > 0 then
-  begin
-  data^.node_type := ntnode;
-  data^.nodedata := CryptoNetwork.nodes[Node.Index];
-  AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
-  end;
-  end
-  end;
+    if RootNodeCount > 0 then
+    begin
+    data^.node_type := ntnode;
+    data^.nodedata := CryptoNetwork.nodes[Node.Index];
+    AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
+    end;
+    end
+    end;
+  }
+end;
 
-  end;
-
+{
   procedure TCryptoNetworkTreeView.DoNotify(const msgtype: TMSGType;
   const aNode: INode);
   var
@@ -193,28 +200,29 @@ end;
   end;
 
   end;
-
-  procedure TCryptoNetworkTreeView.MenuItemClick(Sender: TObject);
-  var
+}
+procedure TLMSNetworkTreeView.MenuItemClick(Sender: TObject);
+var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
-  begin
+begin
   aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
 
   while aVirtualNodeEnumerator.MoveNext do
   begin
-  data := GetNodeData(aVirtualNodeEnumerator.Current);
-  if data^.node_type = ntnode then
-  begin
-  data^.nodedata.Connect();
-  end
-  else if data^.node_type = ntnetwork then
-  begin
-  data^.networkdata.Connect;
-  end
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    if data^.node_type = ntLMS then
+    begin
+      data^.aLMS.Connect; // .connected := true;
+    end
+    { else if data^.node_type = ntnetwork then
+      begin
+      data^.networkdata.Connect;
+      end }
   end;
-  end;
+end;
 
+{
   procedure TCryptoNetworkTreeView.MenuItemClickGetPeers(Sender: TObject);
   var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
@@ -263,75 +271,85 @@ begin
 
   case data^.node_type of
     ntLMS:
-      CellText := 'Networks';
+      begin
+        CellText := data^.aLMS.id;
+      end;
     { ntnetwork:
       CellText := 'BTC Network';
       ntnode:
       // if data^.nodedata <> nil then
       CellText := data^.nodedata.PeerIp; }
   end;
-
-  { else
-    case Column of
-    0:
-    begin
-    case data^.node_type of
-    ntnode:
-    CellText := data^.nodedata.PeerIp;
-    end;
-    end;
-    1:
-    begin
-    case data^.node_type of
-    ntnode:
-    CellText := data^.nodedata.Agent;
-    end;
-    end;
-    end; }
 end;
 
-{
-  procedure TCryptoNetworkTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; var ChildCount: Cardinal);
-  var
-  data: PTreeData;
+{ else
+  case Column of
+  0:
   begin
+  case data^.node_type of
+  ntnode:
+  CellText := data^.nodedata.PeerIp;
+  end;
+  end;
+  1:
+  begin
+  case data^.node_type of
+  ntnode:
+  CellText := data^.nodedata.Agent;
+  end;
+  end;
+  end; }
+
+procedure TLMSNetworkTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; var ChildCount: Cardinal);
+var
+  data: PTreeData;
+begin
   data := GetNodeData(Node);
 
   if data <> nil then
   begin
 
-  if fAsTree then
-  begin
+    case data^.node_type of
+      ntLMS:
+        ChildCount := 0;
+      { ntnetwork:
+        if CryptoNetwork <> nil then
+        ChildCount := CryptoNetwork.count;
+        ntnode:
+        ChildCount := 0; }
+    end;
 
-  case data^.node_type of
-  ntroot:
-  ChildCount := 1;
-  ntnetwork:
-  if CryptoNetwork <> nil then
-  ChildCount := CryptoNetwork.count;
-  ntnode:
-  ChildCount := 0;
   end;
-  end
-  end;
-  end;
+end;
 
-  procedure TCryptoNetworkTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
+procedure TLMSNetworkTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
-  var
+var
   data: PTreeData;
-  begin
+begin
   data := GetNodeData(Node);
 
   case data^.node_type of
-  ntroot:
-  ;
-  ntnetwork:
-  ;
-  ntnode:
-  begin
+    ntLMS:
+      begin
+        if not data^.alms.connected then
+        begin
+          TargetCanvas.Font.Color := clGray;
+          TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
+            - [fsBold];
+        end
+        else
+        begin
+          TargetCanvas.Font.Color := clBlack;
+          TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] -
+            [fsItalic];
+        end;
+      end
+  end;
+end;
+{
   if data^.nodedata.Connected then
   begin
   TargetCanvas.Font.Color := clBlack;
@@ -350,14 +368,9 @@ end;
   begin
   TargetCanvas.Font.Color := clGray;
   TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
-  - [fsBold];
-  end;
-  end;
+  - [fsBold]; }
 
-  end;
-
-  end;
-
+{
   procedure TCryptoNetworkTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
   var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
