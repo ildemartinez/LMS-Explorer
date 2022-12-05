@@ -41,6 +41,39 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "get_courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/webservice/rest/server.php?wstoken={{token}}&moodlewsrestformat=json&wsfunction=core_course_get_courses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"webservice",
+								"rest",
+								"server.php"
+							],
+							"query": [
+								{
+									"key": "wstoken",
+									"value": "{{token}}"
+								},
+								{
+									"key": "moodlewsrestformat",
+									"value": "json"
+								},
+								{
+									"key": "wsfunction",
+									"value": "core_course_get_courses"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -72,7 +105,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/login/token.php?username=admin&password=1Password.-&service=moodle_mobile_app",
+					"raw": "{{host}}/login/token.php?username=user&password=1Password.-&service=moodle_mobile_app",
 					"host": [
 						"{{host}}"
 					],
@@ -83,7 +116,7 @@
 					"query": [
 						{
 							"key": "username",
-							"value": "admin"
+							"value": "user"
 						},
 						{
 							"key": "password",
