@@ -23,19 +23,11 @@ type
   TNodeTypes = (ntLMS, ntCategory);
 
   TTreeData = { packed } record
-    node_type: TNodeTypes;
-    aLMS: tlms;
-    aCategory : TLMSCategory;
-  end;
-
-//    TTreeData = { packed } record
-    // node_type: TNodeTypes;
-  {  case node_type: TNodeTypes of
-      ntLMS:
-        (aLMS: tlms);
+    aLMS: tlms; // Pointer to LMS structure
+    case node_type: TNodeTypes of
       ntCategory:
-        (aCategory: TLMSCategory);
-  end;}
+        (categoryId: cardinal);
+  end;
 
   PTreeData = ^TTreeData;
 
@@ -44,6 +36,7 @@ type
   private
     // fAsTree: boolean;
     fLMSNetwork: TLMSNetwork;
+
     // fPopupMenu: TLMSPopupMenu;
     procedure setLMSNetwork(const Value: TLMSNetwork);
     // fCryptonetwork: TBTCNetwork;
@@ -63,7 +56,7 @@ type
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
     procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      var ChildCount: Cardinal);
+      var ChildCount: cardinal);
     procedure MyDoPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
@@ -92,7 +85,8 @@ uses
   vcl.Graphics,
   vcl.ImgList,
   dialogs,
-  LMSFormUnit;
+  LMSFormUnit,
+  generics.Collections;
 // NodeFormUnit,
 // networkformunit,
 // st4makers.Util.ImageListFromResource;
@@ -153,9 +147,9 @@ begin
       data^.node_type := ntLMS;
       data^.aLMS := fLMSNetwork.item[Node.Index];
 
-      data^.aLMS.getcategories;
+      data^.aLMS.GetCategories;
 
-      if data^.aLMS.categories.count > 0 then
+      if data^.aLMS.getcategorisbyparentcount(0) > 0 then
         Node.States := Node.States + [vsHasChildren, vsExpanded]
     end
     else
@@ -163,24 +157,28 @@ begin
         ntLMS:
           begin
             data^.node_type := ntCategory;
-            data^.aCategory := parentdata^.aLMS.getcategorynbydepth(Node.Index,1);
-            Node.States := Node.States + [vsHasChildren, vsExpanded];
+            data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
+
+            // childcat := parentdata^.aLMS.getcategorisbyparent(0);
+            data^.categoryId := parentdata^.aLMS.getcategoryidbyparent
+              (Node.Index, 0);
+
+            if parentdata^.aLMS.getcategorisbyparentcount(data^.categoryId) > 0
+            then
+              Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
           end;
         ntCategory:
           begin
             data^.node_type := ntCategory;
-            // data^.aCategory := parentdata^.acategory.categories[node.index];
-            // data^.networkdata := self.fCryptonetwork;
-            Node.States := Node.States + [vsHasChildren, vsExpanded];
-          end;
+            data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
 
-        { ntnetwork:
-          begi
-          data^.node_type := ntnode;
-          data^.nodedata := CryptoNetwork.nodes[Node.Index];
-          AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
-          end; }
-        // end;
+            data^.categoryId := parentdata^.aLMS.getcategoryidbyparent
+              (Node.Index, parentdata^.categoryId);
+
+            if parentdata^.aLMS.getcategorisbyparentcount(data^.categoryId) > 0
+            then
+              Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
+          end;
       end
     { else
       begin
@@ -296,11 +294,10 @@ begin
       begin
         CellText := data^.aLMS.id;
       end;
-    { ntnetwork:
-      CellText := 'BTC Network';
-      ntnode:
-      // if data^.nodedata <> nil then
-      CellText := data^.nodedata.PeerIp; }
+    ntCategory:
+      begin
+        CellText := data^.aLMS.GetCategoryById(data^.categoryId).name;
+      end;
   end;
 end;
 
@@ -323,7 +320,7 @@ end;
   end; }
 
 procedure TLMSNetworkTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; var ChildCount: Cardinal);
+  Node: PVirtualNode; var ChildCount: cardinal);
 var
   data: PTreeData;
 begin
@@ -331,20 +328,13 @@ begin
 
   if data <> nil then
   begin
-
     case data^.node_type of
       ntLMS:
         ChildCount := data^.aLMS.CategoriesLevel(0);
       ntCategory:
         begin
-       //   ChildCount := data^.aLMS.CategoriesLevel(data^.aCategory.id);
+          ChildCount := data^.aLMS.getcategorisbyparentcount(data^.categoryId);
         end;
-
-      { ntnetwork:
-        if CryptoNetwork <> nil then
-        ChildCount := CryptoNetwork.count;
-        ntnode:
-        ChildCount := 0; }
     end;
 
   end;

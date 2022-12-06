@@ -11,6 +11,7 @@ type
   TLMSCategory = class
   public
     id: cardinal;
+    name: string;
     fparent: cardinal;
   end;
 
@@ -32,7 +33,10 @@ type
     function connected: boolean;
 
     function CategoriesLevel(level: cardinal): cardinal;
-    function getcategorynbydepth(n: cardinal; depth: cardinal): TLMSCategory;
+
+    function getcategorisbyparentcount(parent: cardinal): cardinal;
+    function getcategoryidbyparent(index, parent: cardinal): cardinal;
+    function GetCategoryById(id: cardinal): TLMSCategory;
 
     procedure GetCategories;
   end;
@@ -135,17 +139,53 @@ begin
   self.aLMSConnection.GetCategories;
 end;
 
-function TLMS.getcategorynbydepth(n, depth: cardinal): TLMSCategory;
+function TLMS.getcategoryidbyparent(index, parent: cardinal): cardinal;
 var
-  k: cardinal;
+  cat: TLMSCategory;
 begin
-  for k := 0 to categories.count - 1 do
-  begin
-    if (n = 0) and (categories.Items[k]. then result :=
+  result := 0;
 
+  for cat in categories do
+  begin
+    if (cat.fparent = parent) then
+    begin
+      if index = 0 then
+      begin
+        result := cat.id;
+        break;
+      end
+      else
+        dec(index);
+    end;
   end;
 end;
 
-{ TLMSCategory }
+function TLMS.getcategorisbyparentcount(parent: cardinal): cardinal;
+var
+  cat: TLMSCategory;
+begin
+  result := 0;
+
+  for cat in categories do
+  begin
+    if (cat.fparent = parent) then
+      inc(result);
+  end;
+end;
+
+function TLMS.GetCategoryById(id: cardinal): TLMSCategory;
+var
+  cat: TLMSCategory;
+begin
+  for cat in categories do
+  begin
+    if (cat.id = id) then
+    begin
+      result := cat;
+      break;
+    end;
+  end;
+
+end;
 
 end.

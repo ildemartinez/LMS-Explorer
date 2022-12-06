@@ -90,6 +90,7 @@ var
   aItem: TRESTRequestParameter;
   aCategory: TLMSCategory;
   aCategories: TJSonArray;
+  k: Integer;
 
 begin
   if Owner is tlms then
@@ -120,26 +121,46 @@ begin
 
       log(aCategories.ToString);
 
-      aCategory := TLMSCategory.Create;
-      aCategory.fparent := 0;
-      aCategory.id := 1;
-      tlms(Owner).categories.Add(aCategory);
+      for k := 0 to aCategories.Count - 1 do
+      begin
+        aCategory := TLMSCategory.Create;
+        aCategory.id := aCategories[k].GetValue<cardinal>('id');
+        aCategory.name := aCategories[k].GetValue<string>('name');
+        aCategory.fparent := aCategories[k].GetValue<cardinal>('parent');
+        tlms(Owner).categories.Add(aCategory);
+      end;
 
-      aCategory := TLMSCategory.Create;
-      aCategory.fparent := 0;
-      aCategory.id := 2;
-      tlms(Owner).categories.Add(aCategory);
+      { aCategory := TLMSCategory.Create;
+        aCategory.fparent := 0;
+        aCategory.id := 1;
 
-            aCategory := TLMSCategory.Create;
-      aCategory.fparent := 0;
-      aCategory.id := 3;
-      tlms(Owner).categories.Add(aCategory);
+        tlms(Owner).categories.Add(aCategory);
 
-      aCategory := TLMSCategory.Create;
-      aCategory.fparent := 2;
-      aCategory.id := 4;
-      tlms(Owner).categories.Add(aCategory);
+        aCategory := TLMSCategory.Create;
+        aCategory.fparent := 0;
+        aCategory.id := 2;
+        tlms(Owner).categories.Add(aCategory);
 
+        aCategory := TLMSCategory.Create;
+        aCategory.fparent := 0;
+        aCategory.id := 3;
+        tlms(Owner).categories.Add(aCategory);
+
+        aCategory := TLMSCategory.Create;
+        aCategory.fparent := 2;
+        aCategory.id := 4;
+        tlms(Owner).categories.Add(aCategory);
+
+        aCategory := TLMSCategory.Create;
+        aCategory.fparent := 4;
+        aCategory.id := 5;
+        tlms(Owner).categories.Add(aCategory);
+
+        aCategory := TLMSCategory.Create;
+        aCategory.fparent := 4;
+        aCategory.id := 6;
+        tlms(Owner).categories.Add(aCategory);
+      }
     end;
   end;
 
