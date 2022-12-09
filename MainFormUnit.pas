@@ -104,7 +104,7 @@ begin
 
         aLMS.id := aSectionName;
 
-        aLMS.url := aIniFile.ReadString(aSectionName, 'url', '');
+        aLMS.Host := aIniFile.ReadString(aSectionName, 'url', '');
         aLMS.user := aIniFile.ReadString(aSectionName, 'user', '');
         aLMS.password := aIniFile.ReadString(aSectionName, 'password', '');
         aLMS.service := aIniFile.ReadString(aSectionName, 'service', '');

@@ -16,12 +16,13 @@ type
   end;
 
   TLMS = class(TComponent)
+  private
+    procedure SetHost(const Value: string);
+    procedure SetPassword(const Value: string);
+    procedure SetService(const Value: string);
+    procedure SetUser(const Value: string);
   public
     id: string;
-    url: string;
-    user: string;
-    password: string;
-    service: string;
 
     categories: TList<TLMSCategory>;
 
@@ -39,6 +40,11 @@ type
     function GetCategoryById(id: cardinal): TLMSCategory;
 
     procedure GetCategories;
+
+    property User: string write SetUser;
+    property Password: string write SetPassword;
+    property Service: string write SetService;
+    property Host: string write SetHost;
   end;
 
   TLMSNetwork = class
@@ -57,6 +63,10 @@ type
 function GetGlobalNetwork: TLMSNetwork;
 
 implementation
+
+uses
+  System.JSON,
+  LMSLogUnit;
 
 var
   _GlobalLMSNetWork: TLMSNetwork;
@@ -116,7 +126,7 @@ end;
 
 procedure TLMS.Connect;
 begin
-  self.aLMSConnection.Connect;
+  aLMSConnection.Connect;
 end;
 
 function TLMS.connected: boolean;
@@ -132,9 +142,26 @@ begin
 end;
 
 procedure TLMS.GetCategories;
-
+var
+  aCategory: TLMSCategory;
+  aCategories: TJSonArray;
+  category: TJSONValue;
 begin
-  self.aLMSConnection.GetCategories;
+
+  aCategories := aLMSConnection.GetCategories;
+
+  if aCategories <> nil then
+  begin
+    log(aCategories.ToString);
+    for category in aCategories do
+    begin
+      aCategory := TLMSCategory.Create;
+      aCategory.id := category.GetValue<cardinal>('id');
+      aCategory.name := category.GetValue<string>('name');
+      aCategory.fparent := category.GetValue<cardinal>('parent');
+      categories.add(aCategory);
+    end;
+  end;
 end;
 
 function TLMS.getcategoryidbyparent(index, parent: cardinal): cardinal;
@@ -156,6 +183,26 @@ begin
         dec(index);
     end;
   end;
+end;
+
+procedure TLMS.SetHost(const Value: string);
+begin
+  aLMSConnection.Host := Value;
+end;
+
+procedure TLMS.SetPassword(const Value: string);
+begin
+  aLMSConnection.Password := Value;
+end;
+
+procedure TLMS.SetService(const Value: string);
+begin
+  aLMSConnection.Service := Value;
+end;
+
+procedure TLMS.SetUser(const Value: string);
+begin
+  aLMSConnection.User := Value;
 end;
 
 function TLMS.getcategorisbyparentcount(parent: cardinal): cardinal;

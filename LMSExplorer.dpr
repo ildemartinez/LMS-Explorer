@@ -9,7 +9,8 @@ uses
   LMSRestMoodleUnit in 'LMSRestMoodleUnit.pas',
   LMSLogUnit in 'LMSLogUnit.pas',
   LMSFormUnit in 'LMSFormUnit.pas' {LMSForm},
-  LMSAboutFormUnit in 'LMSAboutFormUnit.pas' {AboutForm};
+  LMSAboutFormUnit in 'LMSAboutFormUnit.pas' {AboutForm},
+  LMSConstsUnit in 'LMSConstsUnit.pas';
 
 {$R *.res}
 

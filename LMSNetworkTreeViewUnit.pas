@@ -233,6 +233,7 @@ begin
     if data^.node_type = ntLMS then
     begin
       data^.aLMS.Connect; // .connected := true;
+      self.ReinitNode(aVirtualNodeEnumerator.Current,true);
     end
     { else if data^.node_type = ntnetwork then
       begin
