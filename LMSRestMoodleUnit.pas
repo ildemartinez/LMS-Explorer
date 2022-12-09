@@ -26,8 +26,10 @@ type
 implementation
 
 uses
-  lmsnetworkunit, System.JSON, dialogs,
-
+  System.Generics.Collections,
+  System.JSON,
+  dialogs,
+  lmsnetworkunit,
   LMSLogUnit;
 
 { TLMSRestMoodle }
@@ -58,7 +60,12 @@ begin
       aItem.Value := tlms(Owner).service;
 
       aRestClient.BaseURL := tlms(Owner).url + '/login/token.php';
-      aRestRequest.Execute;
+
+      try
+        aRestRequest.Execute;
+      except
+        log('dd');
+      end;
 
       jValue := arestresponse.JSONValue;
       fToken := jValue.GetValue<string>('token');

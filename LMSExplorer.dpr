@@ -8,7 +8,8 @@ uses
   LMSPopupMenuUnit in 'LMSPopupMenuUnit.pas',
   LMSRestMoodleUnit in 'LMSRestMoodleUnit.pas',
   LMSLogUnit in 'LMSLogUnit.pas',
-  LMSFormUnit in 'LMSFormUnit.pas' {LMSForm};
+  LMSFormUnit in 'LMSFormUnit.pas' {LMSForm},
+  LMSAboutFormUnit in 'LMSAboutFormUnit.pas' {AboutForm};
 
 {$R *.res}
 

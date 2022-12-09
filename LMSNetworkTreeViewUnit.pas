@@ -8,12 +8,11 @@ uses
   System.Types,
   System.UITypes,
   vcl.Menus,
-  {*  BTCNetworkUnit,
+  {*
     isubjectunit,
-    BTCPeerNodeUnit,
-    CryptoNetworkPopupMenuUnit,
+
     NodeObserverPattern,
-    ipeernodeunit,*}
+    *}
   VirtualTrees,
 
   lmsnetworkunit,

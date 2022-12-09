@@ -49,9 +49,6 @@ object MainForm: TMainForm
     Height = 89
     Align = alBottom
     TabOrder = 2
-    ExplicitLeft = 408
-    ExplicitTop = 352
-    ExplicitWidth = 185
   end
   object ActionManager1: TActionManager
     ActionBars = <
@@ -67,8 +64,8 @@ object MainForm: TMainForm
           end>
         ActionBar = ActionMainMenuBar1
       end>
-    Left = 296
-    Top = 48
+    Left = 344
+    Top = 72
     StyleName = 'Platform Default'
     object Action1: TAction
       Category = 'Help'

@@ -110,6 +110,9 @@ begin
         aLMS.service := aIniFile.ReadString(aSectionName, 'service', '');
 
         GetGlobalNetwork.add(aLMS);
+
+        if aIniFile.ReadBool(aSectionName, 'autoconnect', false) = true then
+          aLMS.Connect;
       end;
     end;
 

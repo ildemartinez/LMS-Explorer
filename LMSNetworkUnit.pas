@@ -75,8 +75,6 @@ procedure TLMSNetwork.add(aLMS: TLMS);
 begin
   fLMSList.add(aLMS);
 
-  // if autoconnect is set ... future feature ->
-  aLMS.Connect;
 end;
 
 function TLMSNetwork.count: cardinal;

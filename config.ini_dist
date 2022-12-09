@@ -4,6 +4,7 @@ url=
 user=
 password=
 service=moodle_mobile_app
+autoconnect=true
 
 [lms2]
 url=
