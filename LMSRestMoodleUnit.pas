@@ -63,12 +63,12 @@ begin
 
       try
         aRestRequest.Execute;
+        jValue := arestresponse.JSONValue;
+        fToken := jValue.GetValue<string>('token');
       except
-        log('dd');
+        log('Error '+aRestClient.BaseURL);
       end;
 
-      jValue := arestresponse.JSONValue;
-      fToken := jValue.GetValue<string>('token');
     end;
   end;
 end;
@@ -83,9 +83,13 @@ begin
   inherited;
 
   aRestClient := TRestClient.Create(self);
+  // aRestClient.ReadTimeout := 2000;
 
   aRestRequest := trestrequest.Create(self);
   arestresponse := TRESTResponse.Create(self);
+  aRestRequest.ConnectTimeout := 100;
+  aRestRequest.Timeout := 100;
+  aRestRequest.ReadTimeout := 100;
 
   aRestRequest.Client := aRestClient;
   aRestRequest.Response := arestresponse;
@@ -103,7 +107,7 @@ begin
   if Owner is tlms then
   begin
 
-    // if Connected then
+    if Connected then
     begin
       aRestRequest.Params.Clear;
 
