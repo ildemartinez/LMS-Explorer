@@ -25,7 +25,7 @@ type
     aLMS: tlms; // Pointer to LMS structure
     case node_type: TNodeTypes of
       ntCategory:
-        (categoryId: cardinal);
+        (Category: TLMSCategory);
   end;
 
   PTreeData = ^TTreeData;
@@ -147,8 +147,9 @@ begin
       data^.aLMS := fLMSNetwork.item[Node.Index];
 
       data^.aLMS.GetCategories;
+      data^.aLMS.GetCourses;
 
-      if data^.aLMS.getcategorisbyparentcount(0) > 0 then
+      if data^.aLMS.categories.Count > 0 then
         Node.States := Node.States + [vsHasChildren, vsExpanded]
     end
     else
@@ -157,12 +158,10 @@ begin
           begin
             data^.node_type := ntCategory;
             data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
+            data^.Category := parentdata^.aLMS.categories.items[Node.Index];
 
-            // childcat := parentdata^.aLMS.getcategorisbyparent(0);
-            data^.categoryId := parentdata^.aLMS.getcategoryidbyparent
-              (Node.Index, 0);
-
-            if parentdata^.aLMS.getcategorisbyparentcount(data^.categoryId) > 0
+            if parentdata^.aLMS.categories.Count +
+              parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0
             then
               Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
           end;
@@ -170,12 +169,10 @@ begin
           begin
             data^.node_type := ntCategory;
             data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
+            data^.Category := parentdata^.aLMS.getcategorybyid
+              (parentdata^.Category.id).fcategories.items[Node.Index];
 
-            data^.categoryId := parentdata^.aLMS.getcategoryidbyparent
-              (Node.Index, parentdata^.categoryId);
-
-            if parentdata^.aLMS.getcategorisbyparentcount(data^.categoryId) > 0
-            then
+            if parentdata^.category.SubCategoriesCount  > 0 then
               Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
           end;
       end
@@ -233,7 +230,7 @@ begin
     if data^.node_type = ntLMS then
     begin
       data^.aLMS.Connect; // .connected := true;
-      self.ReinitNode(aVirtualNodeEnumerator.Current,true);
+      self.ReinitNode(aVirtualNodeEnumerator.Current, true);
     end
     { else if data^.node_type = ntnetwork then
       begin
@@ -296,7 +293,7 @@ begin
       end;
     ntCategory:
       begin
-        CellText := data^.aLMS.GetCategoryById(data^.categoryId).name;
+        CellText := data^.Category.name;
       end;
   end;
 end;
@@ -333,7 +330,7 @@ begin
         ChildCount := data^.aLMS.CategoriesLevel(0);
       ntCategory:
         begin
-          ChildCount := data^.aLMS.getcategorisbyparentcount(data^.categoryId);
+          ChildCount := data^.Category.SubCategoriesCount;
         end;
     end;
 
@@ -532,7 +529,7 @@ procedure TLMSNetworkTreeView.setLMSNetwork(const Value: TLMSNetwork);
 begin
   fLMSNetwork := Value;
 
-  self.RootNodeCount := fLMSNetwork.count;
+  self.RootNodeCount := fLMSNetwork.Count;
 end;
 
 end.

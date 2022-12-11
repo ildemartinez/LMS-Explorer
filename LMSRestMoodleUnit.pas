@@ -31,7 +31,7 @@ type
     function Connected: boolean;
 
     function GetCategories: TJSonArray;
-    // procedure GetCourses;
+    function GetCourses: TJSonArray;
 
     property User: string write fuser;
     property Password: string write fpassword;
@@ -43,9 +43,11 @@ type
 implementation
 
 uses
+  forms,
   System.Generics.Collections,
   Dialogs,
   rest.Types,
+  System.UITypes,
 
   LMSConstsUnit,
   LMSLogUnit;
@@ -81,6 +83,7 @@ begin
       aRestRequest.Execute;
       jValue := arestresponse.JSONValue;
       fToken := jValue.GetValue<string>('token');
+
     except
       On E: ERestException do
       begin
@@ -100,13 +103,13 @@ begin
   inherited;
 
   aRestClient := TRestClient.Create(self);
-  aRestClient.ReadTimeout := 1000;
+  aRestClient.ReadTimeout := 5000;
 
   aRestRequest := TLMFunctionRequest.Create(self);
   arestresponse := TRESTResponse.Create(self);
-  aRestRequest.ConnectTimeout := 1000;
-  aRestRequest.Timeout := 1000;
-  aRestRequest.ReadTimeout := 1000;
+  aRestRequest.ConnectTimeout := 5000;
+  aRestRequest.Timeout := 5000;
+  aRestRequest.ReadTimeout := 5000;
 
   aRestRequest.Client := aRestClient;
   aRestRequest.Response := arestresponse;
@@ -135,7 +138,12 @@ begin
 
     aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
 
-    aRestRequest.Execute;
+    try
+      screen.Cursor := crHourGlass;
+      aRestRequest.Execute;
+    finally
+      screen.Cursor := crDefault;
+    end;
 
     jValue := arestresponse.JSONValue;
 
@@ -153,60 +161,46 @@ begin
 
 end;
 
-{
-  procedure TLMSRestMoodle.GetCourses;
-  var
+function TLMSRestMoodle.GetCourses: TJSonArray;
+
+var
   jValue: TJsonValue;
   aItem: TRESTRequestParameter;
-  aCategory: TLMSCategory;
-  aCategories: TJSonArray;
-  k: Integer;
-
-  begin
-  if Owner is tlms then
-  begin
+begin
 
   if Connected then
   begin
-  aRestRequest.Params.Clear;
+    aRestRequest.Params.Clear;
 
-  aItem := aRestRequest.Params.AddItem;
-  aItem.name := WSTOKEN;
-  aItem.Value := self.fToken;
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := WSTOKEN;
+    aItem.Value := self.fToken;
 
-  aItem := aRestRequest.Params.AddItem;
-  aItem.name := WSFUNCTION;
-  aItem.Value := CORE_COURSE_GET_COURSES;
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := WSFUNCTION;
+    aItem.Value := CORE_COURSE_GET_COURSES;
 
-  aItem := aRestRequest.Params.AddItem;
-  aItem.name := 'moodlewsrestformat';
-  aItem.Value := 'json';
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := 'moodlewsrestformat';
+    aItem.Value := 'json';
 
-  aRestClient.BaseURL := tlms(Owner).url + '/webservice/rest/server.php';
+    aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
 
-  aRestRequest.Execute;
+    try
+      screen.Cursor := crHourGlass;
+      aRestRequest.Execute;
+    finally
+      screen.Cursor := crDefault;
+    end;
 
-  jValue := arestresponse.JSONValue;
+    jValue := arestresponse.JSONValue;
+    result := jValue as TJSonArray;
+  end
+  else
+    result := nil;
 
-  aCategories := jValue as TJSonArray;
+end;
 
-  log(aCategories.ToString);
-
-  exit;
-  for k := 0 to aCategories.Count - 1 do
-  begin
-  aCategory := TLMSCategory.Create;
-  aCategory.id := aCategories[k].GetValue<cardinal>('id');
-  aCategory.name := aCategories[k].GetValue<string>('name');
-  aCategory.fparent := aCategories[k].GetValue<cardinal>('parent');
-  tlms(Owner).categories.Add(aCategory);
-  end;
-
-  end;
-  end;
-
-  end;
-}
 { TLMFunctionRequest }
 
 constructor TLMFunctionRequest.Create(Owner: TComponent);

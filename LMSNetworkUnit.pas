@@ -8,11 +8,28 @@ uses
 
 type
 
+  TLMSCourse = class
+    id: cardinal;
+    name: string;
+  end;
+
   TLMSCategory = class
+  private
+    fcourses: TList<TLMSCourse>;
+
+    function GetCoursesCount: integer;
+    function GetSubCategoriesCount: cardinal;
   public
+    fcategories: TList<TLMSCategory>;
     id: cardinal;
     name: string;
     fparent: cardinal;
+
+    constructor Create;
+
+    property SubCategoriesCount: cardinal read GetSubCategoriesCount;
+    property CoursesCount: integer read GetCoursesCount;
+
   end;
 
   TLMS = class(TComponent)
@@ -25,6 +42,7 @@ type
     id: string;
 
     categories: TList<TLMSCategory>;
+    courses: TList<TLMSCourse>;
 
     aLMSConnection: TLMSRestMoodle;
 
@@ -35,11 +53,10 @@ type
 
     function CategoriesLevel(level: cardinal): cardinal;
 
-    function getcategorisbyparentcount(parent: cardinal): cardinal;
-    function getcategoryidbyparent(index, parent: cardinal): cardinal;
     function GetCategoryById(id: cardinal): TLMSCategory;
 
     procedure GetCategories;
+    procedure GetCourses;
 
     property User: string write SetUser;
     property Password: string write SetPassword;
@@ -139,11 +156,12 @@ begin
   aLMSConnection := TLMSRestMoodle.Create(self);
 
   categories := TList<TLMSCategory>.Create;
+  courses := TList<TLMSCourse>.Create;
 end;
 
 procedure TLMS.GetCategories;
 var
-  aCategory: TLMSCategory;
+  aCategory : TLMSCategory;
   aCategories: TJSonArray;
   category: TJSONValue;
 begin
@@ -153,36 +171,57 @@ begin
   if aCategories <> nil then
   begin
     log(aCategories.ToString);
+
     for category in aCategories do
     begin
+      // Add to a global category list
       aCategory := TLMSCategory.Create;
       aCategory.id := category.GetValue<cardinal>('id');
       aCategory.name := category.GetValue<string>('name');
       aCategory.fparent := category.GetValue<cardinal>('parent');
       categories.add(aCategory);
     end;
+
+    // Add it to the parent category list
+    // Each category has its own subcategory list
+    for aCategory in categories do
+    begin
+      if aCategory.fparent <> 0 then
+        GetCategoryById(aCategory.fparent).fcategories.add(aCategory);
+    end;
   end;
 end;
 
-function TLMS.getcategoryidbyparent(index, parent: cardinal): cardinal;
+procedure TLMS.GetCourses;
 var
-  cat: TLMSCategory;
+  aCourse: TLMSCourse;
+  aCourses: TJSonArray;
+  course: TJSONValue;
 begin
-  result := 0;
 
-  for cat in categories do
+  aCourses := aLMSConnection.GetCourses;
+
+  if aCourses <> nil then
   begin
-    if (cat.fparent = parent) then
+    log(aCourses.ToString);
+    for course in aCourses do
     begin
-      if index = 0 then
+      aCourse := TLMSCourse.Create;
+
+      if course.GetValue<string>('format') = 'site' then
       begin
-        result := cat.id;
-        break;
+        // ignore de course site
       end
       else
-        dec(index);
+      begin
+        aCourse.id := course.GetValue<cardinal>('id');
+        aCourse.name := course.GetValue<string>('shortname');
+        GetCategoryById(course.GetValue<cardinal>('categoryid'))
+          .fcourses.add(aCourse);
+      end;
     end;
   end;
+
 end;
 
 procedure TLMS.SetHost(const Value: string);
@@ -205,19 +244,6 @@ begin
   aLMSConnection.User := Value;
 end;
 
-function TLMS.getcategorisbyparentcount(parent: cardinal): cardinal;
-var
-  cat: TLMSCategory;
-begin
-  result := 0;
-
-  for cat in categories do
-  begin
-    if (cat.fparent = parent) then
-      inc(result);
-  end;
-end;
-
 function TLMS.GetCategoryById(id: cardinal): TLMSCategory;
 var
   cat: TLMSCategory;
@@ -231,6 +257,24 @@ begin
     end;
   end;
 
+end;
+
+{ TLMSCategory }
+
+constructor TLMSCategory.Create;
+begin
+  fcourses := TList<TLMSCourse>.Create;
+  fcategories := TList<TLMSCategory>.Create;
+end;
+
+function TLMSCategory.GetCoursesCount: integer;
+begin
+  result := fcourses.count;
+end;
+
+function TLMSCategory.GetSubCategoriesCount: cardinal;
+begin
+  result := fcategories.count;
 end;
 
 end.
