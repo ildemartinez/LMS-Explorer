@@ -68,5 +68,7 @@ __recovery/
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
 
-#ignore ini file
+#ignore ini file and icons project resource file
 *.ini
+resourcesfiles.res
+

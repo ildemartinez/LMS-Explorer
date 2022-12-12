@@ -19,13 +19,15 @@ uses
   LMSPopupMenuUnit;
 
 type
-  TNodeTypes = (ntLMS, ntCategory);
+  TNodeTypes = (ntLMS, ntCategory, ntCourse);
 
   TTreeData = { packed } record
     aLMS: tlms; // Pointer to LMS structure
     case node_type: TNodeTypes of
       ntCategory:
         (Category: TLMSCategory);
+      ntCourse:
+        (Course: TLMSCourse);
   end;
 
   PTreeData = ^TTreeData;
@@ -59,9 +61,9 @@ type
     procedure MyDoPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
-    { procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
+    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
-      var ImageIndex: TImageIndex); }
+      var ImageIndex: TImageIndex);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
     {
       procedure Notification(AComponent: TComponent;
@@ -85,10 +87,8 @@ uses
   vcl.ImgList,
   dialogs,
   LMSFormUnit,
-  generics.Collections;
-// NodeFormUnit,
-// networkformunit,
-// st4makers.Util.ImageListFromResource;
+  generics.Collections,
+  LMS.Util.ImageListFromResource;
 
 constructor TLMSNetworkTreeView.Create(Owner: TComponent);
 var
@@ -125,10 +125,9 @@ begin
   OnPaintText := MyDoPaintText;
 
   {
-    OnGetPopupMenu := MyDoGetPopupmenu;
-    OnGetImageIndex := MyGetImageIndex;
-
-    Images := GetGlobalImageListFromResource(); }
+    OnGetPopupMenu := MyDoGetPopupmenu; }
+  OnGetImageIndex := MyGetImageIndex;
+  Images := GetGlobalImageListFromResource();
 end;
 
 procedure TLMSNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -167,13 +166,23 @@ begin
           end;
         ntCategory:
           begin
-            data^.node_type := ntCategory;
-            data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-            data^.Category := parentdata^.aLMS.getcategorybyid
-              (parentdata^.Category.id).fcategories.items[Node.Index];
+            // It is a category
+            if Node.Index < parentdata^.Category.SubCategoriesCount then
+            begin
+              data^.node_type := ntCategory;
+              data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
+              data^.Category := parentdata^.aLMS.getcategorybyid
+                (parentdata^.Category.id).fcategories.items[Node.Index];
 
-            if parentdata^.category.SubCategoriesCount  > 0 then
-              Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
+              if parentdata^.Category.SubCategoriesCount > 0 then
+                Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
+            end
+            else
+            begin
+              data^.node_type := ntCourse;
+              data^.Course := parentdata^.Category.fcourses
+                [Node.Index - parentdata^.Category.SubCategoriesCount];
+            end;
           end;
       end
     { else
@@ -229,13 +238,9 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     if data^.node_type = ntLMS then
     begin
-      data^.aLMS.Connect; // .connected := true;
+      data^.aLMS.Connect;
       self.ReinitNode(aVirtualNodeEnumerator.Current, true);
     end
-    { else if data^.node_type = ntnetwork then
-      begin
-      data^.networkdata.Connect;
-      end }
   end;
 end;
 
@@ -282,39 +287,18 @@ procedure TLMSNetworkTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   var CellText: string);
 var
   data: PTreeData;
-
 begin
   data := GetNodeData(Node);
 
   case data^.node_type of
     ntLMS:
-      begin
-        CellText := data^.aLMS.id;
-      end;
+      CellText := data^.aLMS.id;
     ntCategory:
-      begin
-        CellText := data^.Category.name;
-      end;
+      CellText := data^.Category.name;
+    ntCourse:
+      CellText := data^.Course.shortname + ' ' + data^.Course.displayname;
   end;
 end;
-
-{ else
-  case Column of
-  0:
-  begin
-  case data^.node_type of
-  ntnode:
-  CellText := data^.nodedata.PeerIp;
-  end;
-  end;
-  1:
-  begin
-  case data^.node_type of
-  ntnode:
-  CellText := data^.nodedata.Agent;
-  end;
-  end;
-  end; }
 
 procedure TLMSNetworkTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
   Node: PVirtualNode; var ChildCount: cardinal);
@@ -330,7 +314,8 @@ begin
         ChildCount := data^.aLMS.CategoriesLevel(0);
       ntCategory:
         begin
-          ChildCount := data^.Category.SubCategoriesCount;
+          ChildCount := data^.Category.SubCategoriesCount +
+            data^.Category.coursescount;
         end;
     end;
 
@@ -385,40 +370,36 @@ end;
   TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
   - [fsBold]; }
 
-{
-  procedure TCryptoNetworkTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
+procedure TLMSNetworkTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
   var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
-  var
+var
   data: PTreeData;
-  begin
+begin
   data := GetNodeData(Node);
 
   if (Kind <> ikstate) then
   begin
-  if fAsTree = true then
-  begin
-  if (data^.node_type = ntroot) and (Column = -1) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('PROJECT')
-  else if (data^.node_type = ntnode) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('NODE_BTC');
-  end
-  else
-  begin
-  { if (data^.node_type = ntroot) and (Column = -1) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('PROJECT')
-  else
-  if (data^.node_type = ntnode) and (Column = 0) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('NODE_BTC');
+    { if fAsTree = true then
+      begin
+      if (data^.node_type = ntroot) and (Column = -1) then
+      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+      ('PROJECT')
+      else if (data^.node_type = ntnode) then
+      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+      ('NODE_BTC');
+      end
+      else
+      begin }
+    if (data^.node_type = ntLMS) and (Column = -1) then
+      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+        ('res_lms')
+    else if (data^.node_type = ntCourse) then //and (Column = 0) then
+      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+        ('MM');
   end;
-
-  end;
-  end;
-
+end;
+{
   procedure TCryptoNetworkTreeView.NewBTCAgentAdded(aBTCAgent: TBTCPeerNode);
   begin
   if fAsTree then

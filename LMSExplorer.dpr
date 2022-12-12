@@ -1,5 +1,13 @@
 program LMSExplorer;
 
+
+
+
+
+
+
+{$R 'ResourcesFile.res' 'ResourcesFile.rc'}
+
 uses
   Vcl.Forms,
   MainFormUnit in 'MainFormUnit.pas' {MainForm},
@@ -10,7 +18,8 @@ uses
   LMSLogUnit in 'LMSLogUnit.pas',
   LMSFormUnit in 'LMSFormUnit.pas' {LMSForm},
   LMSAboutFormUnit in 'LMSAboutFormUnit.pas' {AboutForm},
-  LMSConstsUnit in 'LMSConstsUnit.pas';
+  LMSConstsUnit in 'LMSConstsUnit.pas',
+  LMS.Util.ImageListFromResource in 'LMS.Util.ImageListFromResource.pas';
 
 {$R *.res}
 

@@ -10,17 +10,20 @@ type
 
   TLMSCourse = class
     id: cardinal;
-    name: string;
+    shortname: string;
+    fullname : string;
+    displayname : string;
   end;
 
   TLMSCategory = class
   private
-    fcourses: TList<TLMSCourse>;
+
 
     function GetCoursesCount: integer;
     function GetSubCategoriesCount: cardinal;
   public
     fcategories: TList<TLMSCategory>;
+    fcourses: TList<TLMSCourse>;
     id: cardinal;
     name: string;
     fparent: cardinal;
@@ -215,7 +218,9 @@ begin
       else
       begin
         aCourse.id := course.GetValue<cardinal>('id');
-        aCourse.name := course.GetValue<string>('shortname');
+        aCourse.shortname := course.GetValue<string>('shortname');
+        aCourse.fullname := course.GetValue<string>('fullname');
+        aCourse.displayname := course.GetValue<string>('displayname');
         GetCategoryById(course.GetValue<cardinal>('categoryid'))
           .fcourses.add(aCourse);
       end;
