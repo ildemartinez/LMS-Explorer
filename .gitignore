@@ -70,5 +70,4 @@ modules/
 
 #ignore ini file and icons project resource file
 *.ini
-resourcesfiles.res
-
+ResourcesFile.res
