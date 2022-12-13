@@ -2,6 +2,10 @@
 
 LMS Explorer is a open source tool for Moodle administrators that deal with a lot of situations in the daily LMS management.
 
+Features
+
+- Fast ocate course category and category at the LMS 
+
 # Installation
 Just modify the config.ini_dist to config.ini and copy in the same executable path. Configure the host, username and password and a service if you create your own Moodle API Service Access
 
