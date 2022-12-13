@@ -36,7 +36,7 @@ type
     property User: string write fuser;
     property Password: string write fpassword;
     property Service: string write fservice;
-    property Host: string write fhost;
+    property Host: string read fHost write fhost;
 
   end;
 
@@ -103,13 +103,8 @@ begin
   inherited;
 
   aRestClient := TRestClient.Create(self);
-  aRestClient.ReadTimeout := 5000;
-
   aRestRequest := TLMFunctionRequest.Create(self);
   arestresponse := TRESTResponse.Create(self);
-  aRestRequest.ConnectTimeout := 5000;
-  aRestRequest.Timeout := 5000;
-  aRestRequest.ReadTimeout := 5000;
 
   aRestRequest.Client := aRestClient;
   aRestRequest.Response := arestresponse;
@@ -120,6 +115,9 @@ var
   jValue: TJsonValue;
   aItem: TRESTRequestParameter;
 begin
+  if not connected then
+    connect;
+
   if Connected then
   begin
     aRestRequest.Params.Clear;

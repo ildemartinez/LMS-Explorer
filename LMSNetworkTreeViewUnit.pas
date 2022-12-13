@@ -48,6 +48,7 @@ type
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
     procedure MenuItemClick(Sender: TObject);
+    procedure MenuItem2Click(Sender: TObject);
     { procedure MenuItemClickGetPeers(Sender: TObject);
       procedure MyDoGetPopupmenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; const P: TPoint; var AskParent: boolean;
@@ -86,8 +87,11 @@ uses
   vcl.Graphics,
   vcl.ImgList,
   dialogs,
+  ShellApi,
   LMSFormUnit,
   generics.Collections,
+  LMSConstsUnit,
+  LMSLogUnit,
   LMS.Util.ImageListFromResource;
 
 constructor TLMSNetworkTreeView.Create(Owner: TComponent);
@@ -105,6 +109,11 @@ begin
   aMenuItem.OnClick := MenuItemClick;
   PopupMenu.items.add(aMenuItem);
   //
+
+  aMenuItem := TMenuItem.Create(self);
+  aMenuItem.caption := 'Locate in LMS';
+  aMenuItem.OnClick := MenuItem2Click;
+  PopupMenu.items.add(aMenuItem);
 
   { // por el momento ponemos aquí las acciones
     aMenuItem := TMenuItem.Create(self);
@@ -145,11 +154,14 @@ begin
       data^.node_type := ntLMS;
       data^.aLMS := fLMSNetwork.item[Node.Index];
 
-      data^.aLMS.GetCategories;
-      data^.aLMS.GetCourses;
+      if data^.aLMS.connected then
+      begin
+        data^.aLMS.GetCategories;
+        data^.aLMS.GetCourses;
+      end;
 
-      if data^.aLMS.categories.Count > 0 then
-        Node.States := Node.States + [vsHasChildren, vsExpanded]
+      // if data^.aLMS.categories.Count > 0 then
+      Node.States := Node.States + [vsHasChildren] // , vsExpanded]
     end
     else
       case parentdata^.node_type of
@@ -180,6 +192,7 @@ begin
             else
             begin
               data^.node_type := ntCourse;
+              data^.aLMS := parentdata^.aLMS;
               data^.Course := parentdata^.Category.fcourses
                 [Node.Index - parentdata^.Category.SubCategoriesCount];
             end;
@@ -224,6 +237,31 @@ begin
 
     end;
   }
+end;
+
+procedure TLMSNetworkTreeView.MenuItem2Click(Sender: TObject);
+var
+  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+  data: PTreeData;
+begin
+  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
+
+  while aVirtualNodeEnumerator.MoveNext do
+  begin
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    case data^.node_type of
+      ntLMS:
+        log(data^.aLMS.Host);
+      ntCategory:
+        ShellExecute(0, 'open', PChar(data^.aLMS.Host + format(CATEGORY_VIEW,
+          [data^.Category.id])), nil, nil, 0); // SW_SHOW);
+      ntCourse:
+        begin
+          ShellExecute(0, 'open', PChar(data^.aLMS.Host + format(COURSE_VIEW,
+            [data^.Course.id])), nil, nil, 0); // SW_SHOW);
+        end
+    end;
+  end;
 end;
 
 procedure TLMSNetworkTreeView.MenuItemClick(Sender: TObject);
@@ -296,7 +334,7 @@ begin
     ntCategory:
       CellText := data^.Category.name;
     ntCourse:
-      CellText := data^.Course.shortname + ' ' + data^.Course.displayname;
+      CellText := data^.Course.shortname + ' - ' + data^.Course.displayname;
   end;
 end;
 
@@ -311,7 +349,11 @@ begin
   begin
     case data^.node_type of
       ntLMS:
-        ChildCount := data^.aLMS.CategoriesLevel(0);
+        begin
+          data^.aLMS.GetCategories;
+          data^.aLMS.GetCourses;
+          ChildCount := data^.aLMS.CategoriesLevel(0);
+        end;
       ntCategory:
         begin
           ChildCount := data^.Category.SubCategoriesCount +
@@ -394,9 +436,8 @@ begin
     if (data^.node_type = ntLMS) and (Column = -1) then
       ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
         ('res_lms')
-    else if (data^.node_type = ntCourse) then //and (Column = 0) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-        ('MM');
+    else if (data^.node_type = ntCourse) then // and (Column = 0) then
+      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('MM');
   end;
 end;
 {

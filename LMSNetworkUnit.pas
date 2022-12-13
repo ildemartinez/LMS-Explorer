@@ -17,14 +17,13 @@ type
 
   TLMSCategory = class
   private
-
-
     function GetCoursesCount: integer;
     function GetSubCategoriesCount: cardinal;
   public
     fcategories: TList<TLMSCategory>;
     fcourses: TList<TLMSCourse>;
     id: cardinal;
+ //   categoryid : cardinal;
     name: string;
     fparent: cardinal;
 
@@ -41,6 +40,7 @@ type
     procedure SetPassword(const Value: string);
     procedure SetService(const Value: string);
     procedure SetUser(const Value: string);
+    function GetHost: string;
   public
     id: string;
 
@@ -64,7 +64,7 @@ type
     property User: string write SetUser;
     property Password: string write SetPassword;
     property Service: string write SetService;
-    property Host: string write SetHost;
+    property Host: string read GetHost write SetHost;
   end;
 
   TLMSNetwork = class
@@ -168,12 +168,12 @@ var
   aCategories: TJSonArray;
   category: TJSONValue;
 begin
-
+  log('Retrieving LMS Categories');
   aCategories := aLMSConnection.GetCategories;
 
   if aCategories <> nil then
   begin
-    log(aCategories.ToString);
+    //log(aCategories.ToString);
 
     for category in aCategories do
     begin
@@ -201,12 +201,12 @@ var
   aCourses: TJSonArray;
   course: TJSONValue;
 begin
-
+  log('Retrieving LMS Courses - may take some time');
   aCourses := aLMSConnection.GetCourses;
 
   if aCourses <> nil then
   begin
-    log(aCourses.ToString);
+    //log(aCourses.ToString);
     for course in aCourses do
     begin
       aCourse := TLMSCourse.Create;
@@ -227,6 +227,11 @@ begin
     end;
   end;
 
+end;
+
+function TLMS.GetHost: string;
+begin
+  result := aLMSConnection.Host;
 end;
 
 procedure TLMS.SetHost(const Value: string);

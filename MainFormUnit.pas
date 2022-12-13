@@ -78,9 +78,9 @@ end;
 procedure TMainForm.WmAfterShow(var Msg: TMessage);
 var
   aIniFile: TIniFile;
+  aSections: TStrings;
+  aSection: string;
   aIniFilePath: string;
-  k: Integer;
-  aSectionName: string;
 begin
   aIniFilePath := ExtractFilePath(ParamStr(0)) + 'config.ini';
   log('Trying to load ' + aIniFilePath);
@@ -94,26 +94,22 @@ begin
     aIniFile := TIniFile.Create(aIniFilePath);
     log('Config file loaded');
 
-    for k := 0 to 100 do // refactor
+    aSections := TStringList.Create;
+    aIniFile.ReadSections(aSections);
+
+    for aSection in aSections do
     begin
-      aSectionName := 'lms' + inttostr(k);
-      if aIniFile.SectionExists(aSectionName) then
-      begin
-        var
-          aLMS: TLMS := TLMS.Create(self);
+      var
+        aLMS: TLMS := TLMS.Create(self);
 
-        aLMS.id := aSectionName;
+      aLMS.id := aSection;
 
-        aLMS.Host := aIniFile.ReadString(aSectionName, 'url', '');
-        aLMS.user := aIniFile.ReadString(aSectionName, 'user', '');
-        aLMS.password := aIniFile.ReadString(aSectionName, 'password', '');
-        aLMS.service := aIniFile.ReadString(aSectionName, 'service', '');
+      aLMS.Host := aIniFile.ReadString(aSection, 'url', '');
+      aLMS.user := aIniFile.ReadString(aSection, 'user', '');
+      aLMS.password := aIniFile.ReadString(aSection, 'password', '');
+      aLMS.service := aIniFile.ReadString(aSection, 'service', '');
 
-        GetGlobalNetwork.add(aLMS);
-
-        if aIniFile.ReadBool(aSectionName, 'autoconnect', false) = true then
-          aLMS.Connect;
-      end;
+      GetGlobalNetwork.add(aLMS);
     end;
 
     aLMSNetworkTreeView.LMSNetwork := GetGlobalNetwork;
