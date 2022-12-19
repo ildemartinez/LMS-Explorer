@@ -76,6 +76,7 @@ type
     // I
     // procedure NewBTCAgentAdded(aBTCAgent: TBTCPeerNode);
     // procedure NodeConnected(aBTCAgent: TBTCPeerNode);
+    procedure FilterByText(const text: string);
 
     property LMSNetwork: TLMSNetwork read fLMSNetwork write setLMSNetwork;
 
@@ -161,7 +162,7 @@ begin
       end;
 
       // if data^.aLMS.categories.Count > 0 then
-      Node.States := Node.States + [vsHasChildren] // , vsExpanded]
+      Node.States := Node.States + [vsHasChildren]; // , vsExpanded]
     end
     else
       case parentdata^.node_type of
@@ -174,7 +175,7 @@ begin
             if parentdata^.aLMS.categories.Count +
               parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0
             then
-              Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
+              Node.States := Node.States + [vsHasChildren, vsExpanded];
           end;
         ntCategory:
           begin
@@ -187,7 +188,7 @@ begin
                 (parentdata^.Category.id).fcategories.items[Node.Index];
 
               if parentdata^.Category.SubCategoriesCount > 0 then
-                Node.States := Node.States + [vsHasChildren]; // , vsExpanded];
+                Node.States := Node.States + [vsHasChildren, vsExpanded];
             end
             else
             begin
@@ -237,6 +238,47 @@ begin
 
     end;
   }
+end;
+
+procedure TLMSNetworkTreeView.FilterByText(const text: string);
+var
+  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+  data: PTreeData;
+  aCompare: string;
+  aParent: PVirtualNode;
+begin
+  aVirtualNodeEnumerator := initializednodes().GetEnumerator;
+
+  while aVirtualNodeEnumerator.MoveNext do
+  begin
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    case data^.node_type of
+      ntLMS:
+        aCompare := data^.aLMS.id;
+      ntCategory:
+        aCompare := data^.Category.name;
+      ntCourse:
+        aCompare := data^.Course.fullname+data^.Course.shortname;    añadir aquí por qué campos queremos buscar
+
+    end;
+
+    if (Pos(UpperCase(text), UpperCase(aCompare)) > 0) or (text = '') then
+    begin
+      IsVisible[aVirtualNodeEnumerator.Current] := true;
+
+      aParent := aVirtualNodeEnumerator.Current.Parent;
+      while RootNode <> aParent do
+      begin
+        IsVisible[aParent] := true;
+        aParent := aParent.Parent;
+      end;
+
+    end
+    else
+      IsVisible[aVirtualNodeEnumerator.Current] := false;
+
+  end;
+
 end;
 
 procedure TLMSNetworkTreeView.MenuItem2Click(Sender: TObject);

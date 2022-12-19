@@ -23,8 +23,11 @@ type
     ActionManager1: TActionManager;
     Action1: TAction;
     Memo1: TMemo;
+    Panel1: TPanel;
+    Edit1: TEdit;
 
     procedure FormShow(Sender: TObject);
+    procedure Edit1Change(Sender: TObject);
   private
     { Private declarations }
     procedure WmAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
@@ -59,8 +62,8 @@ begin
   end;
 
   aLMSNetworkTreeView := TLMSNetworkTreeView.Create(self);
-  aLMSNetworkTreeView.parent := self;
-  aLMSNetworkTreeView.Align := alleft;
+  aLMSNetworkTreeView.parent := Panel1;
+  aLMSNetworkTreeView.Align := alClient;
 
 end;
 
@@ -68,6 +71,11 @@ destructor TMainForm.Destroy;
 begin
 
   inherited;
+end;
+
+procedure TMainForm.Edit1Change(Sender: TObject);
+begin
+  self.aLMSNetworkTreeView.FilterByText(edit1.text);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);

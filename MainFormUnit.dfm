@@ -50,6 +50,30 @@ object MainForm: TMainForm
     Align = alBottom
     TabOrder = 2
   end
+  object Panel1: TPanel
+    Left = 0
+    Top = 25
+    Width = 185
+    Height = 409
+    Align = alLeft
+    Caption = 'Panel1'
+    TabOrder = 3
+    ExplicitLeft = 56
+    ExplicitTop = 160
+    ExplicitHeight = 41
+    object Edit1: TEdit
+      Left = 1
+      Top = 1
+      Width = 183
+      Height = 21
+      Align = alTop
+      TabOrder = 0
+      OnChange = Edit1Change
+      ExplicitLeft = 32
+      ExplicitTop = 96
+      ExplicitWidth = 121
+    end
+  end
   object ActionManager1: TActionManager
     ActionBars = <
       item
