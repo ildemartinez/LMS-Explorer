@@ -47,7 +47,7 @@ type
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
-    procedure MenuItemClick(Sender: TObject);
+    //procedure MenuItemClick(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     { procedure MenuItemClickGetPeers(Sender: TObject);
       procedure MyDoGetPopupmenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -105,10 +105,10 @@ begin
 
   PopupMenu := TLMSPopupMenu.Create(self);
   // por el momento ponemos aquí las acciones
-  aMenuItem := TMenuItem.Create(self);
+{  aMenuItem := TMenuItem.Create(self);
   aMenuItem.caption := 'Connect';
   aMenuItem.OnClick := MenuItemClick;
-  PopupMenu.items.add(aMenuItem);
+  PopupMenu.items.add(aMenuItem);}
   //
 
   aMenuItem := TMenuItem.Create(self);
@@ -116,18 +116,8 @@ begin
   aMenuItem.OnClick := MenuItem2Click;
   PopupMenu.items.add(aMenuItem);
 
-  { // por el momento ponemos aquí las acciones
-    aMenuItem := TMenuItem.Create(self);
-    aMenuItem.caption := 'Get Peers';
-    aMenuItem.OnClick := MenuItemClickGetPeers;
-    PopupMenu.items.add(aMenuItem);
-    //
-  }
-
   TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
-    [toRightClickSelect,
-  // toLevelSelectConstraint,
-  tomultiselect, toSiblingSelectConstraint];
+    [toRightClickSelect, tomultiselect];
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
@@ -155,14 +145,16 @@ begin
       data^.node_type := ntLMS;
       data^.aLMS := fLMSNetwork.item[Node.Index];
 
-      if data^.aLMS.connected then
+      if (data^.aLMS.connected) then
       begin
         data^.aLMS.GetCategories;
         data^.aLMS.GetCourses;
       end;
 
-      // if data^.aLMS.categories.Count > 0 then
-      Node.States := Node.States + [vsHasChildren]; // , vsExpanded]
+      Include(Node.States, vsHasChildren);
+
+      if (data^.aLMS.autoconnect) then
+        Include(Node.States, vsExpanded);
     end
     else
       case parentdata^.node_type of
@@ -249,6 +241,9 @@ var
 begin
   aVirtualNodeEnumerator := initializednodes().GetEnumerator;
 
+  // Not paint until finished
+  BeginUpdate;
+
   while aVirtualNodeEnumerator.MoveNext do
   begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
@@ -258,7 +253,7 @@ begin
       ntCategory:
         aCompare := data^.Category.name;
       ntCourse:
-        aCompare := data^.Course.fullname+data^.Course.shortname;    añadir aquí por qué campos queremos buscar
+        aCompare := data^.Course.FilterContent;
 
     end;
 
@@ -278,6 +273,9 @@ begin
       IsVisible[aVirtualNodeEnumerator.Current] := false;
 
   end;
+
+  // Please refresh
+  EndUpdate;
 
 end;
 
@@ -305,7 +303,7 @@ begin
     end;
   end;
 end;
-
+       {
 procedure TLMSNetworkTreeView.MenuItemClick(Sender: TObject);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
@@ -322,46 +320,8 @@ begin
       self.ReinitNode(aVirtualNodeEnumerator.Current, true);
     end
   end;
-end;
+end; }
 
-{
-  procedure TCryptoNetworkTreeView.MenuItemClickGetPeers(Sender: TObject);
-  var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-  begin
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-  data := GetNodeData(aVirtualNodeEnumerator.Current);
-  if data^.node_type = ntnode then
-  begin
-  data^.nodedata.GetPeers();
-  end
-  end;
-
-  end;
-
-  procedure TCryptoNetworkTreeView.MyDoGetPopupmenu(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Column: TColumnIndex; const P: TPoint;
-  var AskParent: boolean; var PopupMenu: TPopupMenu);
-  var
-  data: PTreeData;
-  begin
-  data := GetNodeData(Node);
-
-  case data^.node_type of
-  ntroot:
-  ;
-  ntnetwork:
-  ;
-  ntnode:
-  ;
-  end;
-  end;
-
-}
 procedure TLMSNetworkTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
   var CellText: string);
@@ -394,7 +354,7 @@ begin
         begin
           data^.aLMS.GetCategories;
           data^.aLMS.GetCourses;
-          ChildCount := data^.aLMS.CategoriesLevel(0);
+          ChildCount := data^.aLMS.FirstLevelCategoriesCount;
         end;
       ntCategory:
         begin

@@ -23,8 +23,6 @@ type
     ActionManager1: TActionManager;
     Action1: TAction;
     Memo1: TMemo;
-    Panel1: TPanel;
-    Edit1: TEdit;
 
     procedure FormShow(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
@@ -51,20 +49,35 @@ uses
   lmslogUnit;
 
 constructor TMainForm.Create(Owner: Tcomponent);
-
 begin
   inherited;
 
   with TSplitter.Create(self) do
   begin
     parent := self;
-    Align := alleft;
+    Align := alLeft;
+  end;
+
+  var
+  aPanel := TPanel.Create(self);
+  with aPanel do
+  begin
+    parent := self;
+    Align := alLeft;
   end;
 
   aLMSNetworkTreeView := TLMSNetworkTreeView.Create(self);
-  aLMSNetworkTreeView.parent := Panel1;
+  aLMSNetworkTreeView.parent := aPanel;
   aLMSNetworkTreeView.Align := alClient;
 
+  var
+  aFilterEdit := TEdit.Create(self);
+  with aFilterEdit do
+  begin
+    parent := aPanel;
+    Align := alTop;
+    OnChange := Edit1Change;
+  end;
 end;
 
 destructor TMainForm.Destroy;
@@ -75,7 +88,7 @@ end;
 
 procedure TMainForm.Edit1Change(Sender: TObject);
 begin
-  self.aLMSNetworkTreeView.FilterByText(edit1.text);
+  aLMSNetworkTreeView.FilterByText(TEdit(Sender).text);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -116,6 +129,7 @@ begin
       aLMS.user := aIniFile.ReadString(aSection, 'user', '');
       aLMS.password := aIniFile.ReadString(aSection, 'password', '');
       aLMS.service := aIniFile.ReadString(aSection, 'service', '');
+      aLMS.autoconnect := aIniFile.ReadBool(aSection, 'autoconnect', false);
 
       GetGlobalNetwork.add(aLMS);
     end;

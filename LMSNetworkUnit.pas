@@ -9,10 +9,15 @@ uses
 type
 
   TLMSCourse = class
+  private
+    function GetFilterContent: string;
+  public
     id: cardinal;
     shortname: string;
-    fullname : string;
-    displayname : string;
+    fullname: string;
+    displayname: string;
+
+    property FilterContent: string read GetFilterContent;
   end;
 
   TLMSCategory = class
@@ -23,7 +28,7 @@ type
     fcategories: TList<TLMSCategory>;
     fcourses: TList<TLMSCourse>;
     id: cardinal;
- //   categoryid : cardinal;
+    // categoryid : cardinal;
     name: string;
     fparent: cardinal;
 
@@ -43,8 +48,11 @@ type
     function GetHost: string;
   public
     id: string;
+    autoconnect: boolean;
 
+    // All LMS categories
     categories: TList<TLMSCategory>;
+    // All LMS courses
     courses: TList<TLMSCourse>;
 
     aLMSConnection: TLMSRestMoodle;
@@ -54,8 +62,7 @@ type
     procedure Connect;
     function connected: boolean;
 
-    function CategoriesLevel(level: cardinal): cardinal;
-
+    function FirstLevelCategoriesCount: cardinal;
     function GetCategoryById(id: cardinal): TLMSCategory;
 
     procedure GetCategories;
@@ -131,7 +138,7 @@ end;
 
 { TLMS }
 
-function TLMS.CategoriesLevel(level: cardinal): cardinal;
+function TLMS.FirstLevelCategoriesCount: cardinal;
 var
   k: integer;
 begin
@@ -164,7 +171,7 @@ end;
 
 procedure TLMS.GetCategories;
 var
-  aCategory : TLMSCategory;
+  aCategory: TLMSCategory;
   aCategories: TJSonArray;
   category: TJSONValue;
 begin
@@ -173,7 +180,7 @@ begin
 
   if aCategories <> nil then
   begin
-    //log(aCategories.ToString);
+    // log(aCategories.ToString);
 
     for category in aCategories do
     begin
@@ -206,7 +213,7 @@ begin
 
   if aCourses <> nil then
   begin
-    //log(aCourses.ToString);
+    // log(aCourses.ToString);
     for course in aCourses do
     begin
       aCourse := TLMSCourse.Create;
@@ -285,6 +292,13 @@ end;
 function TLMSCategory.GetSubCategoriesCount: cardinal;
 begin
   result := fcategories.count;
+end;
+
+{ TLMSCourse }
+
+function TLMSCourse.GetFilterContent: string;
+begin
+  result := shortname + ' ' + fullname + ' ' + self.displayname
 end;
 
 end.
