@@ -15,7 +15,7 @@ call "c:\Program Files (x86)\Embarcadero\Studio\21.0\bin\rsvars.bat"
 echo Compilando
 msbuild /t:clean /t:build /p:Config=Release;Platform=Win32 LMSExplorer.dproj
 
-if exist .\Win32\Release\....exe (goto L1)
+if exist .\Win32\Release\lmsexplorer.exe (goto L1)
 echo "Error compiling"
 pause
 exit
@@ -30,7 +30,7 @@ cd Win32\Release
 echo --------------------
 echo Zipping
 echo --------------------
-"C:\Program Files\7-Zip\7z.exe" a ....zip ....exe 
+"C:\Program Files\7-Zip\7z.exe" a lmsexplorer.zip lmsexplorer.exe ..\..\config.ini_dist
 
 pause
 

@@ -68,6 +68,10 @@ __recovery/
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
 
+#ignore Win32 directory
+Win32/
+Win64/
+
 #ignore ini file and icons project resource file
 *.ini
 ResourcesFile.res
