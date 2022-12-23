@@ -36,7 +36,7 @@ type
     property User: string write fuser;
     property Password: string write fpassword;
     property Service: string write fservice;
-    property Host: string read fHost write fhost;
+    property Host: string read fhost write fhost;
 
   end;
 
@@ -49,6 +49,7 @@ uses
   rest.Types,
   System.UITypes,
 
+  LMSUserPasswordFormUnit,
   LMSConstsUnit,
   LMSLogUnit;
 
@@ -58,37 +59,63 @@ procedure TLMSRestMoodle.Connect;
 var
   jValue: TJsonValue;
   aItem: TRESTRequestParameter;
-
 begin
+  var
+    ask: boolean := false;
 
   if not Connected then
   begin
     aRestRequest.Params.Clear;
 
     aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'username';
-    aItem.Value := fuser;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'password';
-    aItem.Value := fpassword;
-
-    aItem := aRestRequest.Params.AddItem;
     aItem.name := 'service';
     aItem.Value := fservice;
 
-    aRestClient.BaseURL := fhost + '/login/token.php';
+    if not((fpassword <> '') and (fuser <> '')) then
+    begin
+      var
+        LMSUserPasswordForm: TLMSUserPasswordForm :=
+          TLMSUserPasswordForm.Create(application);
 
-    try
-      aRestRequest.Execute;
-      jValue := arestresponse.JSONValue;
-      fToken := jValue.GetValue<string>('token');
+      LMSUserPasswordForm.username := fuser;
+      LMSUserPasswordForm.Password := fpassword;
 
-    except
-      On E: ERestException do
+      if LMSUserPasswordForm.ShowModal = mrOk then
       begin
-        log('Error ' + aRestClient.BaseURL);
-      end
+        fuser := LMSUserPasswordForm.username;
+        fpassword := LMSUserPasswordForm.Password;
+        // if (fpassword <> '') and (fuser <> '') then // test it in the form close modal
+        ask := true
+      end;
+
+      LMSUserPasswordForm.free;
+    end
+    else
+      ask := true;
+
+    if ask = true then
+    begin
+
+      aItem := aRestRequest.Params.AddItem;
+      aItem.name := 'username';
+      aItem.Value := fuser;
+
+      aItem := aRestRequest.Params.AddItem;
+      aItem.name := 'password';
+      aItem.Value := fpassword;
+      aRestClient.BaseURL := fhost + '/login/token.php';
+
+      try
+        aRestRequest.Execute;
+        jValue := arestresponse.JSONValue;
+        fToken := jValue.GetValue<string>('token');
+
+      except
+        On E: ERestException do
+        begin
+          log('Error ' + aRestClient.BaseURL);
+        end
+      end;
     end;
   end;
 end;
@@ -115,8 +142,8 @@ var
   jValue: TJsonValue;
   aItem: TRESTRequestParameter;
 begin
-  if not connected then
-    connect;
+  if not Connected then
+    Connect;
 
   if Connected then
   begin

@@ -129,6 +129,14 @@
         </DCCReference>
         <DCCReference Include="LMSConstsUnit.pas"/>
         <DCCReference Include="LMS.Util.ImageListFromResource.pas"/>
+        <DCCReference Include="LMSUserPasswordFormUnit.pas">
+            <Form>LMSUserPasswordForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="LMSCourseFormUnit.pas">
+            <Form>LMSCourseForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <None Include="config.ini_dist"/>
         <None Include="README.md"/>
         <BuildConfiguration Include="Release">

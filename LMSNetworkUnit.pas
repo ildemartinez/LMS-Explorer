@@ -11,11 +11,15 @@ type
   TLMSCourse = class
   private
     function GetFilterContent: string;
+    function GetDisplayContent: string;
   public
     id: cardinal;
     shortname: string;
     fullname: string;
     displayname: string;
+
+    // Returns the apropiated text to show information about courses
+    property DisplayContent: string read GetDisplayContent;
 
     property FilterContent: string read GetFilterContent;
   end;
@@ -265,6 +269,8 @@ function TLMS.GetCategoryById(id: cardinal): TLMSCategory;
 var
   cat: TLMSCategory;
 begin
+  result := nil;
+
   for cat in categories do
   begin
     if (cat.id = id) then
@@ -295,6 +301,11 @@ begin
 end;
 
 { TLMSCourse }
+
+function TLMSCourse.GetDisplayContent: string;
+begin
+  result := shortname + ' - ' + displayname;
+end;
 
 function TLMSCourse.GetFilterContent: string;
 begin

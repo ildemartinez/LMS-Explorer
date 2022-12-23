@@ -47,7 +47,7 @@ type
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
-    //procedure MenuItemClick(Sender: TObject);
+    // procedure MenuItemClick(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     { procedure MenuItemClickGetPeers(Sender: TObject);
       procedure MyDoGetPopupmenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -92,6 +92,7 @@ uses
   LMSFormUnit,
   generics.Collections,
   LMSConstsUnit,
+  LMSCourseFormUnit,
   LMSLogUnit,
   LMS.Util.ImageListFromResource;
 
@@ -105,10 +106,10 @@ begin
 
   PopupMenu := TLMSPopupMenu.Create(self);
   // por el momento ponemos aquí las acciones
-{  aMenuItem := TMenuItem.Create(self);
-  aMenuItem.caption := 'Connect';
-  aMenuItem.OnClick := MenuItemClick;
-  PopupMenu.items.add(aMenuItem);}
+  { aMenuItem := TMenuItem.Create(self);
+    aMenuItem.caption := 'Connect';
+    aMenuItem.OnClick := MenuItemClick;
+    PopupMenu.items.add(aMenuItem); }
   //
 
   aMenuItem := TMenuItem.Create(self);
@@ -303,24 +304,24 @@ begin
     end;
   end;
 end;
-       {
-procedure TLMSNetworkTreeView.MenuItemClick(Sender: TObject);
-var
+{
+  procedure TLMSNetworkTreeView.MenuItemClick(Sender: TObject);
+  var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
-begin
+  begin
   aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
 
   while aVirtualNodeEnumerator.MoveNext do
   begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    if data^.node_type = ntLMS then
-    begin
-      data^.aLMS.Connect;
-      self.ReinitNode(aVirtualNodeEnumerator.Current, true);
-    end
+  data := GetNodeData(aVirtualNodeEnumerator.Current);
+  if data^.node_type = ntLMS then
+  begin
+  data^.aLMS.Connect;
+  self.ReinitNode(aVirtualNodeEnumerator.Current, true);
+  end
   end;
-end; }
+  end; }
 
 procedure TLMSNetworkTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
@@ -336,7 +337,7 @@ begin
     ntCategory:
       CellText := data^.Category.name;
     ntCourse:
-      CellText := data^.Course.shortname + ' - ' + data^.Course.displayname;
+      CellText := data^.Course.DisplayContent;
   end;
 end;
 
@@ -476,14 +477,25 @@ begin
   while aVirtualNodeEnumerator.MoveNext do
   begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
-    if data^.node_type = ntLMS then
-    begin
-      with TLMSForm.Create(self) do
-      begin
-        LMS := data^.aLMS;
-        show();
-      end;
-    end
+    case data^.node_type of
+      ntLMS:
+        begin
+          with TLMSForm.Create(self) do
+          begin
+            LMS := data^.aLMS;
+            show();
+          end;
+        end;
+      ntCourse:
+        begin
+          with TLMSCourseForm.Create(self) do
+          begin
+          aLMS := data^.aLMS;
+            aCourse := data^.Course;
+            show();
+          end;
+        end;
+    end;
     { else if data^.node_type = ntnetwork then
       begin
       with TNetworkForm.Create(self) do
