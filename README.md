@@ -20,6 +20,12 @@ you can find a postman collection to test the Moodle API Service
 
 # Configuring Moodle
 
-You have to enable webservices and protocol to enable Moodle API so here goes some step that must be done
+You have to enable webservices and protocol to enable Moodle API so here goes some step that must be done:
 
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_webservices.JPG)
+
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_protocols.JPG)
+
+You can build your own external service but you can start using the default installed Moodle mobile web service.
+
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_moodle_mobile_app.JPG)
