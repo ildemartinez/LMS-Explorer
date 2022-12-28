@@ -5,9 +5,12 @@ interface
 uses
   LMSNetWorkUnit;
 
+// Opens Moodle instace, category or course at the default system browser
 procedure OpenInBrowser(const aLMS: tlms); overload;
 procedure OpenInBrowser(const aCategory: TLMSCategory); overload;
 procedure OpenInBrowser(const aCourse: TLMSCourse); overload;
+//
+
 
 implementation
 
@@ -23,13 +26,13 @@ end;
 
 procedure OpenInBrowser(const aCategory: TLMSCategory); overload;
 begin
-  ShellExecute(0, 'open', PChar(aCategory.fLMS.Host + format(CATEGORY_VIEW,
+  ShellExecute(0, 'open', PChar(aCategory.LMS.Host + format(CATEGORY_VIEW,
     [aCategory.id])), nil, nil, 0); // SW_SHOW);
 end;
 
 procedure OpenInBrowser(const aCourse: TLMSCourse); overload;
 begin
-  ShellExecute(0, 'open', PChar(aCourse.fLMS.Host + format(COURSE_VIEW,
+  ShellExecute(0, 'open', PChar(aCourse.LMS.Host + format(COURSE_VIEW,
     [aCourse.id])), nil, nil, 0); // SW_SHOW);
 end;
 

@@ -13,30 +13,37 @@ type
 
   TLMSCourse = class
   private
+    fLMS: TLMS;
+
     function GetFilterContent: string;
     function GetDisplayContent: string;
+    function GetLMS: TLMS;
   public
-    fLMS : tlms;
-
     id: cardinal;
     shortname: string;
     fullname: string;
     displayname: string;
 
-    constructor Create(const LMS : TLMS);
+    constructor Create(const LMS: TLMS);
+
+    // Pointer to the LMS parent
+    property LMS: TLMS read GetLMS;
 
     // Returns the apropiated text to show information about courses
     property DisplayContent: string read GetDisplayContent;
 
+    // Return the course information that can be filtered from
     property FilterContent: string read GetFilterContent;
   end;
 
   TLMSCategory = class
   private
+    fLMS: TLMS;
+
     function GetCoursesCount: integer;
     function GetSubCategoriesCount: cardinal;
+    function GetLMS: TLMS;
   public
-    fLMS: TLMS;
     fcategories: TList<TLMSCategory>;
     fcourses: TList<TLMSCourse>;
     id: cardinal;
@@ -44,7 +51,10 @@ type
     name: string;
     fparent: cardinal;
 
-    constructor Create(const parent : TLMS);
+    constructor Create(const parent: TLMS);
+
+    // Pointer to the LMS parent
+    property LMS: TLMS read GetLMS;
 
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
     property CoursesCount: integer read GetCoursesCount;
@@ -292,9 +302,9 @@ end;
 
 { TLMSCategory }
 
-constructor TLMSCategory.Create(const parent : TLMS);
+constructor TLMSCategory.Create(const parent: TLMS);
 begin
-  inherited create;
+  inherited Create;
 
   fLMS := parent;
 
@@ -307,6 +317,11 @@ begin
   result := fcourses.count;
 end;
 
+function TLMSCategory.GetLMS: TLMS;
+begin
+  result := fLMS;
+end;
+
 function TLMSCategory.GetSubCategoriesCount: cardinal;
 begin
   result := fcategories.count;
@@ -314,12 +329,11 @@ end;
 
 { TLMSCourse }
 
-constructor TLMSCourse.Create(const LMS : TLMS);
+constructor TLMSCourse.Create(const LMS: TLMS);
 begin
-  inherited create;
+  inherited Create;
 
-  fLMS := lms;
-
+  fLMS := LMS;
 
 end;
 
@@ -331,6 +345,11 @@ end;
 function TLMSCourse.GetFilterContent: string;
 begin
   result := shortname + ' ' + fullname + ' ' + self.displayname
+end;
+
+function TLMSCourse.GetLMS: TLMS;
+begin
+  result := fLMS;
 end;
 
 end.
