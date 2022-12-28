@@ -17,3 +17,9 @@ You cant test it over your Moodle production instances but if you want to test i
 List of webservices https://docs.moodle.org/dev/Web_service_API_functions
 
 you can find a postman collection to test the Moodle API Service
+
+# Configuring Moodle
+
+You have to enable webservices and protocol to enable Moodle API so here goes some step that must be done
+
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_webservices.JPG)
