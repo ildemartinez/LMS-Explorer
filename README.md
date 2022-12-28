@@ -22,10 +22,20 @@ you can find a postman collection to test the Moodle API Service
 
 You have to enable webservices and protocol to enable Moodle API so here goes some step that must be done:
 
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_webservices.JPG)
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_webservices.jpg)
 
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_protocols.JPG)
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_protocols.jpg)
 
 You can build your own external service but you can start using the default installed Moodle mobile web service.
 
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_moodle_mobile_app.JPG)
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/enable_moodle_mobile_app.jpg)
+
+# Features
+
+You can find a course, catogory or even a Moodle instance using the filter box
+
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/find-course-category-moodle.jpg)
+
+Just right mouse click over a course, category or Moodle instance will open that element in default browser.
+
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/locate_course_in_moodle.jpg)
