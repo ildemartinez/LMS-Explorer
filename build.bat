@@ -1,12 +1,12 @@
 @echo off
 if exist "Win32" ( 
 	echo Borrando directorio Win32
-	rmdir Win32 /s/ q 
+	rmdir Win32/Release /s/ q 
 )
 
 if exist "Win64" ( 
 	echo Borrando directorio Win32
-	rmdir Win64 /s/ q
+	rmdir Win64/Release /s/ q
 )
 
 echo Estableciendo variables de entorno
