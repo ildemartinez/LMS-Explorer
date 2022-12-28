@@ -8,15 +8,22 @@ uses
 
 type
 
+  TLMS = class;
+  TLMSCategory = class;
+
   TLMSCourse = class
   private
     function GetFilterContent: string;
     function GetDisplayContent: string;
   public
+    fLMS : tlms;
+
     id: cardinal;
     shortname: string;
     fullname: string;
     displayname: string;
+
+    constructor Create(const LMS : TLMS);
 
     // Returns the apropiated text to show information about courses
     property DisplayContent: string read GetDisplayContent;
@@ -29,6 +36,7 @@ type
     function GetCoursesCount: integer;
     function GetSubCategoriesCount: cardinal;
   public
+    fLMS: TLMS;
     fcategories: TList<TLMSCategory>;
     fcourses: TList<TLMSCourse>;
     id: cardinal;
@@ -36,7 +44,7 @@ type
     name: string;
     fparent: cardinal;
 
-    constructor Create;
+    constructor Create(const parent : TLMS);
 
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
     property CoursesCount: integer read GetCoursesCount;
@@ -189,7 +197,7 @@ begin
     for category in aCategories do
     begin
       // Add to a global category list
-      aCategory := TLMSCategory.Create;
+      aCategory := TLMSCategory.Create(self);
       aCategory.id := category.GetValue<cardinal>('id');
       aCategory.name := category.GetValue<string>('name');
       aCategory.fparent := category.GetValue<cardinal>('parent');
@@ -220,7 +228,7 @@ begin
     // log(aCourses.ToString);
     for course in aCourses do
     begin
-      aCourse := TLMSCourse.Create;
+      aCourse := TLMSCourse.Create(self);
 
       if course.GetValue<string>('format') = 'site' then
       begin
@@ -284,8 +292,12 @@ end;
 
 { TLMSCategory }
 
-constructor TLMSCategory.Create;
+constructor TLMSCategory.Create(const parent : TLMS);
 begin
+  inherited create;
+
+  fLMS := parent;
+
   fcourses := TList<TLMSCourse>.Create;
   fcategories := TList<TLMSCategory>.Create;
 end;
@@ -301,6 +313,15 @@ begin
 end;
 
 { TLMSCourse }
+
+constructor TLMSCourse.Create(const LMS : TLMS);
+begin
+  inherited create;
+
+  fLMS := lms;
+
+
+end;
 
 function TLMSCourse.GetDisplayContent: string;
 begin

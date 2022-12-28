@@ -15,6 +15,7 @@ uses
     *}
   VirtualTrees,
 
+  winapi.messages,
   lmsnetworkunit,
   LMSPopupMenuUnit;
 
@@ -66,6 +67,8 @@ type
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
       var ImageIndex: TImageIndex);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+
+    procedure HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo); override;
     {
       procedure Notification(AComponent: TComponent;
       Operation: TOperation); override; }
@@ -86,7 +89,7 @@ implementation
 
 uses
   vcl.Graphics,
-  vcl.ImgList,
+  vcl.ImgList, windows,
   dialogs,
   ShellApi,
   LMSFormUnit,
@@ -94,7 +97,8 @@ uses
   LMSConstsUnit,
   LMSCourseFormUnit,
   LMSLogUnit,
-  LMS.Util.ImageListFromResource;
+  LMS.Util.ImageListFromResource,
+  LMSBrowserHelperunit;
 
 constructor TLMSNetworkTreeView.Create(Owner: TComponent);
 var
@@ -118,12 +122,14 @@ begin
   PopupMenu.items.add(aMenuItem);
 
   TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
-    [toRightClickSelect, tomultiselect];
+    [toRightClickSelect];
+  // := TreeOptions.SelectionOptions +    [toRightClickSelect, tomultiselect];
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnNodeDblClick := NodeDblClick;
   OnPaintText := MyDoPaintText;
+
 
   {
     OnGetPopupMenu := MyDoGetPopupmenu; }
@@ -280,6 +286,12 @@ begin
 
 end;
 
+procedure TLMSNetworkTreeView.HandleMouseDblClick(var Message: TWMMouse;
+  const HitInfo: THitInfo);
+begin
+   DoNodeDblClick(HitInfo);
+end;
+
 procedure TLMSNetworkTreeView.MenuItem2Click(Sender: TObject);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
@@ -292,15 +304,11 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     case data^.node_type of
       ntLMS:
-        log(data^.aLMS.Host);
+        OpenInBrowser(data^.aLMS);
       ntCategory:
-        ShellExecute(0, 'open', PChar(data^.aLMS.Host + format(CATEGORY_VIEW,
-          [data^.Category.id])), nil, nil, 0); // SW_SHOW);
+        OpenInBrowser(data^.Category);
       ntCourse:
-        begin
-          ShellExecute(0, 'open', PChar(data^.aLMS.Host + format(COURSE_VIEW,
-            [data^.Course.id])), nil, nil, 0); // SW_SHOW);
-        end
+        OpenInBrowser(data^.Course);
     end;
   end;
 end;
@@ -472,6 +480,9 @@ var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
 begin
+  var
+  CtrlPressed := (GetKeyState(VK_CONTROL) and $8000) = $8000;
+
   aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
 
   while aVirtualNodeEnumerator.MoveNext do
@@ -480,20 +491,36 @@ begin
     case data^.node_type of
       ntLMS:
         begin
-          with TLMSForm.Create(self) do
+          if CtrlPressed then
           begin
-            LMS := data^.aLMS;
-            show();
-          end;
+            OpenInBrowser(data^.aLMS);
+          end
+          else
+            with TLMSForm.Create(self) do
+            begin
+              LMS := data^.aLMS;
+              show();
+            end;
+        end;
+      ntCategory:
+        begin
+          if CtrlPressed then
+          begin
+            OpenInBrowser(data^.Category);
+          end
         end;
       ntCourse:
         begin
-          with TLMSCourseForm.Create(self) do
+          if CtrlPressed then
           begin
-          aLMS := data^.aLMS;
-            aCourse := data^.Course;
-            show();
-          end;
+            OpenInBrowser(data^.Course);
+          end
+          else
+            with TLMSCourseForm.Create(self) do
+            begin
+              aCourse := data^.Course;
+              show();
+            end;
         end;
     end;
     { else if data^.node_type = ntnetwork then

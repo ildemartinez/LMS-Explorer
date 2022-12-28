@@ -20,7 +20,6 @@ type
     { Private declarations }
   public
     { Public declarations }
-    property aLMS : TLMS read fLMS write fLMS;
     property aCourse: TLMSCourse read fCourse write SetaCourse;
 
   end;
@@ -43,7 +42,7 @@ end;
 
 procedure TLMSCourseForm.LinkLabel1Click(Sender: TObject);
 begin
-  ShellExecute(0, 'open', PChar(aLMS.Host + format(COURSE_VIEW,
+  ShellExecute(0, 'open', PChar(fCourse.fLMS.Host + format(COURSE_VIEW,
     [fCourse.id])), nil, nil, 0); // SW_SHOW);
 end;
 

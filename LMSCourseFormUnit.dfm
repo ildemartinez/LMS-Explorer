@@ -19,8 +19,8 @@ object LMSCourseForm: TLMSCourseForm
   object Label1: TLabel
     Left = 72
     Top = 32
-    Width = 105
-    Height = 33
+    Width = 31
+    Height = 13
     Caption = 'Label1'
     OnClick = LinkLabel1Click
   end

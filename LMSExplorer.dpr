@@ -21,7 +21,8 @@ uses
   LMSConstsUnit in 'LMSConstsUnit.pas',
   LMS.Util.ImageListFromResource in 'LMS.Util.ImageListFromResource.pas',
   LMSUserPasswordFormUnit in 'LMSUserPasswordFormUnit.pas' {LMSUserPasswordForm},
-  LMSCourseFormUnit in 'LMSCourseFormUnit.pas' {LMSCourseForm};
+  LMSCourseFormUnit in 'LMSCourseFormUnit.pas' {LMSCourseForm},
+  LMSBrowserHelperUnit in 'LMSBrowserHelperUnit.pas';
 
 {$R *.res}
 
