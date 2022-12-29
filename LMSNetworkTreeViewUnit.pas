@@ -68,7 +68,8 @@ type
       var ImageIndex: TImageIndex);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 
-    procedure HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo); override;
+    procedure HandleMouseDblClick(var Message: TWMMouse;
+      const HitInfo: THitInfo); override;
     {
       procedure Notification(AComponent: TComponent;
       Operation: TOperation); override; }
@@ -129,7 +130,6 @@ begin
   OnInitChildren := MyDoInitChildren;
   OnNodeDblClick := NodeDblClick;
   OnPaintText := MyDoPaintText;
-
 
   {
     OnGetPopupMenu := MyDoGetPopupmenu; }
@@ -289,7 +289,7 @@ end;
 procedure TLMSNetworkTreeView.HandleMouseDblClick(var Message: TWMMouse;
   const HitInfo: THitInfo);
 begin
-   DoNodeDblClick(HitInfo);
+  DoNodeDblClick(HitInfo);
 end;
 
 procedure TLMSNetworkTreeView.MenuItem2Click(Sender: TObject);
@@ -479,9 +479,11 @@ procedure TLMSNetworkTreeView.NodeDblClick(Sender: TBaseVirtualTree;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
+  CtrlPressed, ShiftPressed: boolean;
 begin
-  var
+
   CtrlPressed := (GetKeyState(VK_CONTROL) and $8000) = $8000;
+  ShiftPressed := (GetKeyState(VK_SHIFT) and $8000) = $8000;
 
   aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
 
@@ -514,6 +516,10 @@ begin
           if CtrlPressed then
           begin
             OpenInBrowser(data^.Course);
+          end
+          else if ShiftPressed then
+          begin
+            OpenUsersInBrowser(data^.Course);
           end
           else
             with TLMSCourseForm.Create(self) do

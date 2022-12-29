@@ -11,6 +11,7 @@ procedure OpenInBrowser(const aCategory: TLMSCategory); overload;
 procedure OpenInBrowser(const aCourse: TLMSCourse); overload;
 //
 
+procedure OpenUsersInBrowser(const aCourse: TLMSCourse); overload;
 
 implementation
 
@@ -33,6 +34,12 @@ end;
 procedure OpenInBrowser(const aCourse: TLMSCourse); overload;
 begin
   ShellExecute(0, 'open', PChar(aCourse.LMS.Host + format(COURSE_VIEW,
+    [aCourse.id])), nil, nil, 0); // SW_SHOW);
+end;
+
+procedure OpenUsersInBrowser(const aCourse: TLMSCourse); overload;
+begin
+  ShellExecute(0, 'open', PChar(aCourse.LMS.Host + format(USERS_VIEW,
     [aCourse.id])), nil, nil, 0); // SW_SHOW);
 end;
 

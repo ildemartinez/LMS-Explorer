@@ -16,6 +16,7 @@ const
   // URL
   COURSE_VIEW = '/course/view.php?id=%d';
   CATEGORY_VIEW = '/course/index.php?categoryid=%d';
+  USERS_VIEW = '/user/index.php?id=%d';
 
 implementation
 
