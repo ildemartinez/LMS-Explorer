@@ -78,7 +78,86 @@
 			]
 		},
 		{
-			"name": "Gettoken",
+			"name": "core_groups",
+			"item": [
+				{
+					"name": "get_course_groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/webservice/rest/server.php?wstoken={{token}}&moodlewsrestformat=json&wsfunction=core_group_get_course_groups&courseid=7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"webservice",
+								"rest",
+								"server.php"
+							],
+							"query": [
+								{
+									"key": "wstoken",
+									"value": "{{token}}"
+								},
+								{
+									"key": "moodlewsrestformat",
+									"value": "json"
+								},
+								{
+									"key": "wsfunction",
+									"value": "core_group_get_course_groups"
+								},
+								{
+									"key": "courseid",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_group_members",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/webservice/rest/server.php?wstoken={{token}}&moodlewsrestformat=json&wsfunction=core_group_get_group_members&courseid=7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"webservice",
+								"rest",
+								"server.php"
+							],
+							"query": [
+								{
+									"key": "wstoken",
+									"value": "{{token}}"
+								},
+								{
+									"key": "moodlewsrestformat",
+									"value": "json"
+								},
+								{
+									"key": "wsfunction",
+									"value": "core_group_get_group_members"
+								},
+								{
+									"key": "courseid",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "gettoken",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -105,7 +184,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/login/token.php?username=user&password=1Password.-&service=moodle_mobile_app",
+					"raw": "{{host}}/login/token.php?username={{username}}&password={{password}}&service={{service}}",
 					"host": [
 						"{{host}}"
 					],
@@ -116,15 +195,16 @@
 					"query": [
 						{
 							"key": "username",
-							"value": "user"
+							"value": "{{username}}"
 						},
 						{
 							"key": "password",
-							"value": "1Password.-"
+							"value": "{{password}}"
 						},
 						{
 							"key": "service",
-							"value": "moodle_mobile_app"
+							"value": "{{service}}",
+							"description": "can use p.e -> moodle_mobile_app"
 						}
 					]
 				}
@@ -154,14 +234,8 @@
 	],
 	"variable": [
 		{
-			"key": "host",
-			"value": "http://localhost",
-			"type": "string"
-		},
-		{
 			"key": "token",
-			"value": "",
-			"type": "string"
+			"value": ""
 		}
 	]
 }
