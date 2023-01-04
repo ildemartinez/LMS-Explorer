@@ -32,14 +32,23 @@ You can build your own external service but you can start using the default inst
 
 At this point you have a default service "moodle_mobile_app" that can be used as a REST service for this application but some API calls are not enabled in this service. For advanced use of LMS-Explorer you have to create your own service and enable more powerfull entry points.
 
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_functions_to_service.JPG)
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_new_external_service.JPG)
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_user.JPG)
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/admin_token_created.JPG)
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/configure-external-service.JPG)
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/create_admin_token.JPG)
+You can create you own service as follows
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/create_external-service.JPG)
 
+Once created add functions and authorised users
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_new_external_service.JPG)
+
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/configure-external-service.JPG)
+
+Add your user
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_user.JPG)
+
+If you use the Moodle Admin, for securtiy reasons you have to create the access token from Moodle admin pane
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/create_admin_token.JPG)
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/admin_token_created.JPG)
+
+And finally the exclusive functions for use in this tool
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_functions_to_service.JPG)
 
 # Features
 
