@@ -33,11 +33,10 @@ You can build your own external service but you can start using the default inst
 At this point you have a default service "moodle_mobile_app" that can be used as a REST service for this application but some API calls are not enabled in this service. For advanced use of LMS-Explorer you have to create your own service and enable more powerfull entry points.
 
 You can create you own service as follows
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_new_external_service.JPG)
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/create_external-service.JPG)
 
 Once created add functions and authorised users
-![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_new_external_service.JPG)
-
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/configure-external-service.JPG)
 
 Add your user
