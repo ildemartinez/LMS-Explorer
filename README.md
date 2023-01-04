@@ -45,10 +45,18 @@ Add your user
 If you use the Moodle Admin, for securtiy reasons you have to create the access token from Moodle admin pane
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/create_admin_token.JPG)
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/admin_token_created.JPG)
+note: do not publish your token as I am doing (this is a local Moodle private instace)
 
 And finally the exclusive functions for use in this tool
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/screenshots/add_functions_to_service.JPG)
 
+List of needed functions (note that you can use the installed moodle_mobile_app service if use the desired features, for others you have to create your own service):
+
+| Feature                            | Function                           | service           |
+|------------------------------------|------------------------------------|-------------------|
+|Categories navigation and location  |core_course_get_cateogories         | moodle_mobile_app |  
+|Courses navigation and location     |core_course_get_courses             | moodle_mobile_app |  
+ 
 # Features
 
 You can find a course, catogory or even a Moodle instance using the filter box
