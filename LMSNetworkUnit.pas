@@ -11,6 +11,10 @@ type
   TLMS = class;
   TLMSCategory = class;
 
+  TLMSUser = class
+
+  end;
+
   TLMSCourse = class
   private
     fLMS: TLMS;
@@ -24,7 +28,10 @@ type
     fullname: string;
     displayname: string;
 
+    fUsers: TList<TLMSUser>;
     constructor Create(const LMS: TLMS);
+
+    procedure GetEnrolledUsers;
 
     // Pointer to the LMS parent
     property LMS: TLMS read GetLMS;
@@ -333,6 +340,8 @@ constructor TLMSCourse.Create(const LMS: TLMS);
 begin
   inherited Create;
 
+  fUsers := TList<TLMSUser>.Create;
+
   fLMS := LMS;
 
 end;
@@ -340,6 +349,32 @@ end;
 function TLMSCourse.GetDisplayContent: string;
 begin
   result := shortname + ' - ' + displayname;
+end;
+
+procedure TLMSCourse.GetEnrolledUsers;
+var
+  aUser: TLMSUser;
+  aUsers: TJSonArray;
+  User: TJSONValue;
+begin
+  aUsers := fLMS.aLMSConnection.GetEnrolledUsersByCourseId(self.id);
+
+  if aUsers <> nil then
+  begin
+     log(aUsers.ToString);
+    for User in aUsers do
+    begin
+      aUser := TLMSUser.Create;
+        {
+      aCourse.id := course.GetValue<cardinal>('id');
+      aCourse.shortname := course.GetValue<string>('shortname');
+      aCourse.fullname := course.GetValue<string>('fullname');
+      aCourse.displayname := course.GetValue<string>('displayname');
+      GetCategoryById(course.GetValue<cardinal>('categoryid'))
+        .fcourses.add(aCourse);
+         }
+    end;
+  end;
 end;
 
 function TLMSCourse.GetFilterContent: string;

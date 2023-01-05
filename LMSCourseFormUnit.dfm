@@ -2,8 +2,8 @@ object LMSCourseForm: TLMSCourseForm
   Left = 0
   Top = 0
   Caption = 'LMSCourseForm'
-  ClientHeight = 280
-  ClientWidth = 629
+  ClientHeight = 764
+  ClientWidth = 965
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,5 +23,24 @@ object LMSCourseForm: TLMSCourseForm
     Height = 13
     Caption = 'Label1'
     OnClick = LinkLabel1Click
+  end
+  object TabControl1: TTabControl
+    Left = 56
+    Top = 104
+    Width = 665
+    Height = 353
+    TabOrder = 0
+    Tabs.Strings = (
+      'Participantes')
+    TabIndex = 0
+  end
+  object Button1: TButton
+    Left = 232
+    Top = 520
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 1
+    OnClick = Button1Click
   end
 end

@@ -32,6 +32,7 @@ type
 
     function GetCategories: TJSonArray;
     function GetCourses: TJSonArray;
+    function GetEnrolledUsersByCourseId(const courseID: integer) : TJsonArray;
 
     property User: string write fuser;
     property Password: string write fpassword;
@@ -43,7 +44,7 @@ type
 implementation
 
 uses
-  forms,
+  forms,  sysutils,
   System.Generics.Collections,
   Dialogs,
   rest.Types,
@@ -231,6 +232,51 @@ end;
 constructor TLMFunctionRequest.Create(Owner: TComponent);
 begin
   inherited;
+
+end;
+
+function TLMSRestMoodle.GetEnrolledUsersByCourseId(const courseID: integer) : TJsonArray;
+var
+  jValue: TJsonValue;
+  aItem: TRESTRequestParameter;
+begin
+
+  if Connected then
+  begin
+    aRestRequest.Params.Clear;
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := WSTOKEN;
+    aItem.Value := self.fToken;
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := WSFUNCTION;
+    aItem.Value := CORE_ENROL_GET_ENROLLED_USERS;
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := 'moodlewsrestformat';
+    aItem.Value := 'json';
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := 'courseid';
+    aItem.Value := inttostr(courseId);
+
+
+    aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
+
+    try
+      screen.Cursor := crHourGlass;
+      aRestRequest.Execute;
+    finally
+      screen.Cursor := crDefault;
+    end;
+
+    jValue := arestresponse.JSONValue;
+    result := jValue as TJSonArray;
+  end
+  else
+    result := nil;
+
 
 end;
 

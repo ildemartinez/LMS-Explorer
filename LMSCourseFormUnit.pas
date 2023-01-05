@@ -6,13 +6,16 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  LMSNetworkUnit, Vcl.ExtCtrls, Vcl.StdCtrls;
+  LMSNetworkUnit, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls;
 
 type
   TLMSCourseForm = class(TForm)
     Label1: TLabel;
+    TabControl1: TTabControl;
+    Button1: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     fLMS : TLMS;
     fCourse: TLMSCourse;
@@ -34,6 +37,11 @@ uses
     LMSConstsUnit;
 
 {$R *.dfm}
+
+procedure TLMSCourseForm.Button1Click(Sender: TObject);
+begin
+   aCourse.GetEnrolledUsers;
+end;
 
 procedure TLMSCourseForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
