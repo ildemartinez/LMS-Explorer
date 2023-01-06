@@ -32,7 +32,8 @@ type
 
     function GetCategories: TJSonArray;
     function GetCourses: TJSonArray;
-    function GetEnrolledUsersByCourseId(const courseID: integer) : TJsonArray;
+    function GetEnrolledUsersByCourseId(const courseID: integer): TJSonArray;
+    function GetUserGroupsByCourseId(const courseID: integer): TJSonArray;
 
     property User: string write fuser;
     property Password: string write fpassword;
@@ -44,7 +45,7 @@ type
 implementation
 
 uses
-  forms,  sysutils,
+  forms, sysutils,
   System.Generics.Collections,
   Dialogs,
   rest.Types,
@@ -235,7 +236,8 @@ begin
 
 end;
 
-function TLMSRestMoodle.GetEnrolledUsersByCourseId(const courseID: integer) : TJsonArray;
+function TLMSRestMoodle.GetEnrolledUsersByCourseId(const courseID: integer)
+  : TJSonArray;
 var
   jValue: TJsonValue;
   aItem: TRESTRequestParameter;
@@ -259,8 +261,7 @@ begin
 
     aItem := aRestRequest.Params.AddItem;
     aItem.name := 'courseid';
-    aItem.Value := inttostr(courseId);
-
+    aItem.Value := inttostr(courseID);
 
     aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
 
@@ -277,6 +278,49 @@ begin
   else
     result := nil;
 
+end;
+
+function TLMSRestMoodle.GetUserGroupsByCourseId(
+  const courseID: integer): TJSonArray;
+var
+  jValue: TJsonValue;
+  aItem: TRESTRequestParameter;
+begin
+
+  if Connected then
+  begin
+    aRestRequest.Params.Clear;
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := WSTOKEN;
+    aItem.Value := self.fToken;
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := WSFUNCTION;
+    aItem.Value := CORE_GROUP_GET_COURSE_GROUPS;
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := 'moodlewsrestformat';
+    aItem.Value := 'json';
+
+    aItem := aRestRequest.Params.AddItem;
+    aItem.name := 'courseid';
+    aItem.Value := inttostr(courseID);
+
+    aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
+
+    try
+      screen.Cursor := crHourGlass;
+      aRestRequest.Execute;
+    finally
+      screen.Cursor := crDefault;
+    end;
+
+    jValue := arestresponse.JSONValue;
+    result := jValue as TJSonArray;
+  end
+  else
+    result := nil;
 
 end;
 

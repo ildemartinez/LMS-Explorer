@@ -140,6 +140,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="LMSBrowserHelperUnit.pas"/>
+        <DCCReference Include="LMSUsersTreeViewUnit.pas"/>
         <None Include="config.ini_dist"/>
         <None Include="README.md"/>
         <BuildConfiguration Include="Release">

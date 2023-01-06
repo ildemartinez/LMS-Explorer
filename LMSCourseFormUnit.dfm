@@ -33,10 +33,19 @@ object LMSCourseForm: TLMSCourseForm
     Tabs.Strings = (
       'Participantes')
     TabIndex = 0
+    object Memo1: TMemo
+      Left = 88
+      Top = 80
+      Width = 321
+      Height = 161
+      Lines.Strings = (
+        'Memo1')
+      TabOrder = 0
+    end
   end
   object Button1: TButton
-    Left = 232
-    Top = 520
+    Left = 160
+    Top = 40
     Width = 75
     Height = 25
     Caption = 'Button1'

@@ -12,8 +12,19 @@ type
   TLMSCategory = class;
 
   TLMSUser = class
-
+  public
+    fid: integer;
+    fUserName, fFirstName, fLastName, fFullName, fEmail: string;
   end;
+
+  TLMSUsers = TList<TLMSUser>;
+
+  TLMSUserGroup = class
+    fid: cardinal;
+    fName: string;
+  end;
+
+  TLMSUserGroups = TList<TLMSUserGroup>;
 
   TLMSCourse = class
   private
@@ -28,10 +39,13 @@ type
     fullname: string;
     displayname: string;
 
-    fUsers: TList<TLMSUser>;
+    fUsers: TLMSUsers;
+    fUserGroups: TLMSUserGroups;
+
     constructor Create(const LMS: TLMS);
 
-    procedure GetEnrolledUsers;
+    procedure RefreshEnrolledUsers;
+    procedure RefreshUserGroups;
 
     // Pointer to the LMS parent
     property LMS: TLMS read GetLMS;
@@ -340,7 +354,8 @@ constructor TLMSCourse.Create(const LMS: TLMS);
 begin
   inherited Create;
 
-  fUsers := TList<TLMSUser>.Create;
+  fUsers := TLMSUsers.Create;
+  fUserGroups := TLMSUserGroups.Create;
 
   fLMS := LMS;
 
@@ -351,30 +366,58 @@ begin
   result := shortname + ' - ' + displayname;
 end;
 
-procedure TLMSCourse.GetEnrolledUsers;
+procedure TLMSCourse.RefreshEnrolledUsers;
 var
   aUser: TLMSUser;
   aUsers: TJSonArray;
   User: TJSONValue;
 begin
+  fUsers.Clear;
+
   aUsers := fLMS.aLMSConnection.GetEnrolledUsersByCourseId(self.id);
 
   if aUsers <> nil then
   begin
-     log(aUsers.ToString);
+    log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;
-        {
-      aCourse.id := course.GetValue<cardinal>('id');
-      aCourse.shortname := course.GetValue<string>('shortname');
-      aCourse.fullname := course.GetValue<string>('fullname');
-      aCourse.displayname := course.GetValue<string>('displayname');
-      GetCategoryById(course.GetValue<cardinal>('categoryid'))
-        .fcourses.add(aCourse);
-         }
+      aUser.fid := User.GetValue<cardinal>('id');
+      aUser.fUserName := User.GetValue<string>('username');
+      aUser.fFirstName := User.GetValue<string>('firstname');
+      aUser.fLastName := User.GetValue<string>('lastname');
+      aUser.fFullName := User.GetValue<string>('fullname');
+
+      fUsers.add(aUser)
     end;
   end;
+end;
+
+procedure TLMSCourse.RefreshUserGroups;
+var
+  aUserGroups: TJSonArray;
+  aGroup: TJSONValue;
+  aUserGroup: TLMSUserGroup;
+begin
+  aUserGroups := fLMS.aLMSConnection.GetUserGroupsByCourseId(self.id);
+
+  if aUserGroups <> nil then
+  begin
+    log(aUserGroups.ToString);
+    for aGroup in aUserGroups do
+    begin
+      aUserGroup := TLMSUserGroup.Create;
+
+       aUserGroup.fid := aGroup.GetValue<cardinal>('id');
+        aUserGroup.fName := aGroup.GetValue<string>('name');
+      {  aUser.fFirstName := User.GetValue<string>('firstname');
+        aUser.fLastName := User.GetValue<string>('lastname');
+        aUser.fFullName := User.GetValue<string>('fullname');
+      }
+      fUserGroups.add(aUserGroup)
+    end;
+  end;
+
 end;
 
 function TLMSCourse.GetFilterContent: string;
