@@ -11,13 +11,9 @@ uses
 
 type
   TLMSCourseForm = class(TForm)
-    Label1: TLabel;
     TabControl1: TTabControl;
-    Button1: TButton;
-    Memo1: TMemo;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
   private
     fLMS : TLMS;
     fUsersTreeView : TLMSUsersTreeView;
@@ -42,27 +38,13 @@ uses
 
 {$R *.dfm}
 
-procedure TLMSCourseForm.Button1Click(Sender: TObject);
-var
-  aUser : TLMSUser;
-begin
-  aCourse.RefreshEnrolledUsers;
-
-  for aUser in self.aCourse.fUsers do
-  begin
-    Memo1.Lines.Add(aUser.fUserName);
-  end;
-
-
-
-end;
-
 constructor TLMSCourseForm.Create(Owner: TComponent);
 begin
   inherited;
 
   fUsersTreeView := TLMSUsersTreeView.Create(self);
-  fUsersTreeView.parent := self;
+  fUsersTreeView.parent := TabControl1;
+  fUsersTreeView.align := alClient;
 end;
 
 procedure TLMSCourseForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -80,7 +62,7 @@ procedure TLMSCourseForm.SetaCourse(const Value: TLMSCourse);
 begin
   fCourse := Value;
 
-  Label1.Caption := fCourse.displaycontent;
+  self.Caption := fCourse.displaycontent;
 
   fUsersTreeView.LMSCourse := value;
 end;

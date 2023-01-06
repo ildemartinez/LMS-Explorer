@@ -23,7 +23,8 @@ uses
   LMSUserPasswordFormUnit in 'LMSUserPasswordFormUnit.pas' {LMSUserPasswordForm},
   LMSCourseFormUnit in 'LMSCourseFormUnit.pas' {LMSCourseForm},
   LMSBrowserHelperUnit in 'LMSBrowserHelperUnit.pas',
-  LMSUsersTreeViewUnit in 'LMSUsersTreeViewUnit.pas';
+  LMSUsersTreeViewUnit in 'LMSUsersTreeViewUnit.pas',
+  LMSUtilsUnit in 'LMSUtilsUnit.pas';
 
 {$R *.res}
 

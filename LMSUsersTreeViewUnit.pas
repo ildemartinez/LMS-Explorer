@@ -49,6 +49,7 @@ type
     // procedure SetAsTree(const Value: boolean);
 
     // procedure setCryptoNetwork(const Value: TBTCNetwork);
+    function HasGroups: boolean;
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
@@ -104,7 +105,13 @@ uses
   LMSCourseFormUnit,
   LMSLogUnit,
   LMS.Util.ImageListFromResource,
-  LMSBrowserHelperunit;
+  LMSBrowserHelperunit,
+  LMSUtilsUnit;
+
+function TLMSUsersTreeView.HasGroups: boolean;
+begin
+  result := fLMSCourse.fUserGroups.count > 0;
+end;
 
 constructor TLMSUsersTreeView.Create(Owner: TComponent);
 var
@@ -127,9 +134,16 @@ begin
   aMenuItem.OnClick := MenuItem2Click;
   PopupMenu.items.add(aMenuItem);
 
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
-    [toRightClickSelect];
+  // TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +    [toRightClickSelect];
   // := TreeOptions.SelectionOptions +    [toRightClickSelect, tomultiselect];
+
+  TreeOptions.PaintOptions := TreeOptions.PaintOptions -
+    [toShowRoot, toShowTreeLines] + [toHotTrack, tohidefocusrect,
+    toshowhorzgridlines, toshowvertgridlines];
+  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
+    [toFullRowSelect];
+  Header.Options := Header.Options - [hocolumnresize];
+  TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
@@ -158,46 +172,40 @@ begin
       if LMSCourse.fUserGroups.count > 0 then
       begin
         data^.node_type := ntGroup;
-        data^.group := fLMSCourse.fUserGroups[node.Index];
+        data^.Group := fLMSCourse.fUserGroups[Node.Index];
+        Include(Node.States, vsHasChildren);
+        Include(Node.States, vsExpanded);
+      end
+      else
+      begin
+        data^.node_type := ntUser;
+        data^.User := fLMSCourse.fUsers[Node.Index];
+        Exclude(Node.States, vsHasChildren);
       end;
-
-      { if (data^.aLMS.connected) then
-        begin
-        data^.aLMS.GetCategories;
-        data^.aLMS.GetCourses;
-        end;
-      }
-      Include(Node.States, vsHasChildren);
 
       { if (data^.aLMS.autoconnect) then
         Include(Node.States, vsExpanded); }
     end
-    { else
+    else
       case parentdata^.node_type of
-      ntLMS:
-      begin
-      data^.node_type := ntCategory;
-      data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-      data^.Category := parentdata^.aLMS.categories.items[Node.Index];
+        ntGroup:
+          begin
+            data^.node_type := ntUser;
+            data^.User := parentdata.Group.fUsersInGroup[Node.Index];
+            Exclude(Node.States, vsHasChildren);
+          end;
+        { data^.node_type := ntCategory;
+          data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
+          data^.Category := parentdata^.aLMS.categories.items[Node.Index];
 
-      if parentdata^.aLMS.categories.count +
-      parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0
-      then
-      Node.States := Node.States + [vsHasChildren, vsExpanded];
+          if parentdata^.aLMS.categories.count +
+          parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0
+          then
+          Node.States := Node.States + [vsHasChildren, vsExpanded];
+          end;
+        }
       end;
-      ntCategory:
-      begin
-      // It is a category
-      if Node.Index < parentdata^.Category.SubCategoriesCount then
-      begin
-      data^.node_type := ntCategory;
-      data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-      data^.Category := parentdata^.aLMS.getcategorybyid
-      (parentdata^.Category.id).fcategories.items[Node.Index];
-
-      if parentdata^.Category.SubCategoriesCount > 0 then
-      Node.States := Node.States + [vsHasChildren, vsExpanded];
-      end
+    {
       else
       begin
       data^.node_type := ntCourse;
@@ -224,30 +232,6 @@ begin
     }
 
   end;
-
-  {
-    procedure TCryptoNetworkTreeView.DoNotify(const msgtype: TMSGType;
-    const aNode: INode);
-    var
-    aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-    data: PTreeData;
-    begin
-    // todo optimizar la salida
-    aVirtualNodeEnumerator := nodes.GetEnumerator;
-
-    while aVirtualNodeEnumerator.MoveNext do
-    begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    if data^.node_type = ntnode then
-    begin
-    if data^.nodedata.PeerIp = aNode.GetIP then
-    InvalidateNode(aVirtualNodeEnumerator.Current)
-    end;
-    end;
-
-    end;
-  }
-
 end;
 
 procedure TLMSUsersTreeView.FilterByText(const text: string);
@@ -352,12 +336,32 @@ begin
 
   case data^.node_type of
     ntGroup:
-      CellText := data^.Group.fname;
-    { ntCategory:
-      CellText := data^.Category.name;
-      ntCourse:
-      CellText := data^.Course.DisplayContent;
-      end; }
+      if Column = 0 then
+        CellText := data^.Group.fname
+      else
+        CellText := '';
+    ntUser:
+      if HasGroups then
+      begin
+        case Column of
+          0:
+            CellText := '';
+          1:
+{$IFDEF DEBUG}
+            // CellText := ShadowText(data^.User.fFullName);
+            CellText := data^.User.fFullName;
+{$ELSE}
+            CellText := data^.User.fFullName;
+{$ENDIF}
+        end;
+      end
+      else
+{$IFDEF DEBUG}
+        // CellText := ShadowText(data^.User.fFullName);
+        CellText := data^.User.fFullName;
+{$ELSE}
+        CellText := data^.User.fFullName;
+{$ENDIF}
   end;
 end;
 
@@ -370,20 +374,14 @@ begin
 
   if data <> nil then
   begin
-    { case data^.node_type of
-      ntLMS:
-      begin
-      data^.aLMS.GetCategories;
-      data^.aLMS.GetCourses;
-      ChildCount := data^.aLMS.FirstLevelCategoriesCount;
-      end;
-      ntCategory:
-      begin
-      ChildCount := data^.Category.SubCategoriesCount +
-      data^.Category.coursescount;
-      end;
-      end; }
-
+    case data^.node_type of
+      ntGroup:
+        begin
+          // data^.aLMS.GetCategories;
+          // data^.aLMS.GetCourses;
+          ChildCount := data^.Group.fUsersInGroup.count;
+        end;
+    end;
   end;
 end;
 
@@ -413,27 +411,6 @@ begin
     end
     end; }
 end;
-
-{
-  if data^.nodedata.Connected then
-  begin
-  TargetCanvas.Font.Color := clBlack;
-  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] -
-  [fsItalic];
-
-  end
-  else if data^.nodedata.serverconnected then
-  begin
-
-  TargetCanvas.Font.Color := clBlack;
-  TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsItalic]
-  - [fsBold];
-  end
-  else
-  begin
-  TargetCanvas.Font.Color := clGray;
-  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
-  - [fsBold]; }
 
 procedure TLMSUsersTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
@@ -480,10 +457,6 @@ end;
   end;
   end;
 
-  procedure TCryptoNetworkTreeView.NodeConnected(aBTCAgent: TBTCPeerNode);
-  begin
-
-  end;
 }
 
 procedure TLMSUsersTreeView.NodeDblClick(Sender: TBaseVirtualTree;
@@ -502,56 +475,57 @@ begin
   while aVirtualNodeEnumerator.MoveNext do
   begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
-    { case data^.node_type of
-      ntLMS:
-      begin
-      if CtrlPressed then
-      begin
-      OpenInBrowser(data^.aLMS);
-      end
-      else
-      with TLMSForm.Create(self) do
-      begin
-      LMS := data^.aLMS;
-      show();
-      end;
-      end;
-      ntCategory:
-      begin
-      if CtrlPressed then
-      begin
-      OpenInBrowser(data^.Category);
-      end
-      end;
-      ntCourse:
-      begin
-      if CtrlPressed then
-      begin
-      OpenInBrowser(data^.Course);
-      end
-      else if ShiftPressed then
-      begin
-      OpenUsersInBrowser(data^.Course);
-      end
-      else
-      with TLMSCourseForm.Create(self) do
-      begin
-      aCourse := data^.Course;
-      show();
-      end;
-      end;
-      end; }
-    { else if data^.node_type = ntnetwork then
-      begin
-      with TNetworkForm.Create(self) do
-      begin
-      Network := data^.networkdata;
-      show();
-      end;
-      end; }
+    case data^.node_type of
+      ntUser:
+        begin
+          if CtrlPressed then
+          begin
+            OpenInBrowser(data^.user, data^.user.fCourse);
+          end
+          else
+{            with TLMSForm.Create(self) do
+            begin
+              LMS := data^.aLMS;
+              show();
+            end;}
+        end;
+      { ntCategory:
+        begin
+        if CtrlPressed then
+        begin
+        OpenInBrowser(data^.Category);
+        end
+        end;
+        ntCourse:
+        begin
+        if CtrlPressed then
+        begin
+        OpenInBrowser(data^.Course);
+        end
+        else if ShiftPressed then
+        begin
+        OpenUsersInBrowser(data^.Course);
+        end
+        else
+        with TLMSCourseForm.Create(self) do
+        begin
+        aCourse := data^.Course;
+        show();
+        end;
+        end;
+        end; }
+      { else if data^.node_type = ntnetwork then
+        begin
+        with TNetworkForm.Create(self) do
+        begin
+        Network := data^.networkdata;
+        show();
+        end;
+        end; }
+
+    end;
 
   end;
-
 end;
 {
   procedure TCryptoNetworkTreeView.Notification(AComponent: TComponent;
@@ -610,11 +584,49 @@ procedure TLMSUsersTreeView.setLMSCourse(const Value: TLMSCourse);
 begin
   fLMSCourse := Value;
 
-  fLMSCourse.RefreshUserGroups;
-  // fLMSCourse.RefreshEnrolledUsers;
+  fLMSCourse.RefreshEnrolledUsers;
 
-  if fLMSCourse.fUserGroups.Count > 0 then
-   self.RootNodeCount := fLMSCourse.fUserGroups.Count;
+  if HasGroups then
+  begin
+    with Header do
+    begin
+      Columns.Clear;
+
+      with Columns.add do
+      begin
+        Width := 150;
+        text := 'Group';
+      end;
+
+      with Columns.add do
+      begin
+        Width := 150;
+        text := 'Fullname';
+      end;
+
+      Options := Options + [hovisible];
+    end;
+
+    self.RootNodeCount := fLMSCourse.fUserGroups.count
+  end
+  else
+  begin
+    with Header do
+    begin
+      Columns.Clear;
+
+      with Columns.add do
+      begin
+        Width := 150;
+        text := 'FullName';
+      end;
+
+      Options := Options + [hovisible];
+    end;
+
+    self.RootNodeCount := fLMSCourse.fUsers.count;
+  end;
+
 end;
 
 procedure TLMSUsersTreeView.setLMSNetwork(const Value: TLMSNetwork);

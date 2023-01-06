@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'LMS Explorer'
-  ClientHeight = 542
-  ClientWidth = 1002
+  ClientHeight = 685
+  ClientWidth = 1354
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,15 +17,17 @@ object MainForm: TMainForm
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 523
-    Width = 1002
+    Top = 666
+    Width = 1354
     Height = 19
     Panels = <>
+    ExplicitTop = 523
+    ExplicitWidth = 1002
   end
   object ActionMainMenuBar1: TActionMainMenuBar
     Left = 0
     Top = 0
-    Width = 1002
+    Width = 1354
     Height = 25
     UseSystemFont = False
     ActionManager = ActionManager1
@@ -41,14 +43,17 @@ object MainForm: TMainForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
+    ExplicitWidth = 1002
   end
   object Memo1: TMemo
     Left = 0
-    Top = 434
-    Width = 1002
+    Top = 577
+    Width = 1354
     Height = 89
     Align = alBottom
     TabOrder = 2
+    ExplicitTop = 434
+    ExplicitWidth = 1002
   end
   object ActionManager1: TActionManager
     ActionBars = <
