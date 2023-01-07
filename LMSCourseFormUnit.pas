@@ -15,7 +15,6 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
   private
-    fLMS : TLMS;
     fUsersTreeView : TLMSUsersTreeView;
     fCourse: TLMSCourse;
     procedure SetaCourse(const Value: TLMSCourse);

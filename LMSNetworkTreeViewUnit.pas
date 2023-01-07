@@ -41,6 +41,7 @@ type
 
     // fPopupMenu: TLMSPopupMenu;
     procedure setLMSNetwork(const Value: TLMSNetwork);
+    procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
     // fCryptonetwork: TBTCNetwork;
     // procedure SetAsTree(const Value: boolean);
 
@@ -129,6 +130,7 @@ begin
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnNodeDblClick := NodeDblClick;
+  OnNodeClick := NodeClick;
   OnPaintText := MyDoPaintText;
 
   {
@@ -479,6 +481,38 @@ procedure TLMSNetworkTreeView.NodeDblClick(Sender: TBaseVirtualTree;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
+begin
+
+  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
+
+  while aVirtualNodeEnumerator.MoveNext do
+  begin
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    case data^.node_type of
+      ntLMS:
+        with TLMSForm.Create(self) do
+        begin
+          LMS := data^.aLMS;
+          show();
+        end;
+
+      ntCourse:
+        with TLMSCourseForm.Create(self) do
+        begin
+          aCourse := data^.Course;
+          show();
+        end;
+
+    end;
+  end;
+
+end;
+
+procedure TLMSNetworkTreeView.NodeClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
+var
+  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+  data: PTreeData;
   CtrlPressed, ShiftPressed: boolean;
 begin
 
@@ -497,12 +531,6 @@ begin
           begin
             OpenInBrowser(data^.aLMS);
           end
-          else
-            with TLMSForm.Create(self) do
-            begin
-              LMS := data^.aLMS;
-              show();
-            end;
         end;
       ntCategory:
         begin
@@ -521,12 +549,7 @@ begin
           begin
             OpenUsersInBrowser(data^.Course);
           end
-          else
-            with TLMSCourseForm.Create(self) do
-            begin
-              aCourse := data^.Course;
-              show();
-            end;
+
         end;
     end;
     { else if data^.node_type = ntnetwork then

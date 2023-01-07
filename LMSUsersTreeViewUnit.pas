@@ -71,7 +71,7 @@ type
     procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
       var ImageIndex: TImageIndex);
-    procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+    procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 
     procedure HandleMouseDblClick(var Message: TWMMouse;
       const HitInfo: THitInfo); override;
@@ -142,12 +142,14 @@ begin
     toshowhorzgridlines, toshowvertgridlines];
   TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
     [toFullRowSelect];
-  Header.Options := Header.Options - [hocolumnresize];
+ // Header.Options := Header.Options - [hocolumnresize];
   TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
+
+   Header.Options := header.Options + [hoAutoResize];
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
-  OnNodeDblClick := NodeDblClick;
+  OnNodeClick := NodeClick;
   OnPaintText := MyDoPaintText;
 
   {
@@ -347,21 +349,19 @@ begin
           0:
             CellText := '';
           1:
-{$IFDEF DEBUG}
-            // CellText := ShadowText(data^.User.fFullName);
             CellText := data^.User.fFullName;
-{$ELSE}
-            CellText := data^.User.fFullName;
-{$ENDIF}
+          2:
+            CellText := data^.User.Email;
         end;
       end
       else
-{$IFDEF DEBUG}
-        // CellText := ShadowText(data^.User.fFullName);
-        CellText := data^.User.fFullName;
-{$ELSE}
-        CellText := data^.User.fFullName;
-{$ENDIF}
+        case Column of
+          0:
+            CellText := data^.User.fFullName;
+          1:
+            CellText := data^.User.Email;
+        end;
+
   end;
 end;
 
@@ -459,7 +459,7 @@ end;
 
 }
 
-procedure TLMSUsersTreeView.NodeDblClick(Sender: TBaseVirtualTree;
+procedure TLMSUsersTreeView.NodeClick(Sender: TBaseVirtualTree;
   const HitInfo: THitInfo);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
@@ -468,7 +468,7 @@ var
 begin
 
   CtrlPressed := (GetKeyState(VK_CONTROL) and $8000) = $8000;
-  ShiftPressed := (GetKeyState(VK_SHIFT) and $8000) = $8000;
+  // ShiftPressed := (GetKeyState(VK_SHIFT) and $8000) = $8000;
 
   aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
 
@@ -480,14 +480,14 @@ begin
         begin
           if CtrlPressed then
           begin
-            OpenInBrowser(data^.user, data^.user.fCourse);
+            OpenInBrowser(data^.User, data^.User.fCourse);
           end
           else
-{            with TLMSForm.Create(self) do
-            begin
+            { with TLMSForm.Create(self) do
+              begin
               LMS := data^.aLMS;
               show();
-            end;}
+              end; }
         end;
       { ntCategory:
         begin
@@ -578,7 +578,6 @@ end;
   end;
 
 }
-{ TLMSUsersTreeView }
 
 procedure TLMSUsersTreeView.setLMSCourse(const Value: TLMSCourse);
 begin
@@ -586,45 +585,43 @@ begin
 
   fLMSCourse.RefreshEnrolledUsers;
 
+  Header.Columns.Clear;
+
+  // Create group column if has groups defined in course
   if HasGroups then
   begin
     with Header do
-    begin
-      Columns.Clear;
-
       with Columns.add do
       begin
         Width := 150;
         text := 'Group';
       end;
 
-      with Columns.add do
-      begin
-        Width := 150;
-        text := 'Fullname';
-      end;
-
-      Options := Options + [hovisible];
-    end;
-
     self.RootNodeCount := fLMSCourse.fUserGroups.count
   end
+  // Not has groups so only shows users
   else
   begin
-    with Header do
+    self.RootNodeCount := fLMSCourse.fUsers.count;
+  end;
+
+  // Build header columns
+  with Header do
+  begin
+    with Columns.add do
     begin
-      Columns.Clear;
-
-      with Columns.add do
-      begin
-        Width := 150;
-        text := 'FullName';
-      end;
-
-      Options := Options + [hovisible];
+      Width := 150;
+      text := 'FullName';
     end;
 
-    self.RootNodeCount := fLMSCourse.fUsers.count;
+    with Columns.add do
+    begin
+      Width := 150;
+      text := 'Email';
+    end;
+
+    Options := Options + [hovisible, hoAutoResize, hoFullRepaintOnResize];
+    AutoSizeIndex := Columns.GetLastVisibleColumn;
   end;
 
 end;
