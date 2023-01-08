@@ -8,14 +8,10 @@ uses
   System.Types,
   System.UITypes,
   vcl.Menus,
-  {*
-    isubjectunit,
+  winapi.messages,
 
-    NodeObserverPattern,
-    *}
   VirtualTrees,
 
-  winapi.messages,
   lmsnetworkunit,
   LMSPopupMenuUnit;
 
@@ -36,55 +32,35 @@ type
   PTreeData = ^TTreeData;
 
   TLMSUsersTreeView = class(TCustomVirtualStringTree)
-    // , INetworkObserver,    INodeObserver)
   private
-    // fAsTree: boolean;
+
     fLMSNetwork: TLMSNetwork;
     fLMSCourse: TLMSCourse;
 
-    // fPopupMenu: TLMSPopupMenu;
     procedure setLMSNetwork(const Value: TLMSNetwork);
     procedure setLMSCourse(const Value: TLMSCourse);
-    // fCryptonetwork: TBTCNetwork;
-    // procedure SetAsTree(const Value: boolean);
 
-    // procedure setCryptoNetwork(const Value: TBTCNetwork);
     function HasGroups: boolean;
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
-    // procedure MenuItemClick(Sender: TObject);
-    procedure MenuItem2Click(Sender: TObject);
-    { procedure MenuItemClickGetPeers(Sender: TObject);
-      procedure MyDoGetPopupmenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; const P: TPoint; var AskParent: boolean;
-      var PopupMenu: TPopupMenu);
-    }
+
     procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
     procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
       var ChildCount: cardinal);
-    procedure MyDoPaintText(Sender: TBaseVirtualTree;
+    { procedure MyDoPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-      TextType: TVSTTextType);
-    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      TextType: TVSTTextType); }
+    { procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
-      var ImageIndex: TImageIndex);
+      var ImageIndex: TImageIndex); }
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 
-    procedure HandleMouseDblClick(var Message: TWMMouse;
-      const HitInfo: THitInfo); override;
-    {
-      procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override; }
   public
     constructor Create(Owner: TComponent); override;
-    // I
-    // procedure DoNotify(const msgtype: TMSGType; const aNode: INode);
-    // I
-    // procedure NewBTCAgentAdded(aBTCAgent: TBTCPeerNode);
-    // procedure NodeConnected(aBTCAgent: TBTCPeerNode);
+
     procedure FilterByText(const text: string);
 
     property LMSNetwork: TLMSNetwork read fLMSNetwork write setLMSNetwork;
@@ -114,47 +90,28 @@ begin
 end;
 
 constructor TLMSUsersTreeView.Create(Owner: TComponent);
-var
-  aMenuItem: TMenuItem;
 begin
   inherited;
 
   NodeDataSize := SizeOf(TTreeData);
 
-  PopupMenu := TLMSPopupMenu.Create(self);
-  // por el momento ponemos aquí las acciones
-  { aMenuItem := TMenuItem.Create(self);
-    aMenuItem.caption := 'Connect';
-    aMenuItem.OnClick := MenuItemClick;
-    PopupMenu.items.add(aMenuItem); }
-  //
-
-  aMenuItem := TMenuItem.Create(self);
-  aMenuItem.caption := 'Locate in LMS';
-  aMenuItem.OnClick := MenuItem2Click;
-  PopupMenu.items.add(aMenuItem);
-
-  // TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +    [toRightClickSelect];
-  // := TreeOptions.SelectionOptions +    [toRightClickSelect, tomultiselect];
-
   TreeOptions.PaintOptions := TreeOptions.PaintOptions -
-    [toShowRoot, toShowTreeLines] + [toHotTrack, tohidefocusrect,
+    [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect,
     toshowhorzgridlines, toshowvertgridlines];
+
   TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
     [toFullRowSelect];
- // Header.Options := Header.Options - [hocolumnresize];
-  TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
 
-   Header.Options := header.Options + [hoAutoResize];
+  TreeOptions.AutoOptions := TreeOptions.AutoOptions + [toAutoSpanColumns];
+
+  TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnNodeClick := NodeClick;
-  OnPaintText := MyDoPaintText;
+  // OnPaintText := MyDoPaintText;
 
-  {
-    OnGetPopupMenu := MyDoGetPopupmenu; }
-  OnGetImageIndex := MyGetImageIndex;
+  // OnGetImageIndex := MyGetImageIndex;
   Images := GetGlobalImageListFromResource();
 end;
 
@@ -283,51 +240,6 @@ begin
 
 end;
 
-procedure TLMSUsersTreeView.HandleMouseDblClick(var Message: TWMMouse;
-  const HitInfo: THitInfo);
-begin
-  DoNodeDblClick(HitInfo);
-end;
-
-procedure TLMSUsersTreeView.MenuItem2Click(Sender: TObject);
-var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-begin
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    { case data^.node_type of
-      ntLMS:
-      OpenInBrowser(data^.aLMS);
-      ntCategory:
-      OpenInBrowser(data^.Category);
-      ntCourse:
-      OpenInBrowser(data^.Course);
-      end; }
-  end;
-end;
-{
-  procedure TLMSUsersTreeView.MenuItemClick(Sender: TObject);
-  var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-  begin
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-  data := GetNodeData(aVirtualNodeEnumerator.Current);
-  if data^.node_type = ntLMS then
-  begin
-  data^.aLMS.Connect;
-  self.ReinitNode(aVirtualNodeEnumerator.Current, true);
-  end
-  end;
-  end; }
-
 procedure TLMSUsersTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
   var CellText: string);
@@ -376,87 +288,66 @@ begin
   begin
     case data^.node_type of
       ntGroup:
-        begin
-          // data^.aLMS.GetCategories;
-          // data^.aLMS.GetCourses;
-          ChildCount := data^.Group.fUsersInGroup.count;
-        end;
+        ChildCount := data^.Group.fUsersInGroup.count;
     end;
   end;
 end;
 
-procedure TLMSUsersTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
+{ procedure TLMSUsersTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
-var
+  var
   data: PTreeData;
-begin
+  begin
   data := GetNodeData(Node);
 
-  { case data^.node_type of
-    ntLMS:
-    begin
-    if not data^.aLMS.connected then
-    begin
-    TargetCanvas.Font.Color := clGray;
-    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
-    - [fsBold];
-    end
-    else
-    begin
-    TargetCanvas.Font.Color := clBlack;
-    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] -
-    [fsItalic];
-    end;
-    end
-    end; }
-end;
+  case data^.node_type of
+  ntLMS:
+  begin
+  if not data^.aLMS.connected then
+  begin
+  TargetCanvas.Font.Color := clGray;
+  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
+  - [fsBold];
+  end
+  else
+  begin
+  TargetCanvas.Font.Color := clBlack;
+  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] -
+  [fsItalic];
+  end;
+  end
+  end;
+  end; }
 
-procedure TLMSUsersTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
+{ procedure TLMSUsersTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
   var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
-var
+  var
   data: PTreeData;
-begin
+  begin
   data := GetNodeData(Node);
 
   if (Kind <> ikstate) then
   begin
-    { if fAsTree = true then
-      begin
-      if (data^.node_type = ntroot) and (Column = -1) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-      ('PROJECT')
-      else if (data^.node_type = ntnode) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-      ('NODE_BTC');
-      end
-      else
-      begin }
-    { if (data^.node_type = ntLMS) and (Column = -1) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-      ('res_lms')
-      else if (data^.node_type = ntCourse) then // and (Column = 0) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('MM'); }
-  end;
-end;
-{
-  procedure TCryptoNetworkTreeView.NewBTCAgentAdded(aBTCAgent: TBTCPeerNode);
+  if fAsTree = true then
   begin
-  if fAsTree then
-  begin
-  ReinitNode(GetFirst(), true);
+  if (data^.node_type = ntroot) and (Column = -1) then
+  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+  ('PROJECT')
+  else if (data^.node_type = ntnode) then
+  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+  ('NODE_BTC');
   end
   else
   begin
-  Clear;
-  BeginUpdate;
-  RootNodeCount := 1;
-  FullExpand;
-  EndUpdate;
+  if (data^.node_type = ntLMS) and (Column = -1) then
+  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+  ('res_lms')
+  else if (data^.node_type = ntCourse) then // and (Column = 0) then
+  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('MM');
   end;
   end;
-
 }
 
 procedure TLMSUsersTreeView.NodeClick(Sender: TBaseVirtualTree;
@@ -464,7 +355,8 @@ procedure TLMSUsersTreeView.NodeClick(Sender: TBaseVirtualTree;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
-  CtrlPressed, ShiftPressed: boolean;
+  CtrlPressed: boolean;
+  // ShiftPressed: boolean;
 begin
 
   CtrlPressed := (GetKeyState(VK_CONTROL) and $8000) = $8000;
@@ -527,59 +419,33 @@ begin
 
   end;
 end;
-{
-  procedure TCryptoNetworkTreeView.Notification(AComponent: TComponent;
-  Operation: TOperation);
-  begin
-  inherited;
-
-  if Operation = opRemove then
-  if AComponent = CryptoNetwork then
-  CryptoNetwork := nil;
-  end;
-
-  procedure TCryptoNetworkTreeView.SetAsTree(const Value: boolean);
-  begin
-  fAsTree := Value;
-
-  // As Tree
-  if Value = true then
-  begin
-  TreeOptions.PaintOptions := TreeOptions.PaintOptions +
-  [toShowRoot, toShowTreeLines];
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions -
-  [toextendedfocus];
-  TreeOptions.MiscOptions := TreeOptions.MiscOptions - [toToggleondblclick];
-
-  end
-  // as grid
-  else
-  begin
-  TreeOptions.PaintOptions := TreeOptions.PaintOptions -
-  [toShowRoot, toShowTreeLines] + [toHotTrack, tohidefocusrect,
-  toshowhorzgridlines, toshowvertgridlines];
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
-  [toFullRowSelect];
-  Header.Options := Header.Options - [hocolumnresize];
-  TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
-  end;
-  end;
-
-  procedure TCryptoNetworkTreeView.setCryptoNetwork(const Value: TBTCNetwork);
-  begin
-  fCryptonetwork := Value;
-  if Value <> nil then
-  begin
-  RootNodeCount := 1;
-
-  Value.FreeNotification(self);
-  Value.RegisterObserver(self);
-  end;
-  end;
-
-}
 
 procedure TLMSUsersTreeView.setLMSCourse(const Value: TLMSCourse);
+var
+  aUserCount: cardinal;
+
+  procedure CreateColums;
+  begin
+    with Header do
+    begin
+      with Columns.add do
+      begin
+        text := 'FullName';
+        Options := Options + [coAutoSpring, coResizable, coSmartResize];
+      end;
+
+      with Columns.add do
+      begin
+        text := 'Email';
+        Options := Options + [coAutoSpring, coResizable];
+      end;
+
+      Options := Options + [hovisible, hoAutoSpring, hoAutoResize,
+        hoDblClickResize];
+      AutoSizeIndex := Columns.GetLastVisibleColumn;
+    end;
+  end;
+
 begin
   fLMSCourse := Value;
 
@@ -593,36 +459,23 @@ begin
     with Header do
       with Columns.add do
       begin
-        Width := 150;
         text := 'Group';
+        Options := Options + [coAutoSpring, coResizable, coSmartResize];
       end;
 
-    self.RootNodeCount := fLMSCourse.fUserGroups.count
+    CreateColums;
+
+    RootNodeCount := fLMSCourse.fUserGroups.count;
   end
   // Not has groups so only shows users
   else
   begin
-    self.RootNodeCount := fLMSCourse.fUsers.count;
+    CreateColums;
+
+    RootNodeCount := fLMSCourse.fUsers.count;
   end;
 
-  // Build header columns
-  with Header do
-  begin
-    with Columns.add do
-    begin
-      Width := 150;
-      text := 'FullName';
-    end;
-
-    with Columns.add do
-    begin
-      Width := 150;
-      text := 'Email';
-    end;
-
-    Options := Options + [hovisible, hoAutoResize, hoFullRepaintOnResize];
-    AutoSizeIndex := Columns.GetLastVisibleColumn;
-  end;
+  Header.AutoFitColumns(false, smaAllColumns, 0);
 
 end;
 

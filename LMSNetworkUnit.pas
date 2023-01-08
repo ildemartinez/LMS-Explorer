@@ -58,6 +58,7 @@ type
     shortname: string;
     fullname: string;
     displayname: string;
+    groupmode: cardinal;
 
     // All users enrolled in this course
     fUsers: TLMSUsers;
@@ -277,7 +278,7 @@ begin
 
   if aCourses <> nil then
   begin
-    // log(aCourses.ToString);
+    log(aCourses.ToString);
     for course in aCourses do
     begin
       aCourse := TLMSCourse.Create(self);
@@ -292,8 +293,10 @@ begin
         aCourse.shortname := course.GetValue<string>('shortname');
         aCourse.fullname := course.GetValue<string>('fullname');
         aCourse.displayname := course.GetValue<string>('displayname');
+        aCourse.groupmode := course.GetValue<cardinal>('groupmode');
         GetCategoryById(course.GetValue<cardinal>('categoryid'))
           .fcourses.add(aCourse);
+
       end;
     end;
   end;

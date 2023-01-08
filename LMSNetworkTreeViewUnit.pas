@@ -66,7 +66,7 @@ type
       TextType: TVSTTextType);
     procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
-      var ImageIndex: TImageIndex);
+      var ImageIndex: System.UITypes.TImageIndex);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 
     procedure HandleMouseDblClick(var Message: TWMMouse;
@@ -450,7 +450,20 @@ begin
       ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
         ('res_lms')
     else if (data^.node_type = ntCourse) then // and (Column = 0) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('MM');
+    begin
+      case data^.Course.groupmode of
+        0:
+          ImageIndex := GetGlobalImageListFromResource.
+            GetImageIndexByName('res_groups_no_groups');
+        1:
+          ImageIndex := GetGlobalImageListFromResource.
+            GetImageIndexByName('res_groups_separate_groups');
+        2:
+          ImageIndex := GetGlobalImageListFromResource.
+            GetImageIndexByName('res_groups_visible_groups');
+      end;
+
+    end;
   end;
 end;
 {
