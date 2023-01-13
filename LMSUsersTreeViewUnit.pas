@@ -211,15 +211,12 @@ begin
   while aVirtualNodeEnumerator.MoveNext do
   begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
-    { case data^.node_type of
-      ntLMS:
-      aCompare := data^.aLMS.id;
-      ntCategory:
-      aCompare := data^.Category.name;
-      ntCourse:
-      aCompare := data^.Course.FilterContent;
-
-      end; }
+    case data^.node_type of
+      ntGroup:
+        aCompare := data^.Group.FilterContent;
+      ntUser:
+        aCompare := data^.User.FilterContent;
+    end;
 
     if (Pos(UpperCase(text), UpperCase(aCompare)) > 0) or (text = '') then
     begin

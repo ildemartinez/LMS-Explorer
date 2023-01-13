@@ -21,6 +21,8 @@ type
     Action3: TAction;
     Action4: TAction;
     Action5: TAction;
+    Panel1: TPanel;
+    Edit1: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -30,6 +32,7 @@ type
     procedure Action5Execute(Sender: TObject);
     procedure Action4Update(Sender: TObject);
     procedure Action3Update(Sender: TObject);
+    procedure Edit1Change(Sender: TObject);
   private
     fUsersTreeView: TLMSUsersTreeView;
     fCourse: TLMSCourse;
@@ -109,6 +112,11 @@ begin
   fUsersTreeView.parent := TabControl1;
   fUsersTreeView.align := alClient;
 
+end;
+
+procedure TLMSCourseForm.Edit1Change(Sender: TObject);
+begin
+  fUsersTreeView.FilterByText(TEdit(Sender).text);
 end;
 
 procedure TLMSCourseForm.FormClose(Sender: TObject; var Action: TCloseAction);

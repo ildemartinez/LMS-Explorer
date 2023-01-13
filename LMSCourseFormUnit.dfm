@@ -26,14 +26,33 @@ object LMSCourseForm: TLMSCourseForm
     Tabs.Strings = (
       'Users and Groups')
     TabIndex = 0
-    ExplicitTop = 176
-    ExplicitHeight = 358
+    object Panel1: TPanel
+      Left = 4
+      Top = 24
+      Width = 868
+      Height = 25
+      Align = alTop
+      TabOrder = 0
+      object Edit1: TEdit
+        Left = 1
+        Top = 1
+        Width = 313
+        Height = 23
+        Align = alLeft
+        TabOrder = 0
+        OnChange = Edit1Change
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitHeight = 21
+      end
+    end
   end
   object ActionMainMenuBar1: TActionMainMenuBar
     Left = 0
     Top = 0
     Width = 876
     Height = 25
+    UseSystemFont = False
     ActionManager = ActionManager1
     Caption = 'ActionMainMenuBar1'
     Color = clMenuBar
@@ -42,15 +61,11 @@ object LMSCourseForm: TLMSCourseForm
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = clBlack
     Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
-    ExplicitLeft = 544
-    ExplicitTop = 64
-    ExplicitWidth = 150
-    ExplicitHeight = 29
   end
   object ActionManager1: TActionManager
     ActionBars = <
@@ -92,8 +107,8 @@ object LMSCourseForm: TLMSCourseForm
       end
       item
       end>
-    Left = 432
-    Top = 88
+    Left = 464
+    Top = 152
     StyleName = 'Platform Default'
     object Action1: TAction
       Caption = 'Locate in LMS'

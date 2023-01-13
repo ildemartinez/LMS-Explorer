@@ -15,6 +15,7 @@ type
   TLMSUser = class
   private
     fEmail : string;
+    function getFilterContent: string;
   public
     fCourse : TLMSCourse;
 
@@ -22,6 +23,7 @@ type
     fUserName, fFirstName, fLastName, fFullName: string;
 
     property Email : string read fEmail;
+    property FilterContent : string read getFilterContent;
 
   end;
 
@@ -31,6 +33,7 @@ type
   private
     fid: cardinal;
     function getId: cardinal;
+    function getFilterContent: string;
   public
     fName: string;
 
@@ -40,6 +43,7 @@ type
     constructor Create;
 
     property Id: cardinal read getId;
+    property FilterContent : string read getFilterContent;
   end;
 
   TLMSUserGroups = TList<TLMSUserGroup>;
@@ -490,9 +494,21 @@ begin
   fUsersInGroup := TLMSUsers.Create;
 end;
 
+function TLMSUserGroup.getFilterContent: string;
+begin
+  result := fName;
+end;
+
 function TLMSUserGroup.getId: cardinal;
 begin
   result := fId;
+end;
+
+{ TLMSUser }
+
+function TLMSUser.getFilterContent: string;
+begin
+  result := fEmail + ' ' + fFullName;
 end;
 
 end.
