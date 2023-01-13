@@ -25,6 +25,8 @@ const
   USERS_VIEW = '/user/index.php?id=%d';
   PROFILE_VIEW = '/user/profile.php?id=%d';
   PROFILE_VIEW_IN_COURSE = '/user/view.php?id=%d&course=%d';
+  EDIT_PROFILE_IN_COURSE = '/user/editadvanced.php?id=%d&course=%d';
+  EDIT_COURSE = '/course/edit.php?id=%d';
 
 implementation
 

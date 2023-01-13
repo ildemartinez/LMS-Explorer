@@ -10,10 +10,16 @@ procedure OpenInBrowser(const aLMS: tlms); overload;
 procedure OpenInBrowser(const aCategory: TLMSCategory); overload;
 procedure OpenInBrowser(const aCourse: TLMSCourse); overload;
 procedure OpenInBrowser(const aUser: TLMSUser); overload;
-procedure OpenInBrowser(const aUser: TLMSUser; const aCourse : TLMSCourse); overload;
+procedure OpenInBrowser(const aUser: TLMSUser;
+  const aCourse: TLMSCourse); overload;
 //
 
-procedure OpenUsersInBrowser(const aCourse: TLMSCourse); overload;
+procedure OpenUsersInBrowser(const aCourse: TLMSCourse);
+procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
+  const aCourse: TLMSCourse);
+
+// Edit course
+procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
 
 implementation
 
@@ -51,10 +57,26 @@ begin
     [aUser.fid])), nil, nil, 0); // SW_SHOW);
 end;
 
-procedure OpenInBrowser(const aUser: TLMSUser; const aCourse : TLMSCourse); overload;
+procedure OpenInBrowser(const aUser: TLMSUser;
+  const aCourse: TLMSCourse); overload;
 begin
-  ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host + format(PROFILE_VIEW_IN_COURSE,
-    [aUser.fid, aUser.fCourse.Id])), nil, nil, 0); // SW_SHOW);
+  ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
+    format(PROFILE_VIEW_IN_COURSE, [aUser.fid, aUser.fCourse.id])), nil, nil,
+    0); // SW_SHOW);
+end;
+
+procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
+  const aCourse: TLMSCourse);
+begin
+  ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
+    format(EDIT_PROFILE_IN_COURSE, [aUser.fid, aUser.fCourse.id])), nil, nil,
+    0); // SW_SHOW);
+end;
+
+procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
+begin
+  ShellExecute(0, 'open', PChar(aCourse.LMS.Host + format(EDIT_COURSE,
+    [aCourse.id])), nil, nil, 0); // SW_SHOW);
 end;
 
 end.

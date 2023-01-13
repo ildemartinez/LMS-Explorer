@@ -41,6 +41,7 @@ type
     procedure setLMSCourse(const Value: TLMSCourse);
 
     function HasGroups: boolean;
+    function GetSelectedUser: TLMSUser;
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
@@ -65,6 +66,7 @@ type
 
     property LMSNetwork: TLMSNetwork read fLMSNetwork write setLMSNetwork;
     property LMSCourse: TLMSCourse read fLMSCourse write setLMSCourse;
+    property SelectedUser: TLMSUser read GetSelectedUser;
 
   end;
 
@@ -109,6 +111,7 @@ begin
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnNodeClick := NodeClick;
+
   // OnPaintText := MyDoPaintText;
 
   // OnGetImageIndex := MyGetImageIndex;
@@ -238,6 +241,26 @@ begin
   // Please refresh
   EndUpdate;
 
+end;
+
+function TLMSUsersTreeView.GetSelectedUser: TLMSUser;
+var
+  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+  data: PTreeData;
+begin
+  result := nil;
+
+  aVirtualNodeEnumerator := SelectedNodes().GetEnumerator;
+
+  while aVirtualNodeEnumerator.MoveNext do
+  begin
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    if data^.node_type = ntUser then
+    begin
+      result := data^.User;
+      // refactor ... exit if not more
+    end;
+  end;
 end;
 
 procedure TLMSUsersTreeView.MyDoGetText(Sender: TBaseVirtualTree;
