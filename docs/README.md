@@ -4,11 +4,12 @@ LMS Explorer is a open source tool for Moodle administrators that deal with a lo
 
 Features
 
-- Fast locate course category and category at the LMS 
+- Fast locate course category and category at the LMS
 - Fast jumping to course and users management pages ( user profile, course admninistration )
 - Show all your Moodle courses from unique page
 
 # Installation
+
 Just modify the config.ini_dist to config.ini and copy in the same executable path. Configure the host, username and password and a service if you create your own Moodle API Service Access
 
 # Running
@@ -16,6 +17,7 @@ Just modify the config.ini_dist to config.ini and copy in the same executable pa
 You cant test it over your Moodle production instances but if you want to test it against a test Moodle instance you can deploy it using VirtualBox and https://bitnami.com/stack/moodle/virtual-machine
 
 # API Support
+
 List of webservices https://docs.moodle.org/dev/Web_service_API_functions
 
 you can find a postman collection to test the Moodle API Service
@@ -54,11 +56,11 @@ And finally the exclusive functions for use in this tool
 
 List of needed functions (note that you can use the installed moodle_mobile_app service if use the desired features, for others you have to create your own service):
 
-| Feature                            | Function                           | service           |
-|------------------------------------|------------------------------------|-------------------|
-|Categories navigation and location  |core_course_get_cateogories         | moodle_mobile_app |  
-|Courses navigation and location     |core_course_get_courses             | moodle_mobile_app |  
- 
+| Feature                            | Function                    | service           |
+| ---------------------------------- | --------------------------- | ----------------- |
+| Categories navigation and location | core_course_get_cateogories | moodle_mobile_app |
+| Courses navigation and location    | core_course_get_courses     | moodle_mobile_app |
+
 # Features
 
 You can find a course, catogory or even a Moodle instance using the filter box
@@ -68,3 +70,7 @@ You can find a course, catogory or even a Moodle instance using the filter box
 Just right mouse click over a course, category or Moodle instance will open that element in default browser.
 
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/locate_course_in_moodle.jpg)
+
+# Other info
+
+Some icons from http://icons8.com/free-ios-7-icons-in-vector/ http://icons8.com/
