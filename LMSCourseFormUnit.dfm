@@ -41,8 +41,6 @@ object LMSCourseForm: TLMSCourseForm
         Align = alLeft
         TabOrder = 0
         OnChange = Edit1Change
-        ExplicitLeft = 0
-        ExplicitTop = 0
         ExplicitHeight = 21
       end
     end

@@ -18,6 +18,9 @@ const
 
   CORE_GROUP = 'core_group_';
   CORE_GROUP_GET_COURSE_GROUPS = CORE_GROUP + 'get_course_groups';
+
+  CORE_USER = 'core_user_';
+  CORE_USER_GET_USERS = CORE_USER + 'get_users';
   // URL
 
   COURSE_VIEW = '/course/view.php?id=%d';

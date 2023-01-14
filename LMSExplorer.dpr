@@ -24,7 +24,8 @@ uses
   LMSCourseFormUnit in 'LMSCourseFormUnit.pas' {LMSCourseForm},
   LMSBrowserHelperUnit in 'LMSBrowserHelperUnit.pas',
   LMSUsersTreeViewUnit in 'LMSUsersTreeViewUnit.pas',
-  LMSUtilsUnit in 'LMSUtilsUnit.pas';
+  LMSUtilsUnit in 'LMSUtilsUnit.pas',
+  LMSCourseUsersTreeViewUnit in 'LMSCourseUsersTreeViewUnit.pas';
 
 {$R *.res}
 

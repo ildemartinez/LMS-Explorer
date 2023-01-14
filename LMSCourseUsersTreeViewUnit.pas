@@ -1,4 +1,4 @@
-unit LMSUsersTreeViewUnit;
+unit LMSCourseUsersTreeViewUnit;
 
 interface
 
@@ -31,16 +31,19 @@ type
 
   PTreeData = ^TTreeData;
 
-  TLMSUsersTreeView = class(TCustomVirtualStringTree)
+  TLMSCourseUsersTreeView = class(TCustomVirtualStringTree)
   private
 
     fLMSNetwork: TLMSNetwork;
+    fLMSCourse: TLMSCourse;
     fLMSUsers: TLMSUsers;
 
     procedure setLMSNetwork(const Value: TLMSNetwork);
+    procedure setLMSCourse(const Value: TLMSCourse);
 
+    function HasGroups: boolean;
     function GetSelectedUser: TLMSUser;
-    procedure setLMSUsers(const Value: TLMSUsers);
+
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
@@ -68,7 +71,8 @@ type
     procedure Refreshh;
 
     property LMSNetwork: TLMSNetwork read fLMSNetwork write setLMSNetwork;
-    property LMSUsers: TLMSUsers read fLMSUsers write setLMSUsers;
+    property LMSCourse: TLMSCourse read fLMSCourse write setLMSCourse;
+
     property SelectedUser: TLMSUser read GetSelectedUser;
 
   end;
@@ -89,7 +93,12 @@ uses
   LMSBrowserHelperunit,
   LMSUtilsUnit;
 
-constructor TLMSUsersTreeView.Create(Owner: TComponent);
+function TLMSCourseUsersTreeView.HasGroups: boolean;
+begin
+  result := fLMSCourse.fUserGroups.count > 0;
+end;
+
+constructor TLMSCourseUsersTreeView.Create(Owner: TComponent);
 begin
   inherited;
 
@@ -118,7 +127,7 @@ begin
   Images := GetGlobalImageListFromResource();
 end;
 
-procedure TLMSUsersTreeView.DoInitNode(Parent, Node: PVirtualNode;
+procedure TLMSCourseUsersTreeView.DoInitNode(Parent, Node: PVirtualNode;
   var InitStates: TVirtualNodeInitStates);
 var
   data, parentdata: PTreeData;
@@ -132,9 +141,18 @@ begin
     begin
 
       // Has a group
+      if (LMSCourse <> nil) and ( LMSCourse.fUserGroups.count > 0) then
+      begin
+        data^.node_type := ntGroup;
+        data^.Group := fLMSCourse.fUserGroups[Node.Index];
+        Include(Node.States, vsHasChildren);
+        Include(Node.States, vsExpanded);
+      end
+      // Just users list
+      else
       begin
         data^.node_type := ntUser;
-        data^.User := fLMSUsers[Node.Index];
+        data^.User := fLMSCourse.fUsers[Node.Index];
         Exclude(Node.States, vsHasChildren);
       end;
 
@@ -189,7 +207,7 @@ begin
   end;
 end;
 
-procedure TLMSUsersTreeView.FilterByText(const text: string);
+procedure TLMSCourseUsersTreeView.FilterByText(const text: string);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -233,7 +251,7 @@ begin
 
 end;
 
-function TLMSUsersTreeView.GetSelectedUser: TLMSUser;
+function TLMSCourseUsersTreeView.GetSelectedUser: TLMSUser;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -253,7 +271,7 @@ begin
   end;
 end;
 
-procedure TLMSUsersTreeView.MyDoGetText(Sender: TBaseVirtualTree;
+procedure TLMSCourseUsersTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
   var CellText: string);
 var
@@ -268,16 +286,29 @@ begin
       else
         CellText := '';
     ntUser:
-      case Column of
-        0:
-          CellText := data^.User.fFullName;
-        1:
-          CellText := data^.User.Email;
-      end;
+      if HasGroups then
+      begin
+        case Column of
+          0:
+            CellText := '';
+          1:
+            CellText := data^.User.fFullName;
+          2:
+            CellText := data^.User.Email;
+        end;
+      end
+      else
+        case Column of
+          0:
+            CellText := data^.User.fFullName;
+          1:
+            CellText := data^.User.Email;
+        end;
+
   end;
 end;
 
-procedure TLMSUsersTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
+procedure TLMSCourseUsersTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
   Node: PVirtualNode; var ChildCount: cardinal);
 var
   data: PTreeData;
@@ -293,13 +324,13 @@ begin
   end;
 end;
 
-procedure TLMSUsersTreeView.MyDoInitNode(Sender: TBaseVirtualTree;
-  ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
+procedure TLMSCourseUsersTreeView.MyDoInitNode(Sender: TBaseVirtualTree; ParentNode,
+  Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 begin
 
 end;
 
-{ procedure TLMSUsersTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
+{ procedure TLMSCourseUsersTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
   var
@@ -326,7 +357,7 @@ end;
   end;
   end; }
 
-{ procedure TLMSUsersTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
+{ procedure TLMSCourseUsersTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
   var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
   var
@@ -356,7 +387,7 @@ end;
   end;
 }
 
-procedure TLMSUsersTreeView.NodeClick(Sender: TBaseVirtualTree;
+procedure TLMSCourseUsersTreeView.NodeClick(Sender: TBaseVirtualTree;
   const HitInfo: THitInfo);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
@@ -426,20 +457,12 @@ begin
   end;
 end;
 
-procedure TLMSUsersTreeView.Refreshh;
+procedure TLMSCourseUsersTreeView.Refreshh;
 begin
   RootNodeCount := fLMSUsers.count;
 end;
 
-procedure TLMSUsersTreeView.setLMSNetwork(const Value: TLMSNetwork);
-begin
-  fLMSNetwork := Value;
-
-  self.RootNodeCount := fLMSNetwork.count;
-end;
-
-procedure TLMSUsersTreeView.setLMSUsers(const Value: TLMSUsers);
-
+procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: TLMSCourse);
 var
   aUserCount: cardinal;
 
@@ -466,19 +489,44 @@ var
   end;
 
 begin
+  fLMSCourse := Value;
 
-  fLMSUsers := Value;
-
-  // fLMSCourse.RefreshEnrolledUsers;
+  fLMSCourse.RefreshEnrolledUsers;
 
   Header.Columns.Clear;
 
-  CreateColums;
+  // Create group column if has groups defined in course
+  if HasGroups then
+  begin
+    with Header do
+      with Columns.add do
+      begin
+        text := 'Group';
+        Options := Options + [coAutoSpring, coResizable, coSmartResize];
+      end;
 
-  RootNodeCount := fLMSUsers.count;
+    CreateColums;
+
+    RootNodeCount := fLMSCourse.fUserGroups.count;
+  end
+  // Not has groups so only shows users
+  else
+  begin
+    CreateColums;
+
+    RootNodeCount := fLMSCourse.fUsers.count;
+  end;
 
   Header.AutoFitColumns(false, smaAllColumns, 0);
 
 end;
+
+procedure TLMSCourseUsersTreeView.setLMSNetwork(const Value: TLMSNetwork);
+begin
+  fLMSNetwork := Value;
+
+  self.RootNodeCount := fLMSNetwork.count;
+end;
+
 
 end.

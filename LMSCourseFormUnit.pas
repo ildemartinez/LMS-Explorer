@@ -7,7 +7,7 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkUnit, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
-  LMSUsersTreeViewUnit, System.Actions, Vcl.ActnList,
+  LMSCourseUsersTreeViewUnit, System.Actions, Vcl.ActnList,
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
   Vcl.ActnMenus;
 
@@ -34,7 +34,7 @@ type
     procedure Action3Update(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
   private
-    fUsersTreeView: TLMSUsersTreeView;
+    fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: TLMSCourse;
     procedure SetaCourse(const Value: TLMSCourse);
     { Private declarations }
@@ -80,7 +80,7 @@ end;
 
 procedure TLMSCourseForm.Action3Update(Sender: TObject);
 begin
- action3.Enabled := fUsersTreeView.SelectedUser <> nil;
+  Action3.Enabled := fUsersTreeView.SelectedUser <> nil;
 end;
 
 procedure TLMSCourseForm.Action4Execute(Sender: TObject);
@@ -96,7 +96,7 @@ end;
 
 procedure TLMSCourseForm.Action4Update(Sender: TObject);
 begin
-                action4.Enabled := fUsersTreeView.SelectedUser <> nil;
+  Action4.Enabled := fUsersTreeView.SelectedUser <> nil;
 end;
 
 procedure TLMSCourseForm.Action5Execute(Sender: TObject);
@@ -108,7 +108,7 @@ constructor TLMSCourseForm.Create(Owner: TComponent);
 begin
   inherited;
 
-  fUsersTreeView := TLMSUsersTreeView.Create(self);
+  fUsersTreeView := TLMSCourseUsersTreeView.Create(self);
   fUsersTreeView.parent := TabControl1;
   fUsersTreeView.align := alClient;
 

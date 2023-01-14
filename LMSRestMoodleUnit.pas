@@ -24,6 +24,10 @@ type
     aRestClient: TRestClient;
     aRestRequest: TLMFunctionRequest;
     arestresponse: TRESTResponse;
+
+    procedure PrepareParams(const servicefunction: string);
+    procedure ExecuteRequest;
+
   public
     constructor Create(Owner: TComponent); override;
 
@@ -34,6 +38,7 @@ type
     function GetCourses: TJSonArray;
     function GetEnrolledUsersByCourseId(const courseID: integer): TJSonArray;
     function GetUserGroupsByCourseId(const courseID: integer): TJSonArray;
+    function GetUsersByFirstName(const aValue: string): TJSonArray;
 
     property User: string write fuser;
     property Password: string write fpassword;
@@ -71,7 +76,7 @@ begin
 
     aItem := aRestRequest.Params.AddItem;
     aItem.name := 'service';
-    aItem.Value := fservice;
+    aItem.value := fservice;
 
     if not((fpassword <> '') and (fuser <> '')) then
     begin
@@ -100,11 +105,11 @@ begin
 
       aItem := aRestRequest.Params.AddItem;
       aItem.name := 'username';
-      aItem.Value := fuser;
+      aItem.value := fuser;
 
       aItem := aRestRequest.Params.AddItem;
       aItem.name := 'password';
-      aItem.Value := fpassword;
+      aItem.value := fpassword;
       aRestClient.BaseURL := fhost + '/login/token.php';
 
       try
@@ -139,38 +144,28 @@ begin
   aRestRequest.Response := arestresponse;
 end;
 
+procedure TLMSRestMoodle.ExecuteRequest;
+begin
+  try
+    screen.Cursor := crHourGlass;
+    aRestRequest.Execute;
+  finally
+    screen.Cursor := crDefault;
+  end;
+end;
+
 function TLMSRestMoodle.GetCategories: TJSonArray;
 var
   jValue: TJsonValue;
-  aItem: TRESTRequestParameter;
 begin
   if not Connected then
     Connect;
 
   if Connected then
   begin
-    aRestRequest.Params.Clear;
+    PrepareParams(CORE_COURSE_GET_CATEGORIES);
 
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSTOKEN;
-    aItem.Value := self.fToken;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSFUNCTION;
-    aItem.Value := CORE_COURSE_GET_CATEGORIES;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'moodlewsrestformat';
-    aItem.Value := 'json';
-
-    aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
-
-    try
-      screen.Cursor := crHourGlass;
-      aRestRequest.Execute;
-    finally
-      screen.Cursor := crDefault;
-    end;
+    ExecuteRequest;
 
     jValue := arestresponse.JSONValue;
 
@@ -189,36 +184,15 @@ begin
 end;
 
 function TLMSRestMoodle.GetCourses: TJSonArray;
-
 var
   jValue: TJsonValue;
-  aItem: TRESTRequestParameter;
 begin
 
   if Connected then
   begin
-    aRestRequest.Params.Clear;
+    PrepareParams(CORE_COURSE_GET_COURSES);
 
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSTOKEN;
-    aItem.Value := self.fToken;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSFUNCTION;
-    aItem.Value := CORE_COURSE_GET_COURSES;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'moodlewsrestformat';
-    aItem.Value := 'json';
-
-    aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
-
-    try
-      screen.Cursor := crHourGlass;
-      aRestRequest.Execute;
-    finally
-      screen.Cursor := crDefault;
-    end;
+    ExecuteRequest();
 
     jValue := arestresponse.JSONValue;
     result := jValue as TJSonArray;
@@ -227,8 +201,6 @@ begin
     result := nil;
 
 end;
-
-{ TLMFunctionRequest }
 
 constructor TLMFunctionRequest.Create(Owner: TComponent);
 begin
@@ -240,37 +212,19 @@ function TLMSRestMoodle.GetEnrolledUsersByCourseId(const courseID: integer)
   : TJSonArray;
 var
   jValue: TJsonValue;
-  aItem: TRESTRequestParameter;
 begin
 
   if Connected then
   begin
-    aRestRequest.Params.Clear;
+    PrepareParams(CORE_ENROL_GET_ENROLLED_USERS);
 
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSTOKEN;
-    aItem.Value := self.fToken;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSFUNCTION;
-    aItem.Value := CORE_ENROL_GET_ENROLLED_USERS;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'moodlewsrestformat';
-    aItem.Value := 'json';
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'courseid';
-    aItem.Value := inttostr(courseID);
-
-    aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
-
-    try
-      screen.Cursor := crHourGlass;
-      aRestRequest.Execute;
-    finally
-      screen.Cursor := crDefault;
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'courseid';
+      value := inttostr(courseID);
     end;
+
+    ExecuteRequest;
 
     jValue := arestresponse.JSONValue;
     result := jValue as TJSonArray;
@@ -280,41 +234,23 @@ begin
 
 end;
 
-function TLMSRestMoodle.GetUserGroupsByCourseId(
-  const courseID: integer): TJSonArray;
+function TLMSRestMoodle.GetUserGroupsByCourseId(const courseID: integer)
+  : TJSonArray;
 var
   jValue: TJsonValue;
-  aItem: TRESTRequestParameter;
 begin
 
   if Connected then
   begin
-    aRestRequest.Params.Clear;
+    PrepareParams(CORE_GROUP_GET_COURSE_GROUPS);
 
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSTOKEN;
-    aItem.Value := self.fToken;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := WSFUNCTION;
-    aItem.Value := CORE_GROUP_GET_COURSE_GROUPS;
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'moodlewsrestformat';
-    aItem.Value := 'json';
-
-    aItem := aRestRequest.Params.AddItem;
-    aItem.name := 'courseid';
-    aItem.Value := inttostr(courseID);
-
-    aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
-
-    try
-      screen.Cursor := crHourGlass;
-      aRestRequest.Execute;
-    finally
-      screen.Cursor := crDefault;
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'courseid';
+      value := inttostr(courseID);
     end;
+
+    ExecuteRequest();
 
     jValue := arestresponse.JSONValue;
     result := jValue as TJSonArray;
@@ -322,6 +258,64 @@ begin
   else
     result := nil;
 
+end;
+
+
+function TLMSRestMoodle.GetUsersByFirstName(const aValue: string): TJSonArray;
+var
+  jValue: TJsonValue;
+begin
+
+  if Connected then
+  begin
+    PrepareParams(CORE_USER_GET_USERS);
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'criteria[0][key]';
+      value := 'firstname';
+    end;
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'criteria[0][value]';
+      value := aValue;
+    end;
+
+    ExecuteRequest();
+
+    jValue := arestresponse.JSONValue.GetValue<TJSonArray>('users');
+
+    result := jValue as TJSonArray;
+  end
+  else
+    result := nil;
+
+end;
+
+procedure TLMSRestMoodle.PrepareParams(const servicefunction: string);
+begin
+  aRestRequest.Params.Clear;
+
+  with aRestRequest.Params.AddItem do
+  begin
+    name := WSTOKEN;
+    value := self.fToken;
+  end;
+
+  with aRestRequest.Params.AddItem do
+  begin
+    name := WSFUNCTION;
+    value := servicefunction;
+  end;
+
+  with aRestRequest.Params.AddItem do
+  begin
+    name := 'moodlewsrestformat';
+    value := 'json';
+  end;
+
+  aRestClient.BaseURL := fhost + '/webservice/rest/server.php';
 end;
 
 end.

@@ -14,16 +14,16 @@ type
 
   TLMSUser = class
   private
-    fEmail : string;
+    fEmail: string;
     function getFilterContent: string;
   public
-    fCourse : TLMSCourse;
+    fCourse: TLMSCourse;
 
     fid: integer;
     fUserName, fFirstName, fLastName, fFullName: string;
 
-    property Email : string read fEmail;
-    property FilterContent : string read getFilterContent;
+    property Email: string read fEmail;
+    property FilterContent: string read getFilterContent;
 
   end;
 
@@ -43,7 +43,7 @@ type
     constructor Create;
 
     property Id: cardinal read getId;
-    property FilterContent : string read getFilterContent;
+    property FilterContent: string read getFilterContent;
   end;
 
   TLMSUserGroups = TList<TLMSUserGroup>;
@@ -52,7 +52,7 @@ type
   private
     fLMS: TLMS;
 
-    function GetFilterContent: string;
+    function getFilterContent: string;
     function GetDisplayContent: string;
     function GetLMS: TLMS;
 
@@ -80,14 +80,14 @@ type
     property DisplayContent: string read GetDisplayContent;
 
     // Return the course information that can be filtered from
-    property FilterContent: string read GetFilterContent;
+    property FilterContent: string read getFilterContent;
   end;
 
   TLMSCategory = class
   private
     fLMS: TLMS;
 
-    function GetCoursesCount: cardinal;
+    function GetCoursesCount: integer;
     function GetSubCategoriesCount: cardinal;
     function GetLMS: TLMS;
   public
@@ -104,7 +104,7 @@ type
     property LMS: TLMS read GetLMS;
 
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
-    property CoursesCount: cardinal read GetCoursesCount;
+    property CoursesCount: integer read GetCoursesCount;
 
   end;
 
@@ -115,6 +115,7 @@ type
     procedure SetService(const Value: string);
     procedure SetUser(const Value: string);
     function GetHost: string;
+
   public
     Id: string;
     autoconnect: boolean;
@@ -133,6 +134,8 @@ type
 
     function FirstLevelCategoriesCount: cardinal;
     function GetCategoryById(Id: cardinal): TLMSCategory;
+    function GetUsersByFirstName(var aLMSUsers: TLMSUsers;
+      const aFilter: string): integer;
 
     procedure GetCategories;
     procedure GetCourses;
@@ -307,6 +310,38 @@ begin
 
 end;
 
+function TLMS.GetUsersByFirstName(var aLMSUsers: TLMSUsers;
+  const aFilter: string): integer;
+var
+  aUsers: TJSonArray;
+  User: TJSONValue;
+  aUser: TLMSUser;
+begin
+
+  aUsers := aLMSConnection.GetUsersByFirstName(aFilter);
+
+  if aUsers <> nil then
+  begin
+    //log(aUsers.ToString);
+    for User in aUsers do
+    begin
+      aUser := TLMSUser.Create;
+
+      aUser.fid := User.GetValue<cardinal>('id');
+      aUser.fUserName := User.GetValue<string>('username');
+      aUser.fFirstName := User.GetValue<string>('firstname');
+      aUser.fLastName := User.GetValue<string>('lastname');
+      aUser.fFullName := User.GetValue<string>('fullname');
+      aUser.fEmail := User.GetValue<string>('email');
+
+      aLMSUsers.add(aUser);
+
+    end;
+  end;
+
+  result := aLMSUsers.count;
+end;
+
 function TLMS.GetHost: string;
 begin
   result := aLMSConnection.Host;
@@ -361,7 +396,7 @@ begin
   fcategories := TList<TLMSCategory>.Create;
 end;
 
-function TLMSCategory.GetCoursesCount: cardinal;
+function TLMSCategory.GetCoursesCount: integer;
 begin
   result := fcourses.count;
 end;
@@ -477,7 +512,7 @@ begin
 
 end;
 
-function TLMSCourse.GetFilterContent: string;
+function TLMSCourse.getFilterContent: string;
 begin
   result := shortname + ' ' + fullname + ' ' + self.displayname
 end;
@@ -501,7 +536,7 @@ end;
 
 function TLMSUserGroup.getId: cardinal;
 begin
-  result := fId;
+  result := fid;
 end;
 
 { TLMSUser }

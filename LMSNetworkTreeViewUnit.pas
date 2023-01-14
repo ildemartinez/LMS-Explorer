@@ -502,11 +502,15 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     case data^.node_type of
       ntLMS:
+      begin
+        Expanded[aVirtualNodeEnumerator.Current] := true;
+
         with TLMSForm.Create(self) do
         begin
           LMS := data^.aLMS;
           show();
         end;
+      end;
 
       ntCourse:
         with TLMSCourseForm.Create(self) do
