@@ -26,6 +26,7 @@ type
 
     procedure FormShow(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
+    procedure Action1Execute(Sender: TObject);
   private
     { Private declarations }
     procedure WmAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
@@ -47,7 +48,17 @@ implementation
 uses
   inifiles,
   System.JSON,
+  lmsaboutformunit,
   lmslogUnit;
+
+procedure TMainForm.Action1Execute(Sender: TObject);
+begin
+  with TAboutForm.create(self) do
+  begin
+    ShowModal;
+    free;
+  end;
+end;
 
 constructor TMainForm.Create(Owner: Tcomponent);
 begin

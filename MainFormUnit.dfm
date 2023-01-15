@@ -21,8 +21,6 @@ object MainForm: TMainForm
     Width = 1354
     Height = 19
     Panels = <>
-    ExplicitTop = 523
-    ExplicitWidth = 1002
   end
   object ActionMainMenuBar1: TActionMainMenuBar
     Left = 0
@@ -51,8 +49,6 @@ object MainForm: TMainForm
     Height = 89
     Align = alBottom
     TabOrder = 2
-    ExplicitTop = 434
-    ExplicitWidth = 1002
   end
   object ActionManager1: TActionManager
     ActionBars = <
@@ -74,6 +70,7 @@ object MainForm: TMainForm
     object Action1: TAction
       Category = 'Help'
       Caption = 'About'
+      OnExecute = Action1Execute
     end
   end
 end

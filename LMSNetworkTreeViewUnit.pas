@@ -42,9 +42,6 @@ type
 
     procedure HandleMouseDblClick(var Message: TWMMouse;
       const HitInfo: THitInfo); override;
-    {
-      procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override; }
   public
     constructor Create(Owner: TComponent); override;
     procedure FilterByText(const text: string);

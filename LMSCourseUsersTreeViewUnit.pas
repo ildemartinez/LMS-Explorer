@@ -40,12 +40,6 @@ type
     procedure MyDoInitNode(Sender: TBaseVirtualTree;
       ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
-    { procedure MyDoPaintText(Sender: TBaseVirtualTree;
-      const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-      TextType: TVSTTextType); }
-    { procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
-      var ImageIndex: TImageIndex); }
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 
   public
@@ -70,7 +64,6 @@ uses
   LMSConstsUnit,
   LMSCourseFormUnit,
   LMSLogUnit,
-  LMS.Util.ImageListFromResource,
   LMSBrowserHelperunit,
   LMSUtilsUnit;
 
@@ -101,11 +94,6 @@ begin
   oninitnode := MyDoInitNode;
   OnNodeClick := NodeClick;
 
-
-  // OnPaintText := MyDoPaintText;
-
-  // OnGetImageIndex := MyGetImageIndex;
-  Images := GetGlobalImageListFromResource();
 end;
 
 procedure TLMSCourseUsersTreeView.DoInitNode(Parent, Node: PVirtualNode;
