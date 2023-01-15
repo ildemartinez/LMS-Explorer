@@ -43,7 +43,6 @@ object MainForm: TMainForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
-    ExplicitWidth = 1002
   end
   object Memo1: TMemo
     Left = 0

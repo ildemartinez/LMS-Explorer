@@ -8,54 +8,27 @@ uses
   System.Types,
   System.UITypes,
   vcl.Menus,
-  {*
-    isubjectunit,
 
-    NodeObserverPattern,
-    *}
   VirtualTrees,
+  LMSCustomLMSVirtualStringTreeUnit,
 
   winapi.messages,
   lmsnetworkunit,
   LMSPopupMenuUnit;
 
 type
-  TNodeTypes = (ntLMS, ntCategory, ntCourse);
-
-  TTreeData = { packed } record
-    aLMS: tlms; // Pointer to LMS structure
-    case node_type: TNodeTypes of
-      ntCategory:
-        (Category: TLMSCategory);
-      ntCourse:
-        (Course: TLMSCourse);
-  end;
-
-  PTreeData = ^TTreeData;
-
-  TLMSNetworkTreeView = class(TCustomVirtualStringTree)
-    // , INetworkObserver,    INodeObserver)
+  TLMSNetworkTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-    // fAsTree: boolean;
     fLMSNetwork: TLMSNetwork;
 
     // fPopupMenu: TLMSPopupMenu;
-    procedure setLMSNetwork(const Value: TLMSNetwork);
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
-    // fCryptonetwork: TBTCNetwork;
-    // procedure SetAsTree(const Value: boolean);
-
-    // procedure setCryptoNetwork(const Value: TBTCNetwork);
+    procedure SetLMSNetwork(const Value: TLMSNetwork);
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
     // procedure MenuItemClick(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
-    { procedure MenuItemClickGetPeers(Sender: TObject);
-      procedure MyDoGetPopupmenu(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; const P: TPoint; var AskParent: boolean;
-      var PopupMenu: TPopupMenu);
-    }
     procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
@@ -64,9 +37,7 @@ type
     procedure MyDoPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
-    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
-      var ImageIndex: System.UITypes.TImageIndex);
+
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 
     procedure HandleMouseDblClick(var Message: TWMMouse;
@@ -76,14 +47,9 @@ type
       Operation: TOperation); override; }
   public
     constructor Create(Owner: TComponent); override;
-    // I
-    // procedure DoNotify(const msgtype: TMSGType; const aNode: INode);
-    // I
-    // procedure NewBTCAgentAdded(aBTCAgent: TBTCPeerNode);
-    // procedure NodeConnected(aBTCAgent: TBTCPeerNode);
     procedure FilterByText(const text: string);
 
-    property LMSNetwork: TLMSNetwork read fLMSNetwork write setLMSNetwork;
+    property LMSNetwork: TLMSNetwork write SetLMSNetwork;
 
   end;
 
@@ -99,7 +65,6 @@ uses
   LMSConstsUnit,
   LMSCourseFormUnit,
   LMSLogUnit,
-  LMS.Util.ImageListFromResource,
   LMSBrowserHelperunit;
 
 constructor TLMSNetworkTreeView.Create(Owner: TComponent);
@@ -135,8 +100,7 @@ begin
 
   {
     OnGetPopupMenu := MyDoGetPopupmenu; }
-  OnGetImageIndex := MyGetImageIndex;
-  Images := GetGlobalImageListFromResource();
+
 end;
 
 procedure TLMSNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -147,98 +111,57 @@ begin
   data := GetNodeData(Node);
   parentdata := GetNodeData(Parent);
 
-  // if fAsTree then
+  if parentdata = nil then
   begin
-    if parentdata = nil then
+    data^.node_type := ntLMS;
+    data^.aLMS := fLMSNetwork.item[Node.Index];
+
+    if (data^.aLMS.connected) then
     begin
-      data^.node_type := ntLMS;
-      data^.aLMS := fLMSNetwork.item[Node.Index];
+      data^.aLMS.GetCategories;
+      data^.aLMS.GetCourses;
+    end;
 
-      if (data^.aLMS.connected) then
-      begin
-        data^.aLMS.GetCategories;
-        data^.aLMS.GetCourses;
-      end;
+    Include(Node.States, vsHasChildren);
 
-      Include(Node.States, vsHasChildren);
+    if (data^.aLMS.autoconnect) then
+      Include(Node.States, vsExpanded);
+  end
+  else
+    case parentdata^.node_type of
+      ntLMS:
+        begin
+          data^.node_type := ntCategory;
+          data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
+          data^.Category := parentdata^.aLMS.categories.items[Node.Index];
 
-      if (data^.aLMS.autoconnect) then
-        Include(Node.States, vsExpanded);
-    end
-    else
-      case parentdata^.node_type of
-        ntLMS:
+          if parentdata^.aLMS.categories.Count +
+            integer(parentdata^.aLMS.getcategorybyid(data^.Category.id)
+            .coursescount) > 0 then
+            Node.States := Node.States + [vsHasChildren, vsExpanded];
+        end;
+      ntCategory:
+        begin
+          // It is a category
+          if Node.Index < parentdata^.Category.SubCategoriesCount then
           begin
             data^.node_type := ntCategory;
             data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-            data^.Category := parentdata^.aLMS.categories.items[Node.Index];
+            data^.Category := parentdata^.aLMS.getcategorybyid
+              (parentdata^.Category.id).fcategories.items[Node.Index];
 
-            if parentdata^.aLMS.categories.Count +
-              parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0
-            then
+            if parentdata^.Category.SubCategoriesCount > 0 then
               Node.States := Node.States + [vsHasChildren, vsExpanded];
-          end;
-        ntCategory:
+          end
+          else
           begin
-            // It is a category
-            if Node.Index < parentdata^.Category.SubCategoriesCount then
-            begin
-              data^.node_type := ntCategory;
-              data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-              data^.Category := parentdata^.aLMS.getcategorybyid
-                (parentdata^.Category.id).fcategories.items[Node.Index];
-
-              if parentdata^.Category.SubCategoriesCount > 0 then
-                Node.States := Node.States + [vsHasChildren, vsExpanded];
-            end
-            else
-            begin
-              data^.node_type := ntCourse;
-              data^.aLMS := parentdata^.aLMS;
-              data^.Course := parentdata^.Category.fcourses
-                [Node.Index - parentdata^.Category.SubCategoriesCount];
-            end;
+            data^.node_type := ntCourse;
+            data^.aLMS := parentdata^.aLMS;
+            data^.Course := parentdata^.Category.fcourses
+              [Node.Index - parentdata^.Category.SubCategoriesCount];
           end;
-      end
-    { else
-      begin
-      if parentdata = nil then
-      begin
-      RootNodeCount := self.fCryptonetwork.count;
-
-      if RootNodeCount > 0 then
-      begin
-      data^.node_type := ntnode;
-      data^.nodedata := CryptoNetwork.nodes[Node.Index];
-      AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
-      end;
-      end
-      end;
-    }
-  end;
-
-  {
-    procedure TCryptoNetworkTreeView.DoNotify(const msgtype: TMSGType;
-    const aNode: INode);
-    var
-    aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-    data: PTreeData;
-    begin
-    // todo optimizar la salida
-    aVirtualNodeEnumerator := nodes.GetEnumerator;
-
-    while aVirtualNodeEnumerator.MoveNext do
-    begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    if data^.node_type = ntnode then
-    begin
-    if data^.nodedata.PeerIp = aNode.GetIP then
-    InvalidateNode(aVirtualNodeEnumerator.Current)
-    end;
-    end;
-
-    end;
-  }
+        end;
+    end
 end;
 
 procedure TLMSNetworkTreeView.FilterByText(const text: string);
@@ -263,7 +186,6 @@ begin
         aCompare := data^.Category.name;
       ntCourse:
         aCompare := data^.Course.FilterContent;
-
     end;
 
     if (Pos(UpperCase(text), UpperCase(aCompare)) > 0) or (text = '') then
@@ -276,11 +198,9 @@ begin
         IsVisible[aParent] := true;
         aParent := aParent.Parent;
       end;
-
     end
     else
       IsVisible[aVirtualNodeEnumerator.Current] := false;
-
   end;
 
   // Please refresh
@@ -425,69 +345,6 @@ end;
   TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
   - [fsBold]; }
 
-procedure TLMSNetworkTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-  var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
-var
-  data: PTreeData;
-begin
-  data := GetNodeData(Node);
-
-  if (Kind <> ikstate) then
-  begin
-    { if fAsTree = true then
-      begin
-      if (data^.node_type = ntroot) and (Column = -1) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-      ('PROJECT')
-      else if (data^.node_type = ntnode) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-      ('NODE_BTC');
-      end
-      else
-      begin }
-    if (data^.node_type = ntLMS) and (Column = -1) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-        ('res_lms')
-    else if (data^.node_type = ntCourse) then // and (Column = 0) then
-    begin
-      case data^.Course.groupmode of
-        0: ;
-         // ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_groups_no_groups');
-        1:
-          ImageIndex := GetGlobalImageListFromResource.
-            GetImageIndexByName('res_groups_separate_groups');
-        2:
-          ImageIndex := GetGlobalImageListFromResource.
-            GetImageIndexByName('res_groups_visible_groups');
-      end;
-
-    end;
-  end;
-end;
-{
-  procedure TCryptoNetworkTreeView.NewBTCAgentAdded(aBTCAgent: TBTCPeerNode);
-  begin
-  if fAsTree then
-  begin
-  ReinitNode(GetFirst(), true);
-  end
-  else
-  begin
-  Clear;
-  BeginUpdate;
-  RootNodeCount := 1;
-  FullExpand;
-  EndUpdate;
-  end;
-  end;
-
-  procedure TCryptoNetworkTreeView.NodeConnected(aBTCAgent: TBTCPeerNode);
-  begin
-
-  end;
-}
-
 procedure TLMSNetworkTreeView.NodeDblClick(Sender: TBaseVirtualTree;
   const HitInfo: THitInfo);
 var
@@ -502,15 +359,15 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     case data^.node_type of
       ntLMS:
-      begin
-        Expanded[aVirtualNodeEnumerator.Current] := true;
-
-        with TLMSForm.Create(self) do
         begin
-          LMS := data^.aLMS;
-          show();
+          Expanded[aVirtualNodeEnumerator.Current] := true;
+
+          with TLMSForm.Create(self) do
+          begin
+            LMS := data^.aLMS;
+            show();
+          end;
         end;
-      end;
 
       ntCourse:
         with TLMSCourseForm.Create(self) do
@@ -522,6 +379,13 @@ begin
     end;
   end;
 
+end;
+
+procedure TLMSNetworkTreeView.SetLMSNetwork(const Value: TLMSNetwork);
+begin
+  fLMSNetwork := Value;
+
+  RootNodeCount := fLMSNetwork.Count;
 end;
 
 procedure TLMSNetworkTreeView.NodeClick(Sender: TBaseVirtualTree;
@@ -568,76 +432,7 @@ begin
 
         end;
     end;
-    { else if data^.node_type = ntnetwork then
-      begin
-      with TNetworkForm.Create(self) do
-      begin
-      Network := data^.networkdata;
-      show();
-      end;
-      end; }
-
   end;
-
-end;
-{
-  procedure TCryptoNetworkTreeView.Notification(AComponent: TComponent;
-  Operation: TOperation);
-  begin
-  inherited;
-
-  if Operation = opRemove then
-  if AComponent = CryptoNetwork then
-  CryptoNetwork := nil;
-  end;
-
-  procedure TCryptoNetworkTreeView.SetAsTree(const Value: boolean);
-  begin
-  fAsTree := Value;
-
-  // As Tree
-  if Value = true then
-  begin
-  TreeOptions.PaintOptions := TreeOptions.PaintOptions +
-  [toShowRoot, toShowTreeLines];
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions -
-  [toextendedfocus];
-  TreeOptions.MiscOptions := TreeOptions.MiscOptions - [toToggleondblclick];
-
-  end
-  // as grid
-  else
-  begin
-  TreeOptions.PaintOptions := TreeOptions.PaintOptions -
-  [toShowRoot, toShowTreeLines] + [toHotTrack, tohidefocusrect,
-  toshowhorzgridlines, toshowvertgridlines];
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
-  [toFullRowSelect];
-  Header.Options := Header.Options - [hocolumnresize];
-  TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
-  end;
-  end;
-
-  procedure TCryptoNetworkTreeView.setCryptoNetwork(const Value: TBTCNetwork);
-  begin
-  fCryptonetwork := Value;
-  if Value <> nil then
-  begin
-  RootNodeCount := 1;
-
-  Value.FreeNotification(self);
-  Value.RegisterObserver(self);
-  end;
-  end;
-
-}
-{ TLMSNetworkTreeView }
-
-procedure TLMSNetworkTreeView.setLMSNetwork(const Value: TLMSNetwork);
-begin
-  fLMSNetwork := Value;
-
-  self.RootNodeCount := fLMSNetwork.Count;
 end;
 
 end.

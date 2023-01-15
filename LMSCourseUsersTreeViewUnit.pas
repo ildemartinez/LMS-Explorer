@@ -11,34 +11,18 @@ uses
   winapi.messages,
 
   VirtualTrees,
+  LMSCustomLMSVirtualStringTreeUnit,
 
   lmsnetworkunit,
   LMSPopupMenuUnit;
 
 type
-  TNodeTypes = (ntGroup, ntUser);
 
-  TTreeData = { packed } record
-
-    // aLMS: tlms; // Pointer to LMS structure
-    case node_type: TNodeTypes of
-      ntGroup:
-        (Group: TLMSUserGroup);
-      ntUser:
-        (User: TLMSUser);
-
-  end;
-
-  PTreeData = ^TTreeData;
-
-  TLMSCourseUsersTreeView = class(TCustomVirtualStringTree)
+  TLMSCourseUsersTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-
-    fLMSNetwork: TLMSNetwork;
     fLMSCourse: TLMSCourse;
     fLMSUsers: TLMSUsers;
 
-    procedure setLMSNetwork(const Value: TLMSNetwork);
     procedure setLMSCourse(const Value: TLMSCourse);
 
     function HasGroups: boolean;
@@ -70,11 +54,8 @@ type
     procedure FilterByText(const text: string);
     procedure Refreshh;
 
-    property LMSNetwork: TLMSNetwork read fLMSNetwork write setLMSNetwork;
     property LMSCourse: TLMSCourse read fLMSCourse write setLMSCourse;
-
     property SelectedUser: TLMSUser read GetSelectedUser;
-
   end;
 
 implementation
@@ -141,7 +122,7 @@ begin
     begin
 
       // Has a group
-      if (LMSCourse <> nil) and ( LMSCourse.fUserGroups.count > 0) then
+      if (LMSCourse <> nil) and (LMSCourse.fUserGroups.count > 0) then
       begin
         data^.node_type := ntGroup;
         data^.Group := fLMSCourse.fUserGroups[Node.Index];
@@ -324,8 +305,8 @@ begin
   end;
 end;
 
-procedure TLMSCourseUsersTreeView.MyDoInitNode(Sender: TBaseVirtualTree; ParentNode,
-  Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
+procedure TLMSCourseUsersTreeView.MyDoInitNode(Sender: TBaseVirtualTree;
+  ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 begin
 
 end;
@@ -520,13 +501,5 @@ begin
   Header.AutoFitColumns(false, smaAllColumns, 0);
 
 end;
-
-procedure TLMSCourseUsersTreeView.setLMSNetwork(const Value: TLMSNetwork);
-begin
-  fLMSNetwork := Value;
-
-  self.RootNodeCount := fLMSNetwork.count;
-end;
-
 
 end.

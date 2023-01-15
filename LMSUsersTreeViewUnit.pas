@@ -11,33 +11,16 @@ uses
   winapi.messages,
 
   VirtualTrees,
+  LMSCustomLMSVirtualStringTreeUnit,
 
   lmsnetworkunit,
   LMSPopupMenuUnit;
 
 type
-  TNodeTypes = (ntGroup, ntUser);
 
-  TTreeData = { packed } record
-
-    // aLMS: tlms; // Pointer to LMS structure
-    case node_type: TNodeTypes of
-      ntGroup:
-        (Group: TLMSUserGroup);
-      ntUser:
-        (User: TLMSUser);
-
-  end;
-
-  PTreeData = ^TTreeData;
-
-  TLMSUsersTreeView = class(TCustomVirtualStringTree)
+  TLMSUsersTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-
-    fLMSNetwork: TLMSNetwork;
     fLMSUsers: TLMSUsers;
-
-    procedure setLMSNetwork(const Value: TLMSNetwork);
 
     function GetSelectedUser: TLMSUser;
     procedure setLMSUsers(const Value: TLMSUsers);
@@ -67,7 +50,6 @@ type
     procedure FilterByText(const text: string);
     procedure Refreshh;
 
-    property LMSNetwork: TLMSNetwork read fLMSNetwork write setLMSNetwork;
     property LMSUsers: TLMSUsers read fLMSUsers write setLMSUsers;
     property SelectedUser: TLMSUser read GetSelectedUser;
 
@@ -431,49 +413,30 @@ begin
   RootNodeCount := fLMSUsers.count;
 end;
 
-procedure TLMSUsersTreeView.setLMSNetwork(const Value: TLMSNetwork);
-begin
-  fLMSNetwork := Value;
-
-  self.RootNodeCount := fLMSNetwork.count;
-end;
-
 procedure TLMSUsersTreeView.setLMSUsers(const Value: TLMSUsers);
-
-var
-  aUserCount: cardinal;
-
-  procedure CreateColums;
-  begin
-    with Header do
-    begin
-      with Columns.add do
-      begin
-        text := 'FullName';
-        Options := Options + [coAutoSpring, coResizable, coSmartResize];
-      end;
-
-      with Columns.add do
-      begin
-        text := 'Email';
-        Options := Options + [coAutoSpring, coResizable];
-      end;
-
-      Options := Options + [hovisible, hoAutoSpring, hoAutoResize,
-        hoDblClickResize];
-      AutoSizeIndex := Columns.GetLastVisibleColumn;
-    end;
-  end;
-
 begin
-
   fLMSUsers := Value;
-
-  // fLMSCourse.RefreshEnrolledUsers;
 
   Header.Columns.Clear;
 
-  CreateColums;
+  with Header do
+  begin
+    with Columns.add do
+    begin
+      text := 'FullName';
+      Options := Options + [coAutoSpring, coResizable, coSmartResize];
+    end;
+
+    with Columns.add do
+    begin
+      text := 'Email';
+      Options := Options + [coAutoSpring, coResizable];
+    end;
+
+    Options := Options + [hovisible, hoAutoSpring, hoAutoResize,
+      hoDblClickResize];
+    AutoSizeIndex := Columns.GetLastVisibleColumn;
+  end;
 
   RootNodeCount := fLMSUsers.count;
 

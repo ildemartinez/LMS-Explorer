@@ -87,7 +87,7 @@ type
   private
     fLMS: TLMS;
 
-    function GetCoursesCount: integer;
+    function GetCoursesCount: cardinal;
     function GetSubCategoriesCount: cardinal;
     function GetLMS: TLMS;
   public
@@ -104,7 +104,7 @@ type
     property LMS: TLMS read GetLMS;
 
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
-    property CoursesCount: integer read GetCoursesCount;
+    property CoursesCount: cardinal read GetCoursesCount;
 
   end;
 
@@ -396,7 +396,7 @@ begin
   fcategories := TList<TLMSCategory>.Create;
 end;
 
-function TLMSCategory.GetCoursesCount: integer;
+function TLMSCategory.GetCoursesCount: cardinal;
 begin
   result := fcourses.count;
 end;

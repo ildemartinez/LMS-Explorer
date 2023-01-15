@@ -45,7 +45,8 @@ implementation
 {$R *.dfm}
 
 uses
-  inifiles, System.JSON,
+  inifiles,
+  System.JSON,
   lmslogUnit;
 
 constructor TMainForm.Create(Owner: Tcomponent);

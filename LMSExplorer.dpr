@@ -25,7 +25,8 @@ uses
   LMSBrowserHelperUnit in 'LMSBrowserHelperUnit.pas',
   LMSUsersTreeViewUnit in 'LMSUsersTreeViewUnit.pas',
   LMSUtilsUnit in 'LMSUtilsUnit.pas',
-  LMSCourseUsersTreeViewUnit in 'LMSCourseUsersTreeViewUnit.pas';
+  LMSCourseUsersTreeViewUnit in 'LMSCourseUsersTreeViewUnit.pas',
+  LMSCustomLMSVirtualStringTreeUnit in 'LMSCustomLMSVirtualStringTreeUnit.pas';
 
 {$R *.res}
 

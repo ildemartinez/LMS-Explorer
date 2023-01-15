@@ -2,8 +2,8 @@ object AboutForm: TAboutForm
   Left = 0
   Top = 0
   Caption = 'AboutForm'
-  ClientHeight = 231
-  ClientWidth = 505
+  ClientHeight = 225
+  ClientWidth = 499
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
