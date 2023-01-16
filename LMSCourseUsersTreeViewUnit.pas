@@ -264,6 +264,9 @@ begin
             CellText := data^.User.fFullName;
           2:
             CellText := data^.User.Email;
+          3:
+            CellText := data^.User.froles;
+
         end;
       end
       else
@@ -272,6 +275,9 @@ begin
             CellText := data^.User.fFullName;
           1:
             CellText := data^.User.Email;
+          2:
+            CellText := data^.User.froles;
+
         end;
 
   end;
@@ -448,6 +454,12 @@ var
       with Columns.add do
       begin
         text := 'Email';
+        Options := Options + [coAutoSpring, coResizable];
+      end;
+
+      with Columns.add do
+      begin
+        text := 'Rol';
         Options := Options + [coAutoSpring, coResizable];
       end;
 

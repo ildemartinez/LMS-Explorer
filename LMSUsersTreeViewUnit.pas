@@ -233,7 +233,7 @@ begin
     with Columns.add do
     begin
       text := 'FullName';
-      Options := Options + [coAutoSpring, coResizable, coSmartResize];
+      Options := Options + [coAutoSpring, coResizable];
     end;
 
     with Columns.add do

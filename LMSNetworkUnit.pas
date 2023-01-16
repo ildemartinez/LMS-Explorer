@@ -20,7 +20,7 @@ type
     fCourse: TLMSCourse;
 
     fid: integer;
-    fUserName, fFirstName, fLastName, fFullName: string;
+    fUserName, fFirstName, fLastName, fFullName, fRoles: string;
 
     property Email: string read fEmail;
     property FilterContent: string read getFilterContent;
@@ -437,6 +437,8 @@ var
 
   groups: TJSonArray;
   group: TJSONValue;
+
+  rol : TJSONValue;
 begin
   // Populate user groups first
   RefreshUserGroups;
@@ -447,7 +449,7 @@ begin
 
   if aUsers <> nil then
   begin
-    // log(aUsers.ToString);
+    log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;
@@ -460,6 +462,13 @@ begin
       aUser.fFullName := User.GetValue<string>('fullname');
       aUser.fEmail := User.GetValue<string>('email');
 
+      // Get user roles
+      for rol in user.GetValue<TJSONArray>('roles') do
+      begin
+        aUser.fRoles := aUser.fRoles + rol.GetValue<string>('name');
+      end;
+
+      // Add user to users list
       fUsers.add(aUser);
 
       // Include the user in the corresponding group
