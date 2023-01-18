@@ -11,7 +11,7 @@ uses
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Menus, System.Actions, Vcl.ActnList,
   Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, Vcl.ActnMenus,
   Vcl.PlatformDefaultStyleActnCtrls, REST.Types, REST.Client,
-  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls;
+  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls, Vcl.StdActns;
 
 const
   WM_AFTER_SHOW = WM_USER + 300;
@@ -23,10 +23,15 @@ type
     ActionManager1: TActionManager;
     Action1: TAction;
     Memo1: TMemo;
+    WindowCascade1: TWindowCascade;
+    WindowMinimizeAll1: TWindowMinimizeAll;
+    Action2: TAction;
 
     procedure FormShow(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
+    procedure Action2Execute(Sender: TObject);
+    procedure Action2Update(Sender: TObject);
   private
     { Private declarations }
     procedure WmAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
@@ -58,6 +63,19 @@ begin
     ShowModal;
     free;
   end;
+end;
+
+procedure TMainForm.Action2Execute(Sender: TObject);
+begin
+   //
+   for var i := Screen.FormCount-1 downto 1 do
+    Screen.forms[i].Close;
+
+end;
+
+procedure TMainForm.Action2Update(Sender: TObject);
+begin
+action2.Enabled := (screen.FormCount>1);
 end;
 
 constructor TMainForm.Create(Owner: Tcomponent);

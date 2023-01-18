@@ -266,7 +266,8 @@ begin
             CellText := data^.User.Email;
           3:
             CellText := data^.User.froles;
-
+          4:
+            CellText := FormatDateTimeNever(data^.User.flastcourseaccess);
         end;
       end
       else
@@ -277,7 +278,8 @@ begin
             CellText := data^.User.Email;
           2:
             CellText := data^.User.froles;
-
+          3:
+            CellText := FormatDateTimeNever(data^.User.flastcourseaccess);
         end;
 
   end;
@@ -460,6 +462,12 @@ var
       with Columns.add do
       begin
         text := 'Rol';
+        Options := Options + [coAutoSpring, coResizable];
+      end;
+
+      with Columns.add do
+      begin
+        text := 'Last access';
         Options := Options + [coAutoSpring, coResizable];
       end;
 

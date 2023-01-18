@@ -3,8 +3,13 @@ unit LMSUtilsUnit;
 interface
 
 function ShadowText(const aText: string): string;
+function FormatDateTimeNever(const aDateTime: TDateTime): string;
 
 implementation
+
+uses
+  System.SysUtils,
+  dateutils;
 
 function ShadowText(const aText: string): string;
 var
@@ -21,6 +26,14 @@ begin
 
   end;
 
+end;
+
+function FormatDateTimeNever(const aDateTime: TDateTime): string;
+begin
+  if datetimetounix(aDateTime) = 0 then
+    result := 'never'
+  else
+    result := DateTimeToStr(aDateTime);
 end;
 
 end.

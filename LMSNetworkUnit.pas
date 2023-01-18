@@ -21,6 +21,7 @@ type
 
     fid: integer;
     fUserName, fFirstName, fLastName, fFullName, fRoles: string;
+    flastcourseaccess: TDateTime;
 
     property Email: string read fEmail;
     property FilterContent: string read getFilterContent;
@@ -165,7 +166,7 @@ implementation
 
 uses
   System.JSON,
-  LMSLogUnit;
+  LMSLogUnit, DateUtils;
 
 var
   _GlobalLMSNetWork: TLMSNetwork;
@@ -322,7 +323,7 @@ begin
 
   if aUsers <> nil then
   begin
-    //log(aUsers.ToString);
+    // log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;
@@ -438,7 +439,7 @@ var
   groups: TJSonArray;
   group: TJSONValue;
 
-  rol : TJSONValue;
+  rol: TJSONValue;
 begin
   // Populate user groups first
   RefreshUserGroups;
@@ -461,9 +462,10 @@ begin
       aUser.fLastName := User.GetValue<string>('lastname');
       aUser.fFullName := User.GetValue<string>('fullname');
       aUser.fEmail := User.GetValue<string>('email');
+      aUser.flastcourseaccess := unixtodatetime( User.GetValue<Int64>('lastcourseaccess'));
 
       // Get user roles
-      for rol in user.GetValue<TJSONArray>('roles') do
+      for rol in User.GetValue<TJSonArray>('roles') do
       begin
         aUser.fRoles := aUser.fRoles + rol.GetValue<string>('name');
       end;

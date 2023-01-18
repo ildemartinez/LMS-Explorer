@@ -57,6 +57,23 @@ object MainForm: TMainForm
           item
             Items = <
               item
+                Action = WindowCascade1
+                ImageIndex = 17
+              end
+              item
+                Action = WindowMinimizeAll1
+              end
+              item
+                Action = Action2
+              end>
+            Caption = 'W&indow'
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Items = <
+              item
                 Action = Action1
                 Caption = '&About'
               end>
@@ -71,6 +88,26 @@ object MainForm: TMainForm
       Category = 'Help'
       Caption = 'About'
       OnExecute = Action1Execute
+    end
+    object WindowCascade1: TWindowCascade
+      Category = 'Window'
+      Caption = '&Cascade'
+      Enabled = False
+      Hint = 'Cascade'
+      ImageIndex = 17
+    end
+    object WindowMinimizeAll1: TWindowMinimizeAll
+      Category = 'Window'
+      Caption = '&Minimize All'
+      Enabled = False
+      Hint = 'Minimize All'
+    end
+    object Action2: TAction
+      Category = 'Window'
+      Caption = 'Close All'
+      Hint = 'Close all windows'
+      OnExecute = Action2Execute
+      OnUpdate = Action2Update
     end
   end
 end
