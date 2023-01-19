@@ -18,7 +18,6 @@ const
 
 type
   TMainForm = class(TForm)
-    StatusBar1: TStatusBar;
     ActionMainMenuBar1: TActionMainMenuBar;
     ActionManager1: TActionManager;
     Action1: TAction;

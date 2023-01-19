@@ -15,13 +15,6 @@ object MainForm: TMainForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object StatusBar1: TStatusBar
-    Left = 0
-    Top = 666
-    Width = 1354
-    Height = 19
-    Panels = <>
-  end
   object ActionMainMenuBar1: TActionMainMenuBar
     Left = 0
     Top = 0
@@ -44,11 +37,13 @@ object MainForm: TMainForm
   end
   object Memo1: TMemo
     Left = 0
-    Top = 577
+    Top = 555
     Width = 1354
-    Height = 89
+    Height = 130
     Align = alBottom
-    TabOrder = 2
+    TabOrder = 1
+    ExplicitLeft = 40
+    ExplicitTop = 480
   end
   object ActionManager1: TActionManager
     ActionBars = <
@@ -65,6 +60,7 @@ object MainForm: TMainForm
               end
               item
                 Action = Action2
+                Caption = 'C&lose All'
               end>
             Caption = 'W&indow'
           end
