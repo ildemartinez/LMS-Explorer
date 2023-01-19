@@ -13,7 +13,6 @@ uses
 
 type
   TLMSCourseForm = class(TForm)
-    TabControl1: TTabControl;
     ActionMainMenuBar1: TActionMainMenuBar;
     ActionManager1: TActionManager;
     Action1: TAction;
@@ -21,8 +20,12 @@ type
     Action3: TAction;
     Action4: TAction;
     Action5: TAction;
+    Panel2: TPanel;
+    TabControl1: TTabControl;
     Panel1: TPanel;
     Edit1: TEdit;
+    Panel3: TPanel;
+    Memo1: TMemo;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -131,12 +134,25 @@ begin
 end;
 
 procedure TLMSCourseForm.SetaCourse(const Value: TLMSCourse);
+var
+  aRole: string;
+  aRolesList: TStringList;
 begin
   fCourse := Value;
 
-  self.Caption := fCourse.displaycontent;
+  Caption := fCourse.displaycontent;
 
-  fUsersTreeView.LMSCourse := Value;
+  fUsersTreeView.LMSCourse := fCourse;
+
+  aRolesList := TStringList.Create;
+  fCourse.GetCourseRoles(aRolesList);
+
+  for aRole in aRolesList do
+  begin
+    Memo1.Lines.add(aRole + ' ' + fCourse.GetUserCountByRol(aRole).ToString);
+  end;
+
+  aRolesList.free;
 end;
 
 end.

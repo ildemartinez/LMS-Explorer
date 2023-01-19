@@ -58,6 +58,7 @@ type
     function GetLMS: TLMS;
 
     procedure RefreshUserGroups;
+    function GetStudentsCount: integer;
   public
     Id: cardinal;
     shortname: string;
@@ -73,6 +74,8 @@ type
     constructor Create(const LMS: TLMS);
 
     procedure RefreshEnrolledUsers;
+    function GetCourseRoles(aCourseRoles: TStringlist): cardinal;
+    function GetUserCountByRol(const aRole: string): cardinal;
 
     // Pointer to the LMS parent
     property LMS: TLMS read GetLMS;
@@ -82,6 +85,9 @@ type
 
     // Return the course information that can be filtered from
     property FilterContent: string read getFilterContent;
+
+    Property StudentsCount: integer read GetStudentsCount;
+
   end;
 
   TLMSCategory = class
@@ -425,6 +431,15 @@ begin
 
 end;
 
+function TLMSCourse.GetCourseRoles(aCourseRoles: TStringlist): cardinal;
+var
+  aUser: TLMSUser;
+begin
+  for aUser in fUsers do
+    if aCourseRoles.IndexOf(aUser.fRoles) < 0 then
+      aCourseRoles.add(aUser.fRoles);
+end;
+
 function TLMSCourse.GetDisplayContent: string;
 begin
   result := shortname + ' - ' + displayname;
@@ -462,7 +477,8 @@ begin
       aUser.fLastName := User.GetValue<string>('lastname');
       aUser.fFullName := User.GetValue<string>('fullname');
       aUser.fEmail := User.GetValue<string>('email');
-      aUser.flastcourseaccess := unixtodatetime( User.GetValue<Int64>('lastcourseaccess'));
+      aUser.flastcourseaccess :=
+        unixtodatetime(User.GetValue<Int64>('lastcourseaccess'));
 
       // Get user roles
       for rol in User.GetValue<TJSonArray>('roles') do
@@ -531,6 +547,32 @@ end;
 function TLMSCourse.GetLMS: TLMS;
 begin
   result := fLMS;
+end;
+
+function TLMSCourse.GetStudentsCount: integer;
+var
+  aUser: TLMSUser;
+begin
+  result := 0;
+  for aUser in fUsers do
+  begin
+    if aUser.fRoles = 'student' then
+      inc(result);
+
+  end;
+
+end;
+
+function TLMSCourse.GetUserCountByRol(const aRole: string): cardinal;
+var
+  aUser: TLMSUser;
+begin
+  result := 0;
+  for aUser in fUsers do
+  begin
+    if aUser.fRoles = aRole then
+      inc(result);
+  end;
 end;
 
 { TLMSUserGroup }
