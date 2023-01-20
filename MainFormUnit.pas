@@ -57,7 +57,7 @@ uses
 
 procedure TMainForm.Action1Execute(Sender: TObject);
 begin
-  with TAboutForm.create(self) do
+  with TAboutForm.Create(self) do
   begin
     ShowModal;
     free;
@@ -66,15 +66,15 @@ end;
 
 procedure TMainForm.Action2Execute(Sender: TObject);
 begin
-   //
-   for var i := Screen.FormCount-1 downto 1 do
-    Screen.forms[i].Close;
+  //
+  for var i := Screen.FormCount - 1 downto 1 do
+    Screen.Forms[i].Close;
 
 end;
 
 procedure TMainForm.Action2Update(Sender: TObject);
 begin
-action2.Enabled := (screen.FormCount>1);
+  Action2.Enabled := (Screen.FormCount > 1);
 end;
 
 constructor TMainForm.Create(Owner: Tcomponent);
@@ -93,15 +93,14 @@ begin
   begin
     parent := self;
     Align := alLeft;
+    Width := 300;
   end;
 
   aLMSNetworkTreeView := TLMSNetworkTreeView.Create(self);
   aLMSNetworkTreeView.parent := aPanel;
   aLMSNetworkTreeView.Align := alClient;
 
-  var
-  aFilterEdit := TEdit.Create(self);
-  with aFilterEdit do
+  with TEdit.Create(self) do
   begin
     parent := aPanel;
     Align := alTop;

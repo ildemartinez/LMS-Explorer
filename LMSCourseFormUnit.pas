@@ -9,7 +9,7 @@ uses
   LMSNetworkUnit, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
   LMSCourseUsersTreeViewUnit, System.Actions, Vcl.ActnList,
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
-  Vcl.ActnMenus;
+  Vcl.ActnMenus, System.ImageList, Vcl.ImgList;
 
 type
   TLMSCourseForm = class(TForm)
@@ -26,6 +26,8 @@ type
     Edit1: TEdit;
     Panel3: TPanel;
     Memo1: TMemo;
+    Action6: TAction;
+    ImageList1: TImageList;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -36,6 +38,7 @@ type
     procedure Action4Update(Sender: TObject);
     procedure Action3Update(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
+    procedure Action6Execute(Sender: TObject);
   private
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: TLMSCourse;
@@ -107,6 +110,16 @@ begin
   OpenEditCourseInBrowser(fCourse);
 end;
 
+procedure TLMSCourseForm.Action6Execute(Sender: TObject);
+begin
+  // Refresh de users query
+  aCourse := fCourse;
+
+  // Requery the filter
+  Edit1Change(Edit1);
+
+end;
+
 constructor TLMSCourseForm.Create(Owner: TComponent);
 begin
   inherited;
@@ -147,10 +160,13 @@ begin
   aRolesList := TStringList.Create;
   fCourse.GetCourseRoles(aRolesList);
 
+  Memo1.clear;
+  memo1.lines.BeginUpdate;
   for aRole in aRolesList do
   begin
     Memo1.Lines.add(aRole + ' ' + fCourse.GetUserCountByRol(aRole).ToString);
   end;
+  memo1.Lines.EndUpdate;
 
   aRolesList.free;
 end;

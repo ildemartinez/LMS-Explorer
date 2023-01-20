@@ -503,6 +503,7 @@ begin
   begin
     CreateColums;
 
+    RootNodeCount := 0;
     RootNodeCount := fLMSCourse.fUsers.count;
   end;
 
