@@ -2,8 +2,8 @@ object LMSForm: TLMSForm
   Left = 0
   Top = 0
   Caption = 'LMSForm'
-  ClientHeight = 543
-  ClientWidth = 803
+  ClientHeight = 585
+  ClientWidth = 965
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,32 +16,57 @@ object LMSForm: TLMSForm
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
-  object TabControl1: TTabControl
+  object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 803
-    Height = 543
+    Width = 965
+    Height = 585
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
-    Tabs.Strings = (
-      'Users')
-    TabIndex = 0
-    object Panel1: TPanel
-      Left = 4
-      Top = 24
-      Width = 795
-      Height = 25
-      Align = alTop
-      TabOrder = 0
-      object Edit1: TEdit
-        Left = 1
-        Top = 1
-        Width = 313
-        Height = 23
-        Align = alLeft
+    object TabSheet1: TTabSheet
+      Caption = 'Users'
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 957
+        Height = 25
+        Align = alTop
         TabOrder = 0
-        OnChange = Edit1Change
-        ExplicitHeight = 21
+        ExplicitTop = 8
+        object Edit1: TEdit
+          Left = 1
+          Top = 1
+          Width = 313
+          Height = 23
+          Align = alLeft
+          TabOrder = 0
+          OnChange = Edit1Change
+          ExplicitHeight = 21
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      AlignWithMargins = True
+      Caption = 'Configuration'
+      ImageIndex = 1
+      object GroupBox1: TGroupBox
+        Left = 0
+        Top = 0
+        Width = 951
+        Height = 65
+        Align = alTop
+        Caption = 'Service configuration '
+        TabOrder = 0
+        object Button1: TButton
+          Left = 19
+          Top = 24
+          Width = 214
+          Height = 25
+          Caption = 'Got to LMS external service configuration'
+          TabOrder = 0
+          OnClick = Button1Click
+        end
       end
     end
   end

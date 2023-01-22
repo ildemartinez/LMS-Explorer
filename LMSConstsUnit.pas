@@ -31,6 +31,9 @@ const
   EDIT_PROFILE_IN_COURSE = '/user/editadvanced.php?id=%d&course=%d';
   EDIT_COURSE = '/course/edit.php?id=%d';
 
+  // admin settings
+  ADMIN_SETTINGS_EXTERNALSERVICES = '/admin/settings.php?section=externalservices';
+
 implementation
 
 end.

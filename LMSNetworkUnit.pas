@@ -74,7 +74,7 @@ type
     constructor Create(const LMS: TLMS);
 
     procedure RefreshEnrolledUsers;
-    function GetCourseRoles(aCourseRoles: TStringlist): cardinal;
+    procedure GetCourseRoles(aCourseRoles: TStringlist);
     function GetUserCountByRol(const aRole: string): cardinal;
 
     // Pointer to the LMS parent
@@ -122,6 +122,9 @@ type
     procedure SetService(const Value: string);
     procedure SetUser(const Value: string);
     function GetHost: string;
+
+    procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
+      const aFunctionName: string);
 
   public
     Id: string;
@@ -243,6 +246,7 @@ end;
 constructor TLMS.Create(Owner: TComponent);
 begin
   aLMSConnection := TLMSRestMoodle.Create(self);
+  aLMSConnection.OnFunctionNotAdded := MyOnFunctionNotAdded;
 
   categories := TList<TLMSCategory>.Create;
   courses := TList<TLMSCourse>.Create;
@@ -286,13 +290,14 @@ var
   aCourse: TLMSCourse;
   aCourses: TJSonArray;
   course: TJSONValue;
+  aCourseCategory: TLMSCategory;
 begin
   log('Retrieving LMS Courses - may take some time');
   aCourses := aLMSConnection.GetCourses;
 
   if aCourses <> nil then
   begin
-    log(aCourses.ToString);
+    //log(aCourses.ToString);
     for course in aCourses do
     begin
       aCourse := TLMSCourse.Create(self);
@@ -308,8 +313,13 @@ begin
         aCourse.fullname := course.GetValue<string>('fullname');
         aCourse.displayname := course.GetValue<string>('displayname');
         aCourse.groupmode := course.GetValue<cardinal>('groupmode');
-        GetCategoryById(course.GetValue<cardinal>('categoryid'))
-          .fcourses.add(aCourse);
+
+        // Have to check because the category function service could not be enable
+        aCourseCategory := GetCategoryById
+          (course.GetValue<cardinal>('categoryid'));
+        if aCourseCategory <> nil then
+          aCourseCategory.fcourses.add(aCourse);
+        //
 
       end;
     end;
@@ -347,6 +357,12 @@ begin
   end;
 
   result := aLMSUsers.count;
+end;
+
+procedure TLMS.MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
+  const aFunctionName: string);
+begin
+  log('error not service function not defined ' +afunctionname+ ' please added it in the LMS service functions');
 end;
 
 function TLMS.GetHost: string;
@@ -431,7 +447,7 @@ begin
 
 end;
 
-function TLMSCourse.GetCourseRoles(aCourseRoles: TStringlist): cardinal;
+procedure TLMSCourse.GetCourseRoles(aCourseRoles: TStringlist);
 var
   aUser: TLMSUser;
 begin
@@ -465,7 +481,7 @@ begin
 
   if aUsers <> nil then
   begin
-    log(aUsers.ToString);
+    //log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;

@@ -11,11 +11,16 @@ uses
 
 type
   TLMSForm = class(TForm)
-    TabControl1: TTabControl;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     Panel1: TPanel;
     Edit1: TEdit;
+    GroupBox1: TGroupBox;
+    Button1: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1Change(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     fLMS: TLMS;
     fUsers: TLMSUsers;
@@ -37,18 +42,26 @@ implementation
 uses
   System.JSON,
 
+  LMSBrowserHelperUnit,
   LMSLogUnit;
 
 {$R *.dfm}
+
+procedure TLMSForm.Button1Click(Sender: TObject);
+begin
+   OpenExternalServices(self.fLMS);
+end;
 
 constructor TLMSForm.Create(Owner: TComponent);
 begin
   inherited;
 
+  PageControl1.ActivePageIndex := 0;
+
   fUsers := TLMSUsers.Create;
 
   fLMSUsersTreeView := TLMSUsersTreeView.Create(self);
-  fLMSUsersTreeView.Parent := TabControl1;
+  fLMSUsersTreeView.Parent := TabSheet1;
   fLMSUsersTreeView.Align := alClient;
   fLMSUsersTreeView.LMSUsers := fUsers;
 end;

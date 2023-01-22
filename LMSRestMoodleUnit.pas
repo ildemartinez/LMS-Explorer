@@ -8,6 +8,12 @@ uses
   System.JSON;
 
 type
+
+  TLMSRestMoodle = class;
+
+  TFunctionNotAddedNotifyEvent = procedure(Sender: TLMSRestMoodle;
+    const aFunctionName: string) of object;
+
   TLMFunctionRequest = class(TRestRequest)
   public
     constructor Create(Owner: TComponent); override;
@@ -24,9 +30,11 @@ type
     aRestClient: TRestClient;
     aRestRequest: TLMFunctionRequest;
     arestresponse: TRESTResponse;
+    fFunctionNotAddedNotifyEvent: TFunctionNotAddedNotifyEvent;
 
     procedure PrepareParams(const servicefunction: string);
-    procedure ExecuteRequest;
+    function ExecuteRequest(const servicefunction: string): TJSonArray;
+    function ExecuteRequest2(const servicefunction: string): TJSonValue;
 
   public
     constructor Create(Owner: TComponent); override;
@@ -44,6 +52,9 @@ type
     property Password: string write fpassword;
     property Service: string write fservice;
     property Host: string read fhost write fhost;
+
+    property OnFunctionNotAdded: TFunctionNotAddedNotifyEvent
+      read fFunctionNotAddedNotifyEvent write fFunctionNotAddedNotifyEvent;
 
   end;
 
@@ -64,7 +75,7 @@ uses
 
 procedure TLMSRestMoodle.Connect;
 var
-  jValue: TJsonValue;
+  jValue: TJSonValue;
   aItem: TRESTRequestParameter;
 begin
   var
@@ -144,35 +155,73 @@ begin
   aRestRequest.Response := arestresponse;
 end;
 
-procedure TLMSRestMoodle.ExecuteRequest;
+function TLMSRestMoodle.ExecuteRequest(const servicefunction: string)
+  : TJSonArray;
+var
+  jValue: TJSonValue;
+  err: string;
 begin
+  result := nil;
+
   try
     screen.Cursor := crHourGlass;
     aRestRequest.Execute;
+
+    jValue := arestresponse.JSONValue;
+
+    if jValue.TryGetValue<string>('exception', err) = true then
+    begin
+      if assigned(fFunctionNotAddedNotifyEvent) then
+        fFunctionNotAddedNotifyEvent(self, servicefunction);
+    end
+    else
+      result := jValue as TJSonArray;
+
   finally
     screen.Cursor := crDefault;
   end;
 end;
 
-function TLMSRestMoodle.GetCategories: TJSonArray;
+function TLMSRestMoodle.ExecuteRequest2(const servicefunction: string)
+  : TJSonValue;
 var
-  jValue: TJsonValue;
+  jValue: TJSonValue;
+  err: string;
 begin
+  result := nil;
+
+  try
+    screen.Cursor := crHourGlass;
+    aRestRequest.Execute;
+
+    jValue := arestresponse.JSONValue;
+
+    if jValue.TryGetValue<string>('exception', err) = true then
+    begin
+      if assigned(fFunctionNotAddedNotifyEvent) then
+        fFunctionNotAddedNotifyEvent(self, servicefunction);
+    end
+    else
+      result := jValue;
+
+  finally
+    screen.Cursor := crDefault;
+  end;
+
+end;
+
+function TLMSRestMoodle.GetCategories: TJSonArray;
+begin
+  result := nil;
+
   if not Connected then
     Connect;
 
   if Connected then
   begin
     PrepareParams(CORE_COURSE_GET_CATEGORIES);
-
-    ExecuteRequest;
-
-    jValue := arestresponse.JSONValue;
-
-    result := jValue as TJSonArray;
+    result := ExecuteRequest(CORE_COURSE_GET_CATEGORIES);
   end
-  else
-    result := nil;
 
   // GetCourses;
 
@@ -184,18 +233,12 @@ begin
 end;
 
 function TLMSRestMoodle.GetCourses: TJSonArray;
-var
-  jValue: TJsonValue;
 begin
 
   if Connected then
   begin
     PrepareParams(CORE_COURSE_GET_COURSES);
-
-    ExecuteRequest();
-
-    jValue := arestresponse.JSONValue;
-    result := jValue as TJSonArray;
+    result := ExecuteRequest(CORE_COURSE_GET_COURSES);
   end
   else
     result := nil;
@@ -210,8 +253,6 @@ end;
 
 function TLMSRestMoodle.GetEnrolledUsersByCourseId(const courseID: integer)
   : TJSonArray;
-var
-  jValue: TJsonValue;
 begin
 
   if Connected then
@@ -224,10 +265,7 @@ begin
       value := inttostr(courseID);
     end;
 
-    ExecuteRequest;
-
-    jValue := arestresponse.JSONValue;
-    result := jValue as TJSonArray;
+    result := ExecuteRequest(CORE_ENROL_GET_ENROLLED_USERS);
   end
   else
     result := nil;
@@ -236,8 +274,6 @@ end;
 
 function TLMSRestMoodle.GetUserGroupsByCourseId(const courseID: integer)
   : TJSonArray;
-var
-  jValue: TJsonValue;
 begin
 
   if Connected then
@@ -250,20 +286,17 @@ begin
       value := inttostr(courseID);
     end;
 
-    ExecuteRequest();
-
-    jValue := arestresponse.JSONValue;
-    result := jValue as TJSonArray;
+    result := ExecuteRequest(CORE_GROUP_GET_COURSE_GROUPS);
   end
   else
     result := nil;
 
 end;
 
-
 function TLMSRestMoodle.GetUsersByFirstName(const aValue: string): TJSonArray;
 var
-  jValue: TJsonValue;
+  jValue: TJSonValue;
+
 begin
 
   if Connected then
@@ -282,9 +315,8 @@ begin
       value := aValue;
     end;
 
-    ExecuteRequest();
-
-    jValue := arestresponse.JSONValue.GetValue<TJSonArray>('users');
+    jValue := ExecuteRequest2(CORE_USER_GET_USERS);
+    jValue := jvalue.GetValue<TJSonArray>('users');
 
     result := jValue as TJSonArray;
   end

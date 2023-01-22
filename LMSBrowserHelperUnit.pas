@@ -21,6 +21,9 @@ procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
 // Edit course
 procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
 
+// Services
+procedure OpenExternalServices(const aLMS: tlms);
+
 implementation
 
 uses
@@ -77,6 +80,11 @@ procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
 begin
   ShellExecute(0, 'open', PChar(aCourse.LMS.Host + format(EDIT_COURSE,
     [aCourse.id])), nil, nil, 0); // SW_SHOW);
+end;
+
+procedure OpenExternalServices(const aLMS: tlms);
+begin
+  ShellExecute(0, 'open', PChar(aLMS.Host + ADMIN_SETTINGS_EXTERNALSERVICES), nil, nil, 0); // SW_SHOW);
 end;
 
 end.
