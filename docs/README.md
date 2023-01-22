@@ -71,6 +71,8 @@ Just right mouse click over a course, category or Moodle instance will open that
 
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/locate_course_in_moodle.jpg)
 
+Double click on course opens the course form with the follow information. You can jump to your LMS with these shortcuts
+
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/course_form.jpg)
 
 # Other info
