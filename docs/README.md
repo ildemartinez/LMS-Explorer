@@ -71,6 +71,8 @@ Just right mouse click over a course, category or Moodle instance will open that
 
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/locate_course_in_moodle.jpg)
 
+![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/course_form.jpg)
+
 # Other info
 
 Some icons from http://icons8.com/free-ios-7-icons-in-vector/ http://icons8.com/
