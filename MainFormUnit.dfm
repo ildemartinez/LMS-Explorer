@@ -42,8 +42,6 @@ object MainForm: TMainForm
     Height = 130
     Align = alBottom
     TabOrder = 1
-    ExplicitLeft = 40
-    ExplicitTop = 480
   end
   object ActionManager1: TActionManager
     ActionBars = <

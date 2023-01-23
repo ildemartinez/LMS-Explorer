@@ -3,7 +3,8 @@ unit LMSUserPasswordFormUnit;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus;
 
 type
@@ -23,17 +24,15 @@ type
     { Private declarations }
   public
     { Public declarations }
-    constructor Create(Owner : TComponent); override;
+    constructor Create(Owner: TComponent); override;
 
-    property Username : string read GetUserName write SetUsername;
-    property Password : string read GetPassword write SetPassword;
+    property Username: string read GetUserName write SetUsername;
+    property Password: string read GetPassword write SetPassword;
   end;
-
 
 implementation
 
 {$R *.dfm}
-
 { TLMSUserPasswordForm }
 
 constructor TLMSUserPasswordForm.Create(Owner: TComponent);
@@ -48,7 +47,7 @@ end;
 procedure TLMSUserPasswordForm.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
-  //CanClose := false;
+  // CanClose := false;
 end;
 
 function TLMSUserPasswordForm.GetPassword: string;
@@ -68,7 +67,7 @@ end;
 
 procedure TLMSUserPasswordForm.SetUsername(const Value: string);
 begin
-  EdUserName.Text := value;
+  EdUserName.Text := Value;
 end;
 
 end.

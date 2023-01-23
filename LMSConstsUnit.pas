@@ -32,7 +32,8 @@ const
   EDIT_COURSE = '/course/edit.php?id=%d';
 
   // admin settings
-  ADMIN_SETTINGS_EXTERNALSERVICES = '/admin/settings.php?section=externalservices';
+  ADMIN_SETTINGS_EXTERNALSERVICES =
+    '/admin/settings.php?section=externalservices';
 
 implementation
 

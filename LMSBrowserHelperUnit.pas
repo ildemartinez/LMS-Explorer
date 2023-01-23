@@ -6,6 +6,7 @@ uses
   LMSNetWorkUnit;
 
 // Opens Moodle instace, category or course at the default system browser
+procedure OpenInBrowser(const aURL: string); overload;
 procedure OpenInBrowser(const aLMS: tlms); overload;
 procedure OpenInBrowser(const aCategory: TLMSCategory); overload;
 procedure OpenInBrowser(const aCourse: TLMSCourse); overload;
@@ -30,6 +31,11 @@ uses
   sysutils,
   Winapi.ShellAPI,
   LMSconstsUnit;
+
+procedure OpenInBrowser(const aURL: string); overload;
+begin
+  ShellExecute(0, 'open', PChar(aURL), nil, nil, 0); // SW_SHOW);
+end;
 
 procedure OpenInBrowser(const aLMS: tlms); overload;
 begin
@@ -84,7 +90,8 @@ end;
 
 procedure OpenExternalServices(const aLMS: tlms);
 begin
-  ShellExecute(0, 'open', PChar(aLMS.Host + ADMIN_SETTINGS_EXTERNALSERVICES), nil, nil, 0); // SW_SHOW);
+  ShellExecute(0, 'open', PChar(aLMS.Host + ADMIN_SETTINGS_EXTERNALSERVICES),
+    nil, nil, 0); // SW_SHOW);
 end;
 
 end.

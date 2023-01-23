@@ -55,7 +55,6 @@ type
 
     property OnFunctionNotAdded: TFunctionNotAddedNotifyEvent
       read fFunctionNotAddedNotifyEvent write fFunctionNotAddedNotifyEvent;
-
   end;
 
 implementation
@@ -316,7 +315,7 @@ begin
     end;
 
     jValue := ExecuteRequest2(CORE_USER_GET_USERS);
-    jValue := jvalue.GetValue<TJSonArray>('users');
+    jValue := jValue.GetValue<TJSonArray>('users');
 
     result := jValue as TJSonArray;
   end

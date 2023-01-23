@@ -29,7 +29,7 @@ type
 
   TLMSCustomLMSVirtualStringTree = class(TCustomVirtualStringTree)
   private
-      procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
+    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
       var ImageIndex: System.UITypes.TImageIndex);
   public
@@ -49,8 +49,8 @@ begin
   OnGetImageIndex := MyGetImageIndex;
 end;
 
-procedure TLMSCustomLMSVirtualStringTree.MyGetImageIndex(
-  Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
+procedure TLMSCustomLMSVirtualStringTree.MyGetImageIndex
+  (Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
   Column: TColumnIndex; var Ghosted: boolean;
   var ImageIndex: System.UITypes.TImageIndex);
 var

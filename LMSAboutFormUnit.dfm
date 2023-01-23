@@ -1,9 +1,10 @@
 object AboutForm: TAboutForm
   Left = 0
   Top = 0
-  Caption = 'AboutForm'
-  ClientHeight = 146
-  ClientWidth = 603
+  BorderStyle = bsToolWindow
+  Caption = 'About'
+  ClientHeight = 150
+  ClientWidth = 404
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,25 +15,24 @@ object AboutForm: TAboutForm
   Position = poMainFormCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    Left = 56
-    Top = 95
-    Width = 510
-    Height = 19
-    Caption = 'LMS Exlorer at https://github.com/ildemartinez/LMS-Explorer'
+  object lblLMSExplorer: TLabel
+    Left = 127
+    Top = 0
+    Width = 165
+    Height = 35
+    Caption = 'LMS Explorer'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -16
+    Font.Height = -29
     Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
+    Font.Style = []
     ParentFont = False
   end
   object Image1: TImage
-    Left = 8
+    Left = 0
     Top = 8
-    Width = 64
-    Height = 64
-    AutoSize = True
+    Width = 121
+    Height = 121
     Center = True
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D49484452000000400000
@@ -113,5 +113,38 @@ object AboutForm: TAboutForm
       168704802263693969BC3B508DBD2C070988DF3E13FD7C5ABCE420C3304B3EBF
       A69B0B7D5C1E2828CEB9C75FFAFE0F590ABD7D525AD6EA0000000049454E44AE
       426082}
+    Stretch = True
+  end
+  object LinkLabel1: TLinkLabel
+    Left = 0
+    Top = 131
+    Width = 404
+    Height = 19
+    Align = alBottom
+    Alignment = taRightJustify
+    Caption = '<a href="https://icons8.com/">Icons by https://icons8.com/</a>'
+    TabOrder = 0
+    UseVisualStyle = True
+    OnLinkClick = LinkLabel1LinkClick
+    ExplicitTop = 155
+    ExplicitWidth = 157
+  end
+  object LinkLabel2: TLinkLabel
+    Left = 127
+    Top = 41
+    Width = 212
+    Height = 19
+    Caption = 
+      '<a href="https://github.com/ildemartinez/LMS-Explorer">github.co' +
+      'm/ildemartinez/LMS-Explorer</a>'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    UseVisualStyle = True
+    OnLinkClick = LinkLabel1LinkClick
   end
 end

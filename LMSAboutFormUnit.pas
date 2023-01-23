@@ -3,18 +3,19 @@ unit LMSAboutFormUnit;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.pngimage,
   Vcl.ExtCtrls;
 
 type
   TAboutForm = class(TForm)
-    Label1: TLabel;
     Image1: TImage;
-  private
-    { Private declarations }
-  public
-constructor Create(Owner : TComponent); override;
+    lblLMSExplorer: TLabel;
+    LinkLabel1: TLinkLabel;
+    LinkLabel2: TLinkLabel;
+    procedure LinkLabel1LinkClick(Sender: TObject; const Link: string;
+      LinkType: TSysLinkType);
   end;
 
 var
@@ -22,15 +23,15 @@ var
 
 implementation
 
+uses
+  LMSBrowserHelperUnit;
+
 {$R *.dfm}
 
-{ TAboutForm }
-
-constructor TAboutForm.Create(Owner: TComponent);
+procedure TAboutForm.LinkLabel1LinkClick(Sender: TObject; const Link: string;
+  LinkType: TSysLinkType);
 begin
-  inherited;
-
-
+  OpenInBrowser(Link);
 end;
 
 end.

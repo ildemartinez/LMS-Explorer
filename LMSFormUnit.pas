@@ -49,7 +49,7 @@ uses
 
 procedure TLMSForm.Button1Click(Sender: TObject);
 begin
-   OpenExternalServices(self.fLMS);
+  OpenExternalServices(self.fLMS);
 end;
 
 constructor TLMSForm.Create(Owner: TComponent);

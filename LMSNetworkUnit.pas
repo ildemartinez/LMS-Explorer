@@ -4,7 +4,10 @@ interface
 
 uses
   System.Classes,
-  Generics.Collections, dialogs, sysutils, LMSRestmoodleunit;
+  System.JSON,
+  Generics.Collections, dialogs, sysutils,
+
+  LMSRestmoodleunit;
 
 type
 
@@ -22,6 +25,8 @@ type
     fid: integer;
     fUserName, fFirstName, fLastName, fFullName, fRoles: string;
     flastcourseaccess: TDateTime;
+
+    procedure AssignByJson(const aJsonValue: TJSONValue);
 
     property Email: string read fEmail;
     property FilterContent: string read getFilterContent;
@@ -174,7 +179,6 @@ function GetGlobalNetwork: TLMSNetwork;
 implementation
 
 uses
-  System.JSON,
   LMSLogUnit, DateUtils;
 
 var
@@ -297,7 +301,7 @@ begin
 
   if aCourses <> nil then
   begin
-    //log(aCourses.ToString);
+    // log(aCourses.ToString);
     for course in aCourses do
     begin
       aCourse := TLMSCourse.Create(self);
@@ -343,16 +347,8 @@ begin
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;
-
-      aUser.fid := User.GetValue<cardinal>('id');
-      aUser.fUserName := User.GetValue<string>('username');
-      aUser.fFirstName := User.GetValue<string>('firstname');
-      aUser.fLastName := User.GetValue<string>('lastname');
-      aUser.fFullName := User.GetValue<string>('fullname');
-      aUser.fEmail := User.GetValue<string>('email');
-
+      aUser.AssignByJson(User);
       aLMSUsers.add(aUser);
-
     end;
   end;
 
@@ -362,7 +358,8 @@ end;
 procedure TLMS.MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
   const aFunctionName: string);
 begin
-  log('error not service function not defined ' +afunctionname+ ' please added it in the LMS service functions');
+  log('error not service function not defined ' + aFunctionName +
+    ' please added it in the LMS service functions');
 end;
 
 function TLMS.GetHost: string;
@@ -481,20 +478,12 @@ begin
 
   if aUsers <> nil then
   begin
-    //log(aUsers.ToString);
+    // log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;
       aUser.fCourse := self;
-
-      aUser.fid := User.GetValue<cardinal>('id');
-      aUser.fUserName := User.GetValue<string>('username');
-      aUser.fFirstName := User.GetValue<string>('firstname');
-      aUser.fLastName := User.GetValue<string>('lastname');
-      aUser.fFullName := User.GetValue<string>('fullname');
-      aUser.fEmail := User.GetValue<string>('email');
-      aUser.flastcourseaccess :=
-        unixtodatetime(User.GetValue<Int64>('lastcourseaccess'));
+      aUser.AssignByJson(User);
 
       // Get user roles
       for rol in User.GetValue<TJSonArray>('roles') do
@@ -609,6 +598,22 @@ begin
 end;
 
 { TLMSUser }
+
+procedure TLMSUser.AssignByJson(const aJsonValue: TJSONValue);
+var
+  timestamp: Int64;
+begin
+  fid := aJsonValue.GetValue<cardinal>('id');
+  fUserName := aJsonValue.GetValue<string>('username');
+  fFirstName := aJsonValue.GetValue<string>('firstname');
+  fLastName := aJsonValue.GetValue<string>('lastname');
+  fFullName := aJsonValue.GetValue<string>('fullname');
+  fEmail := aJsonValue.GetValue<string>('email');
+
+  // Some rest query does not return some fields so we have to check
+  if aJsonValue.TryGetValue<Int64>('lastcourseaccess', timestamp) then
+    flastcourseaccess := unixtodatetime(timestamp);
+end;
 
 function TLMSUser.getFilterContent: string;
 begin

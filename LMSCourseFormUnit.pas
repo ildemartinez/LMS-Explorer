@@ -161,12 +161,12 @@ begin
   fCourse.GetCourseRoles(aRolesList);
 
   Memo1.clear;
-  memo1.lines.BeginUpdate;
+  Memo1.lines.BeginUpdate;
   for aRole in aRolesList do
   begin
-    Memo1.Lines.add(aRole + ' ' + fCourse.GetUserCountByRol(aRole).ToString);
+    Memo1.lines.add(aRole + ' ' + fCourse.GetUserCountByRol(aRole).ToString);
   end;
-  memo1.Lines.EndUpdate;
+  Memo1.lines.EndUpdate;
 
   aRolesList.free;
 end;

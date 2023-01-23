@@ -36,7 +36,6 @@ object LMSCourseForm: TLMSCourseForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
-    ExplicitHeight = 25
   end
   object Panel2: TPanel
     Left = 0
@@ -52,12 +51,13 @@ object LMSCourseForm: TLMSCourseForm
       Left = 1
       Top = 1
       Width = 763
-      Height = 359
+      Height = 358
       Align = alClient
       TabOrder = 0
       Tabs.Strings = (
         'Users and Groups')
       TabIndex = 0
+      ExplicitHeight = 359
       object Panel1: TPanel
         Left = 4
         Top = 24
@@ -79,11 +79,12 @@ object LMSCourseForm: TLMSCourseForm
     end
     object Panel3: TPanel
       Left = 1
-      Top = 360
+      Top = 359
       Width = 763
       Height = 102
       Align = alBottom
       TabOrder = 1
+      ExplicitTop = 360
       object Memo1: TMemo
         Left = 1
         Top = 1
@@ -124,6 +125,7 @@ object LMSCourseForm: TLMSCourseForm
           end
           item
             Action = Action2
+            Caption = '&Course users'
             ImageIndex = 3
           end
           item
@@ -131,6 +133,7 @@ object LMSCourseForm: TLMSCourseForm
           end
           item
             Action = Action3
+            Caption = '&User profile'
             ImageIndex = 2
           end
           item
