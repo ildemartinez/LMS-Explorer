@@ -76,6 +76,7 @@ procedure TLMSRestMoodle.Connect;
 var
   jValue: TJSonValue;
   aItem: TRESTRequestParameter;
+  aerrorcode: string;
 begin
   var
     ask: boolean := false;
@@ -125,7 +126,21 @@ begin
       try
         aRestRequest.Execute;
         jValue := arestresponse.JSONValue;
-        fToken := jValue.GetValue<string>('token');
+        log(jValue.ToString);
+
+        if jValue.TryGetValue<string>('errorcode', aerrorcode) then
+        begin
+          if aerrorcode = 'enablewsdescription' then
+            logerror(jValue.GetValue<string>('error') + ' fix at ' + fhost +
+              '/admin/search.php?query=enablewebservices')
+          else if aerrorcode = 'servicenotavailable' then
+            logerror(jValue.GetValue<string>('error'))
+          else
+            logerror(aerrorcode);
+
+        end
+        else
+          fToken := jValue.GetValue<string>('token');
 
       except
         On E: ERestException do
