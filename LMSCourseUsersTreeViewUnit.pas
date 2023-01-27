@@ -456,7 +456,7 @@ var
       with Columns.add do
       begin
         text := 'Email';
-        Options := Options + [coAutoSpring, coResizable];
+        Options := Options + [coAutoSpring, coResizable,coEditable];
       end;
 
       with Columns.add do

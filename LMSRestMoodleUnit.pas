@@ -134,7 +134,8 @@ begin
             logerror(jValue.GetValue<string>('error') + ' fix at ' + fhost +
               '/admin/search.php?query=enablewebservices')
           else if aerrorcode = 'servicenotavailable' then
-            logerror(jValue.GetValue<string>('error'))
+            logerror(jValue.GetValue<string>('error') + ' maybe ' + fservice +
+              ' is not enabled or not exists')
           else
             logerror(aerrorcode);
 

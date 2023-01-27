@@ -18,9 +18,9 @@ end;
 procedure LogError(message: string);
 begin
   MainForm.Memo1.Lines.add('');
-  MainForm.Memo1.Lines.add('Error');
+  MainForm.Memo1.Lines.add('Error --------------');
   MainForm.Memo1.Lines.add('    '+message);
-  MainForm.Memo1.Lines.add('');
+  MainForm.Memo1.Lines.add('--------------------');
 end;
 
 end.

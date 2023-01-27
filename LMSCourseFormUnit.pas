@@ -28,6 +28,7 @@ type
     Memo1: TMemo;
     Action6: TAction;
     ImageList1: TImageList;
+    Action7: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -39,6 +40,8 @@ type
     procedure Action3Update(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure Action6Execute(Sender: TObject);
+    procedure Action7Update(Sender: TObject);
+    procedure Action7Execute(Sender: TObject);
   private
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: TLMSCourse;
@@ -118,6 +121,21 @@ begin
   // Requery the filter
   Edit1Change(Edit1);
 
+end;
+
+procedure TLMSCourseForm.Action7Execute(Sender: TObject);
+var
+  SelectedUser: TLMSUser;
+begin
+  SelectedUser := fUsersTreeView.SelectedUser;
+
+  if SelectedUser <> nil then
+    OpenUserInCourseInBrowser(SelectedUser);
+end;
+
+procedure TLMSCourseForm.Action7Update(Sender: TObject);
+begin
+  Action7.Enabled := fUsersTreeView.SelectedUser <> nil;
 end;
 
 constructor TLMSCourseForm.Create(Owner: TComponent);

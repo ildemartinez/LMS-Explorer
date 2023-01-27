@@ -45,8 +45,6 @@ object LMSCourseForm: TLMSCourseForm
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    ExplicitTop = 25
-    ExplicitHeight = 463
     object TabControl1: TTabControl
       Left = 1
       Top = 1
@@ -57,7 +55,6 @@ object LMSCourseForm: TLMSCourseForm
       Tabs.Strings = (
         'Users and Groups')
       TabIndex = 0
-      ExplicitHeight = 359
       object Panel1: TPanel
         Left = 4
         Top = 24
@@ -84,7 +81,6 @@ object LMSCourseForm: TLMSCourseForm
       Height = 102
       Align = alBottom
       TabOrder = 1
-      ExplicitTop = 360
       object Memo1: TMemo
         Left = 1
         Top = 1
@@ -113,9 +109,6 @@ object LMSCourseForm: TLMSCourseForm
             ImageIndex = 5
           end
           item
-            Caption = '-'
-          end
-          item
             Action = Action5
             Caption = 'E&dit course'
             ImageIndex = 4
@@ -129,15 +122,16 @@ object LMSCourseForm: TLMSCourseForm
             ImageIndex = 3
           end
           item
+            Action = Action7
+            ImageIndex = 3
+          end
+          item
             Caption = '-'
           end
           item
             Action = Action3
             Caption = '&User profile'
             ImageIndex = 2
-          end
-          item
-            Caption = '-'
           end
           item
             Action = Action4
@@ -184,6 +178,12 @@ object LMSCourseForm: TLMSCourseForm
       Caption = 'Refresh'
       ImageIndex = 0
       OnExecute = Action6Execute
+    end
+    object Action7: TAction
+      Caption = 'User in course'
+      ImageIndex = 3
+      OnExecute = Action7Execute
+      OnUpdate = Action7Update
     end
   end
   object ImageList1: TImageList

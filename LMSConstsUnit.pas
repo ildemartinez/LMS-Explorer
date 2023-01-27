@@ -25,7 +25,8 @@ const
 
   COURSE_VIEW = '/course/view.php?id=%d';
   CATEGORY_VIEW = '/course/index.php?categoryid=%d';
-  USERS_VIEW = '/user/index.php?id=%d';
+  USERS_VIEW = '/user/index.php?id=%d&tifirst&tilast';
+  USERS_VIEW_FIRSTNAME_LASTNAME = '/user/index.php?id=%d&tifirst=%s&tilast=%s';
   PROFILE_VIEW = '/user/profile.php?id=%d';
   PROFILE_VIEW_IN_COURSE = '/user/view.php?id=%d&course=%d';
   EDIT_PROFILE_IN_COURSE = '/user/editadvanced.php?id=%d&course=%d';

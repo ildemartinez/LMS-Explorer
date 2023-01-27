@@ -16,6 +16,7 @@ procedure OpenInBrowser(const aUser: TLMSUser;
 //
 
 procedure OpenUsersInBrowser(const aCourse: TLMSCourse);
+procedure OpenUserInCourseInBrowser(const aUser: TLMSUser);
 procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse);
 
@@ -92,6 +93,15 @@ procedure OpenExternalServices(const aLMS: tlms);
 begin
   ShellExecute(0, 'open', PChar(aLMS.Host + ADMIN_SETTINGS_EXTERNALSERVICES),
     nil, nil, 0); // SW_SHOW);
+end;
+
+procedure OpenUserInCourseInBrowser(const aUser: TLMSUser);
+begin
+  ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
+    format(USERS_VIEW_FIRSTNAME_LASTNAME, [aUser.fCourse.id,
+    UpperCase(aUser.fFirstName[1]), UpperCase(aUser.fLastName[1])])), nil, nil,
+    0); // SW_SHOW);
+  // https://campusvirtual.unia.es/user/index.php?id=119&tifirst=J&tilast=A
 end;
 
 end.
