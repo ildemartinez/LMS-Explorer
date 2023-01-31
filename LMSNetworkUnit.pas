@@ -225,15 +225,13 @@ end;
 { TLMS }
 
 function TLMS.FirstLevelCategoriesCount: cardinal;
-var
-  k: integer;
 begin
   result := 0;
 
-  for k := 0 to categories.count - 1 do
+  for var Category in categories do
   begin
-    if categories.items[k].fparent = 0 then
-      inc(result)
+    if Category.fparent = 0 then
+      inc(result);
   end;
 end;
 
@@ -260,7 +258,7 @@ procedure TLMS.GetCategories;
 var
   aCategory: TLMSCategory;
   aCategories: TJSonArray;
-  category: TJSONValue;
+  Category: TJSONValue;
 begin
   log('Retrieving LMS Categories');
   aCategories := aLMSConnection.GetCategories;
@@ -269,13 +267,13 @@ begin
   begin
     // log(aCategories.ToString);
 
-    for category in aCategories do
+    for Category in aCategories do
     begin
       // Add to a global category list
       aCategory := TLMSCategory.Create(self);
-      aCategory.Id := category.GetValue<cardinal>('id');
-      aCategory.name := category.GetValue<string>('name');
-      aCategory.fparent := category.GetValue<cardinal>('parent');
+      aCategory.Id := Category.GetValue<cardinal>('id');
+      aCategory.name := Category.GetValue<string>('name');
+      aCategory.fparent := Category.GetValue<cardinal>('parent');
       categories.add(aCategory);
     end;
 

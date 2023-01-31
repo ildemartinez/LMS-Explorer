@@ -54,9 +54,6 @@ type
 
   end;
 
-var
-  LMSCourseForm: TLMSCourseForm;
-
 implementation
 
 uses

@@ -61,6 +61,7 @@ uses
   generics.Collections,
   LMSConstsUnit,
   LMSCourseFormUnit,
+  LMSCategoryFormUnit,
   LMSLogUnit,
   LMSBrowserHelperunit;
 
@@ -365,7 +366,13 @@ begin
             show();
           end;
         end;
+      ntCategory:
 
+        with TLMSCategoryForm.Create(self) do
+        begin
+          aCategory := data^.Category;
+          show();
+        end;
       ntCourse:
         with TLMSCourseForm.Create(self) do
         begin

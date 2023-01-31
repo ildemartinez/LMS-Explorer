@@ -123,6 +123,7 @@ object LMSCourseForm: TLMSCourseForm
           end
           item
             Action = Action7
+            Caption = 'U&ser in course'
             ImageIndex = 3
           end
           item

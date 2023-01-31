@@ -146,6 +146,10 @@
         <DCCReference Include="LMSUtilsUnit.pas"/>
         <DCCReference Include="LMSCourseUsersTreeViewUnit.pas"/>
         <DCCReference Include="LMSCustomLMSVirtualStringTreeUnit.pas"/>
+        <DCCReference Include="LMSCategoryFormUnit.pas">
+            <Form>LMSCategoryForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

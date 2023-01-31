@@ -34,6 +34,9 @@ type
       var ImageIndex: System.UITypes.TImageIndex);
   public
     constructor Create(Owner: TComponent); override;
+
+    // Focus a selected node in tree
+    procedure FocusSelectedNode;
   end;
 
 implementation
@@ -47,6 +50,13 @@ begin
 
   Images := GetGlobalImageListFromResource();
   OnGetImageIndex := MyGetImageIndex;
+end;
+
+procedure TLMSCustomLMSVirtualStringTree.FocusSelectedNode;
+begin
+  if SelectedCount = 1 then
+    for var aNode in SelectedNodes() do
+      FocusedNode := aNode;
 end;
 
 procedure TLMSCustomLMSVirtualStringTree.MyGetImageIndex
