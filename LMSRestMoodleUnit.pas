@@ -126,7 +126,7 @@ begin
       try
         aRestRequest.Execute;
         jValue := arestresponse.JSONValue;
-        log(jValue.ToString);
+        //log(jValue.ToString);
 
         if jValue.TryGetValue<string>('errorcode', aerrorcode) then
         begin
