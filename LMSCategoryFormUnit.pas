@@ -23,9 +23,12 @@ type
     ActionManager1: TActionManager;
     ActionToolBar1: TActionToolBar;
     Action1: TAction;
+    Action2: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Action1Execute(Sender: TObject);
     procedure Action1Update(Sender: TObject);
+    procedure Action2Execute(Sender: TObject);
+    procedure Action2Update(Sender: TObject);
   private
     fCategory: TLMSCategory;
     procedure SetCategory(const Value: TLMSCategory);
@@ -52,6 +55,17 @@ end;
 procedure TLMSCategoryForm.Action1Update(Sender: TObject);
 begin
   Action1.Enabled := aCategory.SubCategoriesCount = 0;
+end;
+
+procedure TLMSCategoryForm.Action2Execute(Sender: TObject);
+begin
+for var acourse in fCategory.fcourses do
+    OpenUsersInBrowser(acourse);
+end;
+
+procedure TLMSCategoryForm.Action2Update(Sender: TObject);
+begin
+  Action2.Enabled := aCategory.SubCategoriesCount = 0;
 end;
 
 procedure TLMSCategoryForm.FormClose(Sender: TObject; var Action: TCloseAction);

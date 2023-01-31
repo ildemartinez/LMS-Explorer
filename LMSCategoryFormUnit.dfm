@@ -42,6 +42,11 @@ object LMSCategoryForm: TLMSCategoryForm
         Items = <
           item
             Action = Action1
+            Caption = '&Open courses in Moodle'
+          end
+          item
+            Action = Action2
+            Caption = 'O&pen course users'
           end>
         ActionBar = ActionToolBar1
       end>
@@ -52,6 +57,12 @@ object LMSCategoryForm: TLMSCategoryForm
       Caption = 'Open courses in Moodle'
       OnExecute = Action1Execute
       OnUpdate = Action1Update
+    end
+    object Action2: TAction
+      AutoCheck = True
+      Caption = 'Open course users'
+      OnExecute = Action2Execute
+      OnUpdate = Action2Update
     end
   end
 end
