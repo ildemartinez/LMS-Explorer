@@ -61,7 +61,8 @@ object MainForm: TMainForm
       Left = 1
       Top = 22
       Width = 279
-      Height = 29
+      Height = 25
+      UseSystemFont = False
       ActionManager = CoursesActionManager
       Caption = 'ActionMainMenuBar2'
       Color = clMenuBar
@@ -70,13 +71,12 @@ object MainForm: TMainForm
       ColorMap.BtnSelectedFont = clBlack
       ColorMap.UnusedColor = clWhite
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
+      Font.Color = clBlack
       Font.Height = -12
       Font.Name = 'Segoe UI'
       Font.Style = []
       Spacing = 0
-      ExplicitLeft = -4
-      ExplicitTop = 49
+      ExplicitHeight = 29
     end
     object Edit1: TEdit
       Left = 1
@@ -159,6 +159,7 @@ object MainForm: TMainForm
         Items = <
           item
             Action = Action3
+            Caption = '&Clear filter'
           end
           item
             Caption = '-'

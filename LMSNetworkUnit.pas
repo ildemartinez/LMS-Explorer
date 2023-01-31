@@ -229,10 +229,8 @@ begin
   result := 0;
 
   for var Category in categories do
-  begin
     if Category.fparent = 0 then
       inc(result);
-  end;
 end;
 
 procedure TLMS.Connect;

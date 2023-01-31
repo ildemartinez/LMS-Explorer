@@ -74,10 +74,8 @@ end;
 
 procedure TMainForm.Action2Execute(Sender: TObject);
 begin
-  //
   for var i := Screen.FormCount - 1 downto 1 do
     Screen.Forms[i].Close;
-
 end;
 
 procedure TMainForm.Action2Update(Sender: TObject);
