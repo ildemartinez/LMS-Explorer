@@ -15,10 +15,13 @@ procedure OpenInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse); overload;
 //
 
-procedure OpenUsersInBrowser(const aCourse: TLMSCourse);
+procedure OpenUsersInBrowser(const aLMS: tlms); overload;
+procedure OpenUsersInBrowser(const aCourse: TLMSCourse); overload;
+procedure OpenUploadUsersInBrowser(const aLMS: tlms);
 procedure OpenUserInCourseInBrowser(const aUser: TLMSUser);
 procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse);
+procedure OpenCreateUserInBrowser(const aLMS: tlms);
 
 // Edit course
 procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
@@ -53,6 +56,12 @@ procedure OpenInBrowser(const aCourse: TLMSCourse); overload;
 begin
   ShellExecute(0, 'open', PChar(aCourse.LMS.Host + format(COURSE_VIEW,
     [aCourse.id])), nil, nil, 0); // SW_SHOW);
+end;
+
+procedure OpenUsersInBrowser(const aLMS: tlms); overload;
+begin
+  ShellExecute(0, 'open', PChar(aLMS.Host + ADMIN_USER), nil, nil, 0);
+  // SW_SHOW);
 end;
 
 procedure OpenUsersInBrowser(const aCourse: TLMSCourse); overload;
@@ -104,4 +113,13 @@ begin
   // https://campusvirtual.unia.es/user/index.php?id=119&tifirst=J&tilast=A
 end;
 
+procedure OpenCreateUserInBrowser(const aLMS: tlms);
+begin
+  ShellExecute(0, 'open', PChar(aLMS.Host + USER_CREATE), nil, nil, 0);
+end;
+
+procedure OpenUploadUsersInBrowser(const aLMS: tlms);
+begin
+ShellExecute(0, 'open', PChar(aLMS.Host + USERS_UPLOAD), nil, nil, 0);
+end;
 end.

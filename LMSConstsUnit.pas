@@ -32,9 +32,13 @@ const
   EDIT_PROFILE_IN_COURSE = '/user/editadvanced.php?id=%d&course=%d';
   EDIT_COURSE = '/course/edit.php?id=%d';
 
+  USER_CREATE = '/user/editadvanced.php?id=-1';
+  USERS_UPLOAD = '/admin/tool/uploaduser/index.php';
+
   // admin settings
   ADMIN_SETTINGS_EXTERNALSERVICES =
     '/admin/settings.php?section=externalservices';
+  ADMIN_USER = '/admin/user.php';
 
 implementation
 

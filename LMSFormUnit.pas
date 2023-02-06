@@ -7,7 +7,8 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkUnit, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls,
-  LMSUsersTreeViewUnit;
+  LMSUsersTreeViewUnit, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
+  Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls;
 
 type
   TLMSForm = class(TForm)
@@ -18,9 +19,17 @@ type
     Edit1: TEdit;
     GroupBox1: TGroupBox;
     Button1: TButton;
+    ActionManager1: TActionManager;
+    Action1: TAction;
+    Action2: TAction;
+    Action3: TAction;
+    ActionToolBar1: TActionToolBar;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1Change(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure Action1Execute(Sender: TObject);
+    procedure Action2Execute(Sender: TObject);
+    procedure Action3Execute(Sender: TObject);
   private
     fLMS: TLMS;
     fUsers: TLMSUsers;
@@ -46,6 +55,21 @@ uses
   LMSLogUnit;
 
 {$R *.dfm}
+
+procedure TLMSForm.Action1Execute(Sender: TObject);
+begin
+   OpenUsersInBrowser(fLMS);
+end;
+
+procedure TLMSForm.Action2Execute(Sender: TObject);
+begin
+   OpenCreateUserInBrowser(fLMS);
+end;
+
+procedure TLMSForm.Action3Execute(Sender: TObject);
+begin
+   OpenUploadUsersInBrowser(fLMS);
+end;
 
 procedure TLMSForm.Button1Click(Sender: TObject);
 begin
