@@ -29,6 +29,7 @@ type
     Action6: TAction;
     ImageList1: TImageList;
     Action7: TAction;
+    Action8: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -42,6 +43,8 @@ type
     procedure Action6Execute(Sender: TObject);
     procedure Action7Update(Sender: TObject);
     procedure Action7Execute(Sender: TObject);
+    procedure Action8Update(Sender: TObject);
+    procedure Action8Execute(Sender: TObject);
   private
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: TLMSCourse;
@@ -57,10 +60,14 @@ type
 implementation
 
 uses
+  Vcl.Clipbrd,
   ShellApi,
+
   virtualtrees,
 
-  LMSConstsUnit, LMSBrowserHelperUnit, LMSLogUnit;
+  LMSConstsUnit,
+  LMSBrowserHelperUnit,
+  LMSLogUnit;
 
 {$R *.dfm}
 
@@ -133,6 +140,16 @@ end;
 procedure TLMSCourseForm.Action7Update(Sender: TObject);
 begin
   Action7.Enabled := fUsersTreeView.SelectedUser <> nil;
+end;
+
+procedure TLMSCourseForm.Action8Execute(Sender: TObject);
+begin
+  ClipBoard.asText := fUsersTreeView.SelectedUser.fUserName;
+end;
+
+procedure TLMSCourseForm.Action8Update(Sender: TObject);
+begin
+  Action8.Enabled := fUsersTreeView.SelectedUser <> nil;
 end;
 
 constructor TLMSCourseForm.Create(Owner: TComponent);

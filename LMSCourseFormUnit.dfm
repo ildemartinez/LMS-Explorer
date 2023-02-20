@@ -3,7 +3,7 @@ object LMSCourseForm: TLMSCourseForm
   Top = 309
   Caption = 'LMSCourseForm'
   ClientHeight = 488
-  ClientWidth = 765
+  ClientWidth = 930
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object LMSCourseForm: TLMSCourseForm
   object ActionMainMenuBar1: TActionMainMenuBar
     Left = 0
     Top = 0
-    Width = 765
+    Width = 930
     Height = 26
     UseSystemFont = False
     ActionManager = ActionManager1
@@ -36,32 +36,36 @@ object LMSCourseForm: TLMSCourseForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
+    ExplicitWidth = 765
   end
   object Panel2: TPanel
     Left = 0
     Top = 26
-    Width = 765
+    Width = 930
     Height = 462
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
+    ExplicitWidth = 765
     object TabControl1: TTabControl
       Left = 1
       Top = 1
-      Width = 763
+      Width = 928
       Height = 358
       Align = alClient
       TabOrder = 0
       Tabs.Strings = (
         'Users and Groups')
       TabIndex = 0
+      ExplicitWidth = 763
       object Panel1: TPanel
         Left = 4
         Top = 24
-        Width = 755
+        Width = 920
         Height = 25
         Align = alTop
         TabOrder = 0
+        ExplicitWidth = 755
         object Edit1: TEdit
           Left = 1
           Top = 1
@@ -77,10 +81,11 @@ object LMSCourseForm: TLMSCourseForm
     object Panel3: TPanel
       Left = 1
       Top = 359
-      Width = 763
+      Width = 928
       Height = 102
       Align = alBottom
       TabOrder = 1
+      ExplicitWidth = 763
       object Memo1: TMemo
         Left = 1
         Top = 1
@@ -138,6 +143,13 @@ object LMSCourseForm: TLMSCourseForm
             Action = Action4
             Caption = '&Edit user profile'
             ImageIndex = 1
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Action = Action8
+            Caption = 'C&opy user email'
           end>
         ActionBar = ActionMainMenuBar1
       end
@@ -185,6 +197,11 @@ object LMSCourseForm: TLMSCourseForm
       ImageIndex = 3
       OnExecute = Action7Execute
       OnUpdate = Action7Update
+    end
+    object Action8: TAction
+      Caption = 'Copy user email'
+      OnExecute = Action8Execute
+      OnUpdate = Action8Update
     end
   end
   object ImageList1: TImageList

@@ -76,7 +76,6 @@ object MainForm: TMainForm
       Font.Name = 'Segoe UI'
       Font.Style = []
       Spacing = 0
-      ExplicitHeight = 29
     end
     object Edit1: TEdit
       Left = 1
@@ -87,9 +86,6 @@ object MainForm: TMainForm
       TabOrder = 1
       TextHint = 'Filter courses'
       OnChange = Edit1Change
-      ExplicitLeft = 48
-      ExplicitTop = 32
-      ExplicitWidth = 121
     end
   end
   object MainActionManager: TActionManager
@@ -124,8 +120,8 @@ object MainForm: TMainForm
           end>
         ActionBar = ActionMainMenuBar1
       end>
-    Left = 576
-    Top = 72
+    Left = 608
+    Top = 152
     StyleName = 'Platform Default'
     object Action1: TAction
       Category = 'Help'
@@ -166,8 +162,8 @@ object MainForm: TMainForm
           end>
         ActionBar = ActionMainMenuBar2
       end>
-    Left = 496
-    Top = 152
+    Left = 440
+    Top = 176
     StyleName = 'Platform Default'
     object Action3: TAction
       Caption = 'Clear filter'

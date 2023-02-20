@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkUnit, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls,
   LMSUsersTreeViewUnit, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
-  Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls;
+  Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, System.ImageList, Vcl.ImgList;
 
 type
   TLMSForm = class(TForm)
@@ -24,6 +24,7 @@ type
     Action2: TAction;
     Action3: TAction;
     ActionToolBar1: TActionToolBar;
+    ImageList1: TImageList;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1Change(Sender: TObject);
     procedure Button1Click(Sender: TObject);
