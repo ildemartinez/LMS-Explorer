@@ -36,6 +36,30 @@ object LMSCategoryForm: TLMSCategoryForm
     ParentFont = False
     Spacing = 0
   end
+  object Panel2: TPanel
+    Left = 0
+    Top = 23
+    Width = 852
+    Height = 276
+    Align = alClient
+    Caption = 'Panel2'
+    TabOrder = 1
+    ExplicitLeft = -78
+    ExplicitTop = -163
+    ExplicitWidth = 930
+    ExplicitHeight = 462
+    object TabControl1: TTabControl
+      Left = 1
+      Top = 1
+      Width = 850
+      Height = 274
+      Align = alClient
+      TabOrder = 0
+      Tabs.Strings = (
+        'Courses and users')
+      TabIndex = 0
+    end
+  end
   object ActionManager1: TActionManager
     ActionBars = <
       item

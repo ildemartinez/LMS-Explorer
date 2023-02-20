@@ -21,7 +21,8 @@ uses
   LMSUtilsUnit in 'LMSUtilsUnit.pas',
   LMSCourseUsersTreeViewUnit in 'LMSCourseUsersTreeViewUnit.pas',
   LMSCustomLMSVirtualStringTreeUnit in 'LMSCustomLMSVirtualStringTreeUnit.pas',
-  LMSCategoryFormUnit in 'LMSCategoryFormUnit.pas' {LMSCategoryForm};
+  LMSCategoryFormUnit in 'LMSCategoryFormUnit.pas' {LMSCategoryForm},
+  LMSCategoryTreeViewUnit in 'LMSCategoryTreeViewUnit.pas';
 
 {$R *.res}
 

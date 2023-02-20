@@ -150,6 +150,7 @@
             <Form>LMSCategoryForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="LMSCategoryTreeViewUnit.pas"/>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

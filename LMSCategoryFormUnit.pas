@@ -16,12 +16,16 @@ uses
   Vcl.Dialogs,
 
   LMSNetworkUnit, System.Actions, Vcl.ActnList, Vcl.ToolWin, Vcl.ActnMan,
-  Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls;
+  Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls,
+
+  LMSCategoryTreeViewUnit, Vcl.ComCtrls, Vcl.ExtCtrls;
 
 type
   TLMSCategoryForm = class(TForm)
-    ActionManager1: TActionManager;
     ActionToolBar1: TActionToolBar;
+    Panel2: TPanel;
+    TabControl1: TTabControl;
+    ActionManager1: TActionManager;
     Action1: TAction;
     Action2: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -31,10 +35,13 @@ type
     procedure Action2Update(Sender: TObject);
   private
     fCategory: TLMSCategory;
+    fCategoryTreeView :TLMSCategoryTreeView;
+
     procedure SetCategory(const Value: TLMSCategory);
     { Private declarations }
   public
     { Public declarations }
+    constructor Create(Owner: TComponent); override;
     property aCategory: TLMSCategory read fCategory write SetCategory;
   end;
 
@@ -59,13 +66,22 @@ end;
 
 procedure TLMSCategoryForm.Action2Execute(Sender: TObject);
 begin
-for var acourse in fCategory.fcourses do
+  for var acourse in fCategory.fcourses do
     OpenUsersInBrowser(acourse);
 end;
 
 procedure TLMSCategoryForm.Action2Update(Sender: TObject);
 begin
   Action2.Enabled := aCategory.SubCategoriesCount = 0;
+end;
+
+constructor TLMSCategoryForm.Create(Owner: TComponent);
+begin
+  inherited;
+
+  fCategoryTreeView := TLMSCategoryTreeView.Create(self);
+  fCategoryTreeView.parent := TabControl1;
+  fCategoryTreeView.align := alClient;
 end;
 
 procedure TLMSCategoryForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -76,6 +92,10 @@ end;
 procedure TLMSCategoryForm.SetCategory(const Value: TLMSCategory);
 begin
   fCategory := Value;
+
+  Caption := fCategory.name;
+  fCategoryTreeView.Category := fCategory;
+
 end;
 
 end.
