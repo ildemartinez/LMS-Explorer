@@ -440,8 +440,6 @@ begin
 end;
 
 procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: TLMSCourse);
-var
-  aUserCount: cardinal;
 
   procedure CreateColums;
   begin

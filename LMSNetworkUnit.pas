@@ -464,6 +464,7 @@ var
   group: TJSONValue;
 
   rol: TJSONValue;
+  arealrol : string;
 begin
   // Populate user groups first
   RefreshUserGroups;
@@ -474,7 +475,7 @@ begin
 
   if aUsers <> nil then
   begin
-    // log(aUsers.ToString);
+    //log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;
@@ -484,7 +485,11 @@ begin
       // Get user roles
       for rol in User.GetValue<TJSonArray>('roles') do
       begin
-        aUser.fRoles := aUser.fRoles + rol.GetValue<string>('name');
+        arealrol := rol.GetValue<string>('name');
+        if arealrol = '' then
+          aUser.fRoles := aUser.fRoles + rol.GetValue<string>('shortname')
+        else
+          aUser.fRoles := aUser.fRoles + arealrol;
       end;
 
       // Add user to users list
