@@ -8,7 +8,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkUnit, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls,
   LMSUsersTreeViewUnit, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
-  Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, System.ImageList, Vcl.ImgList;
+  Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, System.ImageList,
+  Vcl.ImgList;
 
 type
   TLMSForm = class(TForm)
@@ -25,12 +26,17 @@ type
     Action3: TAction;
     ActionToolBar1: TActionToolBar;
     ImageList1: TImageList;
+    Action4: TAction;
+    Action5: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1Change(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
     procedure Action2Execute(Sender: TObject);
     procedure Action3Execute(Sender: TObject);
+    procedure Action4Update(Sender: TObject);
+    procedure Action4Execute(Sender: TObject);
+    procedure Action5Execute(Sender: TObject);
   private
     fLMS: TLMS;
     fUsers: TLMSUsers;
@@ -59,17 +65,34 @@ uses
 
 procedure TLMSForm.Action1Execute(Sender: TObject);
 begin
-   OpenUsersInBrowser(fLMS);
+  OpenUsersInBrowser(fLMS);
 end;
 
 procedure TLMSForm.Action2Execute(Sender: TObject);
 begin
-   OpenCreateUserInBrowser(fLMS);
+  OpenCreateUserInBrowser(fLMS);
 end;
 
 procedure TLMSForm.Action3Execute(Sender: TObject);
 begin
-   OpenUploadUsersInBrowser(fLMS);
+  OpenUploadUsersInBrowser(fLMS);
+end;
+
+procedure TLMSForm.Action4Execute(Sender: TObject);
+begin
+
+  OpenInBrowserByLMS(fLMS, fLMSUsersTreeView.SelectedUser);
+
+end;
+
+procedure TLMSForm.Action4Update(Sender: TObject);
+begin
+  Action4.enabled := fLMSUsersTreeView.SelectedUser <> nil;
+end;
+
+procedure TLMSForm.Action5Execute(Sender: TObject);
+begin
+  OpenEditProfileByLMS(fLMS, fLMSUsersTreeView.SelectedUser);
 end;
 
 procedure TLMSForm.Button1Click(Sender: TObject);
@@ -108,6 +131,10 @@ begin
     if aUsersCount = 0 then
       fLMSUsersTreeView.Clear;
 
+  end
+  else
+  begin
+    fLMSUsersTreeView.Clear;
   end;
 end;
 

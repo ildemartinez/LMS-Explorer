@@ -30,6 +30,7 @@ const
   PROFILE_VIEW = '/user/profile.php?id=%d';
   PROFILE_VIEW_IN_COURSE = '/user/view.php?id=%d&course=%d';
   EDIT_PROFILE_IN_COURSE = '/user/editadvanced.php?id=%d&course=%d';
+  EDIT_PROFILE = '/user/editadvanced.php?id=%d';
   EDIT_COURSE = '/course/edit.php?id=%d';
 
   USER_CREATE = '/user/editadvanced.php?id=-1';

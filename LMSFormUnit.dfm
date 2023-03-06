@@ -33,7 +33,6 @@ object LMSForm: TLMSForm
         Height = 25
         Align = alTop
         TabOrder = 0
-        ExplicitTop = 23
         object Edit1: TEdit
           Left = 1
           Top = 1
@@ -64,7 +63,6 @@ object LMSForm: TLMSForm
         Font.Style = []
         ParentFont = False
         Spacing = 0
-        ExplicitHeight = 23
       end
     end
     object TabSheet2: TTabSheet
@@ -97,6 +95,7 @@ object LMSForm: TLMSForm
         Items = <
           item
             Action = Action1
+            Caption = 'U&ser list'
             ImageIndex = 1
           end
           item
@@ -125,6 +124,7 @@ object LMSForm: TLMSForm
           end
           item
             Action = Action1
+            Caption = 'U&ser list'
             ImageIndex = 1
           end
           item
@@ -134,6 +134,17 @@ object LMSForm: TLMSForm
             Action = Action3
             Caption = '&Upload users'
             ImageIndex = 2
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Action = Action4
+            Caption = 'Us&er profile'
+          end
+          item
+            Action = Action5
+            Caption = 'E&dit user profile'
           end>
         ActionBar = ActionToolBar1
       end>
@@ -155,6 +166,16 @@ object LMSForm: TLMSForm
       Caption = 'Upload users'
       ImageIndex = 2
       OnExecute = Action3Execute
+    end
+    object Action4: TAction
+      Caption = 'User profile'
+      OnExecute = Action4Execute
+      OnUpdate = Action4Update
+    end
+    object Action5: TAction
+      Caption = 'Edit user profile'
+      OnExecute = Action5Execute
+      OnUpdate = Action4Update
     end
   end
   object ImageList1: TImageList

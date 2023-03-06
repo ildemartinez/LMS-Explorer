@@ -220,6 +220,7 @@ end;
 procedure TLMSUsersTreeView.Refreshh;
 begin
   RootNodeCount := fLMSUsers.count;
+  Header.AutoFitColumns(false, smaAllColumns, 0);
 end;
 
 procedure TLMSUsersTreeView.setLMSUsers(const Value: TLMSUsers);

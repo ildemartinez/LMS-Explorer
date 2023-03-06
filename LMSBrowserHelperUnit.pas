@@ -23,6 +23,9 @@ procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse);
 procedure OpenCreateUserInBrowser(const aLMS: tlms);
 
+procedure OpenInBrowserByLMS(const aLMS: tlms; const aUser: TLMSUser);
+procedure OpenEditProfileByLMS(const aLMS: tlms; const aUser: TLMSUser);
+
 // Edit course
 procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
 
@@ -120,6 +123,19 @@ end;
 
 procedure OpenUploadUsersInBrowser(const aLMS: tlms);
 begin
-ShellExecute(0, 'open', PChar(aLMS.Host + USERS_UPLOAD), nil, nil, 0);
+  ShellExecute(0, 'open', PChar(aLMS.Host + USERS_UPLOAD), nil, nil, 0);
 end;
+
+procedure OpenInBrowserByLMS(const aLMS: tlms; const aUser: TLMSUser);
+begin
+  ShellExecute(0, 'open', PChar(aLMS.Host + format(PROFILE_VIEW, [aUser.fid])),
+    nil, nil, 0); // SW_SHOW);
+end;
+
+procedure OpenEditProfileByLMS(const aLMS: tlms; const aUser: TLMSUser);
+begin
+  ShellExecute(0, 'open', PChar(aLMS.Host + format(EDIT_PROFILE,
+    [aUser.fid])), nil, nil, 0); // SW_SHOW);
+end;
+
 end.

@@ -344,6 +344,7 @@ begin
     begin
       aUser := TLMSUser.Create;
       aUser.AssignByJson(User);
+//      aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
     end;
   end;
