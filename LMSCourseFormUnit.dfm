@@ -36,7 +36,6 @@ object LMSCourseForm: TLMSCourseForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
-    ExplicitWidth = 765
   end
   object Panel2: TPanel
     Left = 0
@@ -46,7 +45,6 @@ object LMSCourseForm: TLMSCourseForm
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    ExplicitWidth = 765
     object TabControl1: TTabControl
       Left = 1
       Top = 1
@@ -57,7 +55,6 @@ object LMSCourseForm: TLMSCourseForm
       Tabs.Strings = (
         'Users and Groups')
       TabIndex = 0
-      ExplicitWidth = 763
       object Panel1: TPanel
         Left = 4
         Top = 24
@@ -65,7 +62,6 @@ object LMSCourseForm: TLMSCourseForm
         Height = 25
         Align = alTop
         TabOrder = 0
-        ExplicitWidth = 755
         object Edit1: TEdit
           Left = 1
           Top = 1
@@ -85,7 +81,6 @@ object LMSCourseForm: TLMSCourseForm
       Height = 102
       Align = alBottom
       TabOrder = 1
-      ExplicitWidth = 763
       object Memo1: TMemo
         Left = 1
         Top = 1
@@ -150,6 +145,13 @@ object LMSCourseForm: TLMSCourseForm
           item
             Action = Action8
             Caption = 'C&opy user email'
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Action = actExport
+            Caption = 'E&xport'
           end>
         ActionBar = ActionMainMenuBar1
       end
@@ -202,6 +204,10 @@ object LMSCourseForm: TLMSCourseForm
       Caption = 'Copy user email'
       OnExecute = Action8Execute
       OnUpdate = Action8Update
+    end
+    object actExport: TAction
+      Caption = 'Export'
+      OnExecute = actExportExecute
     end
   end
   object ImageList1: TImageList

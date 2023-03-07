@@ -30,6 +30,7 @@ type
     ImageList1: TImageList;
     Action7: TAction;
     Action8: TAction;
+    actExport: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -45,6 +46,7 @@ type
     procedure Action7Execute(Sender: TObject);
     procedure Action8Update(Sender: TObject);
     procedure Action8Execute(Sender: TObject);
+    procedure actExportExecute(Sender: TObject);
   private
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: TLMSCourse;
@@ -67,9 +69,15 @@ uses
 
   LMSConstsUnit,
   LMSBrowserHelperUnit,
-  LMSLogUnit;
+  LMSLogUnit,
+  LMSExcelUnit;
 
 {$R *.dfm}
+
+procedure TLMSCourseForm.actExportExecute(Sender: TObject);
+begin
+  ExportToExcel(fCourse);
+end;
 
 procedure TLMSCourseForm.Action1Execute(Sender: TObject);
 begin
