@@ -111,7 +111,7 @@ procedure OpenUserInCourseInBrowser(const aUser: TLMSUser);
 begin
   ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
     format(USERS_VIEW_FIRSTNAME_LASTNAME, [aUser.fCourse.id,
-    UpperCase(aUser.fFirstName[1]), UpperCase(aUser.fLastName[1])])), nil, nil,
+    UpperCase(aUser.First_Name[1]), UpperCase(aUser.Last_Name[1])])), nil, nil,
     0); // SW_SHOW);
   // https://campusvirtual.unia.es/user/index.php?id=119&tifirst=J&tilast=A
 end;

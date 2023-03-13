@@ -23,7 +23,8 @@ uses
   LMSCustomLMSVirtualStringTreeUnit in 'LMSCustomLMSVirtualStringTreeUnit.pas',
   LMSCategoryFormUnit in 'LMSCategoryFormUnit.pas' {LMSCategoryForm},
   LMSCategoryTreeViewUnit in 'LMSCategoryTreeViewUnit.pas',
-  LMSExcelUnit in 'LMSExcelUnit.pas';
+  LMSExcelUnit in 'LMSExcelUnit.pas',
+  LMSRTTIUnit in 'LMSRTTIUnit.pas';
 
 {$R *.res}
 

@@ -18,17 +18,29 @@ type
   TLMSUser = class
   private
     fEmail: string;
+    fFullName: string;
+    fFirstName: string;
+    fLastName: string;
+    fRoles: string;
     function getFilterContent: string;
+    function GetLastAccessAsString: string;
   public
     fCourse: TLMSCourse;
 
     fid: integer;
-    fUserName, fFirstName, fLastName, fFullName, fRoles: string;
+    fUserName: string;
     flastcourseaccess: TDateTime;
 
     procedure AssignByJson(const aJsonValue: TJSONValue);
 
+    // Properties for view components, do not resource
+    property Full_Name: string read fFullName;
+    property First_Name: string read fFirstName;
+    property Last_Name: string read fLastName;
     property Email: string read fEmail;
+    property Roles: string read fRoles;
+    property Last_access: string read GetLastAccessAsString;
+
     property FilterContent: string read getFilterContent;
 
   end;
@@ -38,17 +50,17 @@ type
   TLMSUserGroup = class
   private
     fid: cardinal;
+    fGroupName : string;
     function getId: cardinal;
     function getFilterContent: string;
   public
-    fName: string;
-
     // Users in this group
     fUsersInGroup: TLMSUsers;
 
     constructor Create;
 
     property Id: cardinal read getId;
+    property Group : string read fGroupName;
     property FilterContent: string read getFilterContent;
   end;
 
@@ -67,7 +79,7 @@ type
   public
     Id: cardinal;
     shortname: string;
-    fullname: string;
+    FullName: string;
     displayname: string;
     groupmode: cardinal;
 
@@ -179,6 +191,7 @@ function GetGlobalNetwork: TLMSNetwork;
 implementation
 
 uses
+  LMSUtilsUnit,
   LMSLogUnit, DateUtils;
 
 var
@@ -310,7 +323,7 @@ begin
       begin
         aCourse.Id := course.GetValue<cardinal>('id');
         aCourse.shortname := course.GetValue<string>('shortname');
-        aCourse.fullname := course.GetValue<string>('fullname');
+        aCourse.FullName := course.GetValue<string>('fullname');
         aCourse.displayname := course.GetValue<string>('displayname');
         aCourse.groupmode := course.GetValue<cardinal>('groupmode');
 
@@ -344,7 +357,7 @@ begin
     begin
       aUser := TLMSUser.Create;
       aUser.AssignByJson(User);
-//      aUser.fCourse.fLMS := self;  // set the LMS of the user
+      // aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
     end;
   end;
@@ -465,7 +478,7 @@ var
   group: TJSONValue;
 
   rol: TJSONValue;
-  arealrol : string;
+  arealrol: string;
 begin
   // Populate user groups first
   RefreshUserGroups;
@@ -476,7 +489,7 @@ begin
 
   if aUsers <> nil then
   begin
-    //log(aUsers.ToString);
+    // log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TLMSUser.Create;
@@ -535,7 +548,7 @@ begin
       aUserGroup := TLMSUserGroup.Create;
 
       aUserGroup.fid := agroup.GetValue<cardinal>('id');
-      aUserGroup.fName := agroup.GetValue<string>('name');
+      aUserGroup.fGroupName := agroup.GetValue<string>('name');
       { aUser.fFirstName := User.GetValue<string>('firstname');
         aUser.fLastName := User.GetValue<string>('lastname');
         aUser.fFullName := User.GetValue<string>('fullname');
@@ -548,7 +561,7 @@ end;
 
 function TLMSCourse.getFilterContent: string;
 begin
-  result := shortname + ' ' + fullname + ' ' + self.displayname
+  result := shortname + ' ' + FullName + ' ' + self.displayname
 end;
 
 function TLMSCourse.GetLMS: TLMS;
@@ -591,7 +604,7 @@ end;
 
 function TLMSUserGroup.getFilterContent: string;
 begin
-  result := fName;
+  result := fGroupName;
 end;
 
 function TLMSUserGroup.getId: cardinal;
@@ -620,6 +633,13 @@ end;
 function TLMSUser.getFilterContent: string;
 begin
   result := fEmail + ' ' + fFullName;
+end;
+
+function TLMSUser.GetLastAccessAsString: string;
+begin
+
+  result := FormatDateTimeNever(flastcourseaccess);
+
 end;
 
 end.

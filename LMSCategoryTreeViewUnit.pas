@@ -20,11 +20,7 @@ type
 
   TLMSCategoryTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-    // fLMSCourse: TLMSCourse;
-    // fLMSUsers: TLMSUsers;
     fLMSCategory: TLMSCategory;
-
-    // procedure setLMSCourse(const Value: TLMSCourse);
 
     function GetSelectedUser: TLMSUser;
     procedure setLMSCategory(const Value: TLMSCategory);
@@ -38,16 +34,12 @@ type
 
     procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
       var ChildCount: cardinal);
-    procedure MyDoInitNode(Sender: TBaseVirtualTree;
-      ParentNode, Node: PVirtualNode;
-      var InitialStates: TVirtualNodeInitStates);
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 
   public
     constructor Create(Owner: TComponent); override;
 
     procedure FilterByText(const text: string);
-    procedure Refreshh;
 
     property Category: TLMSCategory read fLMSCategory write setLMSCategory;
     property SelectedUser: TLMSUser read GetSelectedUser;
@@ -62,6 +54,7 @@ uses
   ShellApi,
   LMSFormUnit,
   generics.Collections,
+  lmsrttiunit,
   LMSConstsUnit,
   LMSCourseFormUnit,
   LMSLogUnit,
@@ -87,7 +80,6 @@ begin
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
-  oninitnode := MyDoInitNode;
   OnNodeClick := NodeClick;
 
 end;
@@ -164,37 +156,7 @@ begin
     { if (data^.aLMS.autoconnect) then
       Include(Node.States, vsExpanded); }
   end
-  // else
-  { *case parentdata^.node_type of
-    ntGroup:
-    begin
-    data^.node_type := ntUser;
-    data^.User := parentdata.Group.fUsersInGroup[Node.Index];
-    Exclude(Node.States, vsHasChildren);
-    end;
-    { data^.node_type := ntCategory;
-    data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-    data^.Category := parentdata^.aLMS.categories.items[Node.Index];
-
-    if parentdata^.aLMS.categories.count +
-    parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0
-    then
-    Node.States := Node.States + [vsHasChildren, vsExpanded];
-    end;
-  }
-
 end;
-{
-  else
-  begin
-  data^.node_type := ntCourse;
-  data^.aLMS := parentdata^.aLMS;
-  data^.Course := parentdata^.Category.fcourses
-  [Node.Index - parentdata^.Category.SubCategoriesCount];
-  end;
-  end;
-  end
-}
 
 procedure TLMSCategoryTreeView.FilterByText(const text: string);
 var
@@ -276,24 +238,12 @@ begin
         CellText := '';
     ntGroup:
       if Column = 1 then
-        CellText := data^.Group.fname
+        CellText := data^.Group.Group
       else
         CellText := '';
     ntUser:
-      case Column of
-        0:
-          CellText := '';
-        1:
-          CellText := '';
-        2:
-          CellText := data^.User.fFullName;
-        3:
-          CellText := data^.User.Email;
-        4:
-          CellText := data^.User.froles;
-        5:
-          CellText := FormatDateTimeNever(data^.User.flastcourseaccess);
-      end;
+      CellText := GetPropertyValue(data^.User,
+        TextToPropertyName(Header.Columns[Column].text));
   end;
 end;
 
@@ -317,69 +267,6 @@ begin
     end;
   end;
 end;
-
-procedure TLMSCategoryTreeView.MyDoInitNode(Sender: TBaseVirtualTree;
-  ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
-begin
-
-end;
-
-{ procedure TLMSCourseUsersTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
-  const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType);
-  var
-  data: PTreeData;
-  begin
-  data := GetNodeData(Node);
-
-  case data^.node_type of
-  ntLMS:
-  begin
-  if not data^.aLMS.connected then
-  begin
-  TargetCanvas.Font.Color := clGray;
-  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
-  - [fsBold];
-  end
-  else
-  begin
-  TargetCanvas.Font.Color := clBlack;
-  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] -
-  [fsItalic];
-  end;
-  end
-  end;
-  end; }
-
-{ procedure TLMSCourseUsersTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-  var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
-  var
-  data: PTreeData;
-  begin
-  data := GetNodeData(Node);
-
-  if (Kind <> ikstate) then
-  begin
-  if fAsTree = true then
-  begin
-  if (data^.node_type = ntroot) and (Column = -1) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('PROJECT')
-  else if (data^.node_type = ntnode) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('NODE_BTC');
-  end
-  else
-  begin
-  if (data^.node_type = ntLMS) and (Column = -1) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('res_lms')
-  else if (data^.node_type = ntCourse) then // and (Column = 0) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('MM');
-  end;
-  end;
-}
 
 procedure TLMSCategoryTreeView.NodeClick(Sender: TBaseVirtualTree;
   const HitInfo: THitInfo);
@@ -412,48 +299,8 @@ begin
               show();
               end; }
         end;
-      { ntCategory:
-        begin
-        if CtrlPressed then
-        begin
-        OpenInBrowser(data^.Category);
-        end
-        end;
-        ntCourse:
-        begin
-        if CtrlPressed then
-        begin
-        OpenInBrowser(data^.Course);
-        end
-        else if ShiftPressed then
-        begin
-        OpenUsersInBrowser(data^.Course);
-        end
-        else
-        with TLMSCourseForm.Create(self) do
-        begin
-        aCourse := data^.Course;
-        show();
-        end;
-        end;
-        end; }
-      { else if data^.node_type = ntnetwork then
-        begin
-        with TNetworkForm.Create(self) do
-        begin
-        Network := data^.networkdata;
-        show();
-        end;
-        end; }
-
     end;
-
   end;
-end;
-
-procedure TLMSCategoryTreeView.Refreshh;
-begin
-  // RootNodeCount := fLMSUsers.count;
 end;
 
 procedure TLMSCategoryTreeView.setLMSCategory(const Value: TLMSCategory);
@@ -480,7 +327,7 @@ begin
   begin
     with Columns.add do
     begin
-      text := 'FullName';
+      text := 'Full name';
       Options := Options + [coAutoSpring, coResizable, coSmartResize];
     end;
 
@@ -492,7 +339,7 @@ begin
 
     with Columns.add do
     begin
-      text := 'Rol';
+      text := 'Roles';
       Options := Options + [coAutoSpring, coResizable];
     end;
 
@@ -512,77 +359,5 @@ begin
 
   Header.AutoFitColumns(false, smaAllColumns, 0);
 end;
-
-{ procedure TLMSCategoryTreeView.setLMSCourse(const Value: TLMSCourse);
-  var
-  aUserCount: cardinal;
-
-  procedure CreateColums;
-  begin
-  with Header do
-  begin
-  with Columns.add do
-  begin
-  text := 'FullName';
-  Options := Options + [coAutoSpring, coResizable, coSmartResize];
-  end;
-
-  with Columns.add do
-  begin
-  text := 'Email';
-  Options := Options + [coAutoSpring, coResizable, coEditable];
-  end;
-
-  with Columns.add do
-  begin
-  text := 'Rol';
-  Options := Options + [coAutoSpring, coResizable];
-  end;
-
-  with Columns.add do
-  begin
-  text := 'Last access';
-  Options := Options + [coAutoSpring, coResizable];
-  end;
-
-  Options := Options + [hovisible, hoAutoSpring, hoAutoResize,
-  hoDblClickResize];
-  AutoSizeIndex := Columns.GetLastVisibleColumn;
-  end;
-  end;
-
-  begin
-  { fLMSCourse := Value;
-
-  fLMSCourse.RefreshEnrolledUsers;
-
-  Header.Columns.Clear;
-
-  // Create group column if has groups defined in course
-  if HasGroups then
-  begin
-  with Header do
-  with Columns.add do
-  begin
-  text := 'Group';
-  Options := Options + [coAutoSpring, coResizable, coSmartResize];
-  end;
-
-  CreateColums;
-
-  RootNodeCount := fLMSCourse.fUserGroups.count;
-  end
-  // Not has groups so only shows users
-  else
-  begin
-  CreateColums;
-
-  RootNodeCount := 0;
-  RootNodeCount := fLMSCourse.fUsers.count;
-  end;
-
-  Header.AutoFitColumns(false, smaAllColumns, 0);
-
-  end; }
 
 end.

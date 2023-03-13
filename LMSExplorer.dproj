@@ -152,6 +152,7 @@
         </DCCReference>
         <DCCReference Include="LMSCategoryTreeViewUnit.pas"/>
         <DCCReference Include="LMSExcelUnit.pas"/>
+        <DCCReference Include="LMSRTTIUnit.pas"/>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

@@ -55,13 +55,13 @@ begin
     begin
       for var aGroup in aLMSCourse.fUserGroups do
       begin
-        FXLWS.Cells.item[aRow, 2] := aGroup.fName;
+        FXLWS.Cells.item[aRow, 2] := aGroup.Group;
         inc(aRow);
 
         for var aUser in aGroup.fUsersInGroup do
         begin
-          FXLWS.Cells.item[aRow, 3] := aUser.fFirstName;
-          FXLWS.Cells.item[aRow, 4] := aUser.fLastName;
+          FXLWS.Cells.item[aRow, 3] := aUser.First_Name;
+          FXLWS.Cells.item[aRow, 4] := aUser.Last_Name;
           FXLWS.Cells.item[aRow, 5] := aUser.fUserName;
           inc(aRow);
         end;

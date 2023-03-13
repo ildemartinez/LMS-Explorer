@@ -169,7 +169,7 @@ begin
 
   case Column of
     0:
-      CellText := data^.User.fFullName;
+      CellText := data^.User.Full_Name;
     1:
       CellText := data^.User.Email;
   end;

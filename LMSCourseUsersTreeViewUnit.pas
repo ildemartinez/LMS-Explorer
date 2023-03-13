@@ -56,11 +56,14 @@ implementation
 
 uses
   vcl.Graphics,
-  vcl.ImgList, windows,
+  vcl.ImgList,
+  windows,
   dialogs,
   ShellApi,
-  LMSFormUnit,
   generics.Collections,
+
+  LMSFormUnit,
+  LMSRTTIUnit,
   LMSConstsUnit,
   LMSCourseFormUnit,
   LMSLogUnit,
@@ -69,7 +72,7 @@ uses
 
 function TLMSCourseUsersTreeView.HasGroups: boolean;
 begin
-  result := fLMSCourse.fUserGroups.count > 0;
+  Result := fLMSCourse.fUserGroups.count > 0;
 end;
 
 constructor TLMSCourseUsersTreeView.Create(Owner: TComponent);
@@ -200,12 +203,12 @@ begin
 
     if (Pos(UpperCase(text), UpperCase(aCompare)) > 0) or (text = '') then
     begin
-      IsVisible[aVirtualNodeEnumerator.Current] := true;
+      IsVisible[aVirtualNodeEnumerator.Current] := True;
 
       aParent := aVirtualNodeEnumerator.Current.Parent;
       while RootNode <> aParent do
       begin
-        IsVisible[aParent] := true;
+        IsVisible[aParent] := True;
         aParent := aParent.Parent;
       end;
 
@@ -225,7 +228,7 @@ var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
 begin
-  result := nil;
+  Result := nil;
 
   aVirtualNodeEnumerator := SelectedNodes().GetEnumerator;
 
@@ -234,7 +237,7 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     if data^.node_type = ntUser then
     begin
-      result := data^.User;
+      Result := data^.User;
       // refactor ... exit if not more
     end;
   end;
@@ -251,37 +254,14 @@ begin
   case data^.node_type of
     ntGroup:
       if Column = 0 then
-        CellText := data^.Group.fname
+        CellText := GetPropertyValue(data^.Group,
+          TextToPropertyName(Header.Columns[Column].text))
+        // CellText := data^.Group.fname
       else
         CellText := '';
     ntUser:
-      if HasGroups then
-      begin
-        case Column of
-          0:
-            CellText := '';
-          1:
-            CellText := data^.User.fFullName;
-          2:
-            CellText := data^.User.Email;
-          3:
-            CellText := data^.User.froles;
-          4:
-            CellText := FormatDateTimeNever(data^.User.flastcourseaccess);
-        end;
-      end
-      else
-        case Column of
-          0:
-            CellText := data^.User.fFullName;
-          1:
-            CellText := data^.User.Email;
-          2:
-            CellText := data^.User.froles;
-          3:
-            CellText := FormatDateTimeNever(data^.User.flastcourseaccess);
-        end;
-
+      CellText := GetPropertyValue(data^.User,
+        TextToPropertyName(Header.Columns[Column].text));
   end;
 end;
 
@@ -306,63 +286,6 @@ procedure TLMSCourseUsersTreeView.MyDoInitNode(Sender: TBaseVirtualTree;
 begin
 
 end;
-
-{ procedure TLMSCourseUsersTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
-  const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType);
-  var
-  data: PTreeData;
-  begin
-  data := GetNodeData(Node);
-
-  case data^.node_type of
-  ntLMS:
-  begin
-  if not data^.aLMS.connected then
-  begin
-  TargetCanvas.Font.Color := clGray;
-  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
-  - [fsBold];
-  end
-  else
-  begin
-  TargetCanvas.Font.Color := clBlack;
-  TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] -
-  [fsItalic];
-  end;
-  end
-  end;
-  end; }
-
-{ procedure TLMSCourseUsersTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-  var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
-  var
-  data: PTreeData;
-  begin
-  data := GetNodeData(Node);
-
-  if (Kind <> ikstate) then
-  begin
-  if fAsTree = true then
-  begin
-  if (data^.node_type = ntroot) and (Column = -1) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('PROJECT')
-  else if (data^.node_type = ntnode) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('NODE_BTC');
-  end
-  else
-  begin
-  if (data^.node_type = ntLMS) and (Column = -1) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-  ('res_lms')
-  else if (data^.node_type = ntCourse) then // and (Column = 0) then
-  ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('MM');
-  end;
-  end;
-}
 
 procedure TLMSCourseUsersTreeView.NodeClick(Sender: TBaseVirtualTree;
   const HitInfo: THitInfo);
@@ -395,42 +318,7 @@ begin
               show();
               end; }
         end;
-      { ntCategory:
-        begin
-        if CtrlPressed then
-        begin
-        OpenInBrowser(data^.Category);
-        end
-        end;
-        ntCourse:
-        begin
-        if CtrlPressed then
-        begin
-        OpenInBrowser(data^.Course);
-        end
-        else if ShiftPressed then
-        begin
-        OpenUsersInBrowser(data^.Course);
-        end
-        else
-        with TLMSCourseForm.Create(self) do
-        begin
-        aCourse := data^.Course;
-        show();
-        end;
-        end;
-        end; }
-      { else if data^.node_type = ntnetwork then
-        begin
-        with TNetworkForm.Create(self) do
-        begin
-        Network := data^.networkdata;
-        show();
-        end;
-        end; }
-
     end;
-
   end;
 end;
 
@@ -447,19 +335,30 @@ procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: TLMSCourse);
     begin
       with Columns.add do
       begin
-        text := 'FullName';
+        text := 'Full name';
+        Options := Options + [coAutoSpring, coResizable, coSmartResize];
+      end;
+
+      with Columns.add do
+      begin
+        text := 'First name';
+        Options := Options + [coAutoSpring, coResizable, coSmartResize];
+      end;
+      with Columns.add do
+      begin
+        text := 'Last name';
         Options := Options + [coAutoSpring, coResizable, coSmartResize];
       end;
 
       with Columns.add do
       begin
         text := 'Email';
-        Options := Options + [coAutoSpring, coResizable,coEditable];
+        Options := Options + [coAutoSpring, coResizable, coEditable];
       end;
 
       with Columns.add do
       begin
-        text := 'Rol';
+        text := 'Roles';
         Options := Options + [coAutoSpring, coResizable];
       end;
 

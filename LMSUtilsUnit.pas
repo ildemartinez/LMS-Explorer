@@ -5,6 +5,11 @@ interface
 function ShadowText(const aText: string): string;
 function FormatDateTimeNever(const aDateTime: TDateTime): string;
 
+// Property name has underscore so for show purpose better to change it for space
+// p.e. Header column "Full name" -> property Full_name
+function TextToPropertyName(const aText: string): string;
+
+
 implementation
 
 uses
@@ -34,6 +39,11 @@ begin
     result := 'never'
   else
     result := DateTimeToStr(aDateTime);
+end;
+
+function TextToPropertyName(const aText: string): string;
+begin
+  result := StringReplace(aText, ' ', '_', [rfReplaceAll]);
 end;
 
 end.
