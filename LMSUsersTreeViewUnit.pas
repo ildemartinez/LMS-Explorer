@@ -171,7 +171,14 @@ begin
     0:
       CellText := data^.User.Full_Name;
     1:
+      CellText := data^.User.First_Name;
+
+    2:
+      CellText := data^.User.Last_Name;
+
+    3:
       CellText := data^.User.Email;
+
   end;
 
 end;
@@ -234,6 +241,18 @@ begin
     with Columns.add do
     begin
       text := 'FullName';
+      Options := Options + [coAutoSpring, coResizable];
+    end;
+
+    with Columns.add do
+    begin
+      text := 'First name';
+      Options := Options + [coAutoSpring, coResizable];
+    end;
+
+    with Columns.add do
+    begin
+      text := 'Last name';
       Options := Options + [coAutoSpring, coResizable];
     end;
 

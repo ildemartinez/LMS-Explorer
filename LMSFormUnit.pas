@@ -118,12 +118,12 @@ procedure TLMSForm.Edit1Change(Sender: TObject);
 var
   aUsersCount: integer;
 begin
-  if Length(Edit1.Text) > 2 then
+  if Length(Edit1.Text) > 5 then
   begin
 
     fUsers.Clear;
 
-    aUsersCount := fLMS.GetUsersByFirstName(fUsers, '%' + Edit1.Text + '%');
+    aUsersCount := fLMS.GetUsersByAlmostAllFields(fUsers, '%' + Edit1.Text + '%');
 
     if aUsersCount > 0 then
       fLMSUsersTreeView.Refreshh;
@@ -150,4 +150,6 @@ begin
   caption := fLMS.Id;
 end;
 
+//initialization
+//ReportMemoryLeaksOnShutdown := True;
 end.

@@ -40,8 +40,10 @@ object LMSForm: TLMSForm
           Height = 23
           Align = alLeft
           TabOrder = 0
+          TextHint = 'min 5 chars'
           OnChange = Edit1Change
-          ExplicitHeight = 21
+          ExplicitLeft = 0
+          ExplicitTop = 6
         end
       end
       object ActionToolBar1: TActionToolBar

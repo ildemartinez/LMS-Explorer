@@ -46,7 +46,10 @@ type
     function GetCourses: TJSonArray;
     function GetEnrolledUsersByCourseId(const courseID: integer): TJSonArray;
     function GetUserGroupsByCourseId(const courseID: integer): TJSonArray;
+
     function GetUsersByFirstName(const aValue: string): TJSonArray;
+    function GetUsersByLastName(const aValue: string): TJSonArray;
+    function GetUsersByEmail(const aValue: string): TJSonArray;
 
     property User: string write fuser;
     property Password: string write fpassword;
@@ -126,7 +129,7 @@ begin
       try
         aRestRequest.Execute;
         jValue := arestresponse.JSONValue;
-        //log(jValue.ToString);
+        // log(jValue.ToString);
 
         if jValue.TryGetValue<string>('errorcode', aerrorcode) then
         begin
@@ -322,6 +325,70 @@ begin
     begin
       name := 'criteria[0][key]';
       value := 'firstname';
+    end;
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'criteria[0][value]';
+      value := aValue;
+    end;
+
+    jValue := ExecuteRequest2(CORE_USER_GET_USERS);
+    jValue := jValue.GetValue<TJSonArray>('users');
+
+    result := jValue as TJSonArray;
+  end
+  else
+    result := nil;
+
+end;
+
+function TLMSRestMoodle.GetUsersByLastName(const aValue: string): TJSonArray;
+var
+  jValue: TJSonValue;
+
+begin
+
+  if Connected then
+  begin
+    PrepareParams(CORE_USER_GET_USERS);
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'criteria[0][key]';
+      value := 'lastname';
+    end;
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'criteria[0][value]';
+      value := aValue;
+    end;
+
+    jValue := ExecuteRequest2(CORE_USER_GET_USERS);
+    jValue := jValue.GetValue<TJSonArray>('users');
+
+    result := jValue as TJSonArray;
+  end
+  else
+    result := nil;
+
+end;
+
+function TLMSRestMoodle.GetUsersByEmail(const aValue: string): TJSonArray;
+var
+  jValue: TJSonValue;
+
+begin
+
+  if Connected then
+  begin
+    PrepareParams(CORE_USER_GET_USERS);
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'criteria[0][key]';
+      value := 'email';
     end;
 
     with aRestRequest.Params.AddItem do

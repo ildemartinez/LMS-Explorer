@@ -50,7 +50,7 @@ type
   TLMSUserGroup = class
   private
     fid: cardinal;
-    fGroupName : string;
+    fGroupName: string;
     function getId: cardinal;
     function getFilterContent: string;
   public
@@ -60,7 +60,7 @@ type
     constructor Create;
 
     property Id: cardinal read getId;
-    property Group : string read fGroupName;
+    property Group: string read fGroupName;
     property FilterContent: string read getFilterContent;
   end;
 
@@ -161,7 +161,7 @@ type
 
     function FirstLevelCategoriesCount: cardinal;
     function GetCategoryById(Id: cardinal): TLMSCategory;
-    function GetUsersByFirstName(var aLMSUsers: TLMSUsers;
+    function GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
       const aFilter: string): integer;
 
     procedure GetCategories;
@@ -340,7 +340,7 @@ begin
 
 end;
 
-function TLMS.GetUsersByFirstName(var aLMSUsers: TLMSUsers;
+function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
   const aFilter: string): integer;
 var
   aUsers: TJSonArray;
@@ -350,7 +350,35 @@ begin
 
   aUsers := aLMSConnection.GetUsersByFirstName(aFilter);
 
-  if aUsers <> nil then
+  if (aUsers <> nil) and (aUsers.count > 0) then
+  begin
+    // log(aUsers.ToString);
+    for User in aUsers do
+    begin
+      aUser := TLMSUser.Create;
+      aUser.AssignByJson(User);
+      // aUser.fCourse.fLMS := self;  // set the LMS of the user
+      aLMSUsers.add(aUser);
+    end;
+  end;
+
+  aUsers := aLMSConnection.GetUsersByLastName(aFilter);
+
+  if (aUsers <> nil) and (aUsers.count > 0) then
+  begin
+    // log(aUsers.ToString);
+    for User in aUsers do
+    begin
+      aUser := TLMSUser.Create;
+      aUser.AssignByJson(User);
+      // aUser.fCourse.fLMS := self;  // set the LMS of the user
+      aLMSUsers.add(aUser);
+    end;
+  end;
+
+    aUsers := aLMSConnection.GetUsersByEmail(aFilter);
+
+  if (aUsers <> nil) and (aUsers.count > 0) then
   begin
     // log(aUsers.ToString);
     for User in aUsers do
@@ -475,7 +503,7 @@ var
   User: TJSONValue;
 
   groups: TJSonArray;
-  group: TJSONValue;
+  Group: TJSONValue;
 
   rol: TJSONValue;
   arealrol: string;
@@ -515,11 +543,11 @@ begin
       if groups <> nil then
       begin
         // log(groups.ToString);
-        for group in groups do
+        for Group in groups do
         begin
           for var agroup in self.fUserGroups do
           begin
-            if agroup.fid = group.GetValue<cardinal>('id') then
+            if agroup.fid = Group.GetValue<cardinal>('id') then
               agroup.fUsersInGroup.add(aUser)
           end;
 
