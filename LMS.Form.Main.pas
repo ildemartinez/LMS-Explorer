@@ -1,4 +1,4 @@
-unit MainFormUnit;
+unit LMS.Form.Main;
 
 interface
 
@@ -6,12 +6,13 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  LMSNetworkTreeViewUnit,
   lmsnetworkunit,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Menus, System.Actions, Vcl.ActnList,
   Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, Vcl.ActnMenus,
   Vcl.PlatformDefaultStyleActnCtrls, REST.Types, REST.Client,
-  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls, Vcl.StdActns;
+  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls, Vcl.StdActns,
+
+  LMS.TreeView.Network;
 
 const
   WM_AFTER_SHOW = WM_USER + 300;
@@ -60,8 +61,9 @@ implementation
 uses
   inifiles,
   System.JSON,
-  lmsaboutformunit,
-  lmslogUnit;
+
+  LMS.Helper.Log,
+  LMS.Form.About;
 
 procedure TMainForm.Action1Execute(Sender: TObject);
 begin
@@ -129,16 +131,16 @@ var
   aIniFilePath: string;
 begin
   aIniFilePath := ExtractFilePath(ParamStr(0)) + 'config.ini';
-  log('Trying to load ' + aIniFilePath);
+  // log('Trying to load ' + aIniFilePath);
 
   if not FileExists(aIniFilePath) then
   begin
-    log('Please, create the config.ini file to continue. You can use the config.ini_dist as template');
+    Log('Please, create the config.ini file to continue. You can use the config.ini_dist as template');
   end
   else
   begin
     aIniFile := TIniFile.Create(aIniFilePath);
-    log('Config file loaded');
+    // log('Config file loaded');
 
     aSections := TStringList.Create;
     aIniFile.ReadSections(aSections);

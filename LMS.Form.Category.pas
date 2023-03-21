@@ -1,4 +1,4 @@
-unit LMSCategoryFormUnit;
+unit LMS.Form.Category;
 
 interface
 
@@ -18,7 +18,9 @@ uses
   LMSNetworkUnit, System.Actions, Vcl.ActnList, Vcl.ToolWin, Vcl.ActnMan,
   Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls,
 
-  LMSCategoryTreeViewUnit, Vcl.ComCtrls, Vcl.ExtCtrls;
+  Vcl.ComCtrls, Vcl.ExtCtrls,
+
+  LMS.TreeView.CourseCategory;
 
 type
   TLMSCategoryForm = class(TForm)
@@ -48,8 +50,7 @@ type
 implementation
 
 uses
-  LMSBrowserHelperUnit,
-  LMSLogUnit;
+  LMS.Helper.Browser;
 
 {$R *.dfm}
 

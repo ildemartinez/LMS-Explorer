@@ -48,6 +48,7 @@ object MainForm: TMainForm
     Height = 130
     Align = alBottom
     TabOrder = 1
+    Visible = False
   end
   object Panel1: TPanel
     Left = 0

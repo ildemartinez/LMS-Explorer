@@ -1,4 +1,4 @@
-unit LMSBrowserHelperUnit;
+unit LMS.Helper.Browser;
 
 interface
 
@@ -37,7 +37,8 @@ implementation
 uses
   sysutils,
   Winapi.ShellAPI,
-  LMSconstsUnit;
+
+  LMS.Helper.Consts;
 
 procedure OpenInBrowser(const aURL: string); overload;
 begin

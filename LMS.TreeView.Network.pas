@@ -1,4 +1,4 @@
-unit LMSNetworkTreeViewUnit;
+unit LMS.TreeView.Network;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   vcl.Menus,
 
   VirtualTrees,
-  LMSCustomLMSVirtualStringTreeUnit,
+  LMS.TreeView.Custom,
 
   winapi.messages,
   lmsnetworkunit,
@@ -57,13 +57,13 @@ uses
   vcl.ImgList, windows,
   dialogs,
   ShellApi,
-  LMSFormUnit,
   generics.Collections,
-  LMSConstsUnit,
-  LMSCourseFormUnit,
-  LMSCategoryFormUnit,
-  LMSLogUnit,
-  LMSBrowserHelperunit;
+
+  LMS.Helper.Consts,
+  LMS.Helper.Browser,
+  LMS.Form.LMS,
+  LMS.Form.Course,
+  LMS.Form.Category;
 
 constructor TLMSNetworkTreeView.Create(Owner: TComponent);
 var

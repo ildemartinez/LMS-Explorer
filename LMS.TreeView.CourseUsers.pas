@@ -1,4 +1,4 @@
-unit LMSCourseUsersTreeViewUnit;
+unit LMS.TreeView.CourseUsers;
 
 interface
 
@@ -11,7 +11,7 @@ uses
   winapi.messages,
 
   VirtualTrees,
-  LMSCustomLMSVirtualStringTreeUnit,
+  LMS.TreeView.Custom,
 
   lmsnetworkunit,
   LMSPopupMenuUnit;
@@ -41,7 +41,7 @@ type
       ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
-
+    procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   public
     constructor Create(Owner: TComponent); override;
 
@@ -62,13 +62,12 @@ uses
   ShellApi,
   generics.Collections,
 
-  LMSFormUnit,
-  LMSRTTIUnit,
-  LMSConstsUnit,
-  LMSCourseFormUnit,
-  LMSLogUnit,
-  LMSBrowserHelperunit,
-  LMSUtilsUnit;
+  LMS.Helper.Consts,
+  LMS.Helper.Browser,
+  LMS.Helper.Utils,
+  LMS.Helper.RTTI,
+  LMS.Form.User,
+  LMS.Form.Course;
 
 function TLMSCourseUsersTreeView.HasGroups: boolean;
 begin
@@ -96,6 +95,7 @@ begin
   OnInitChildren := MyDoInitChildren;
   oninitnode := MyDoInitNode;
   OnNodeClick := NodeClick;
+  OnNodeDblClick := NodeDblClick;
 
 end;
 
@@ -317,6 +317,31 @@ begin
               LMS := data^.aLMS;
               show();
               end; }
+        end;
+    end;
+  end;
+end;
+
+procedure TLMSCourseUsersTreeView.NodeDblClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
+var
+  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+  data: PTreeData;
+begin
+
+  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
+
+  while aVirtualNodeEnumerator.MoveNext do
+  begin
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    case data^.node_type of
+      ntUser:
+        begin
+          with TLMSUserForm.Create(self) do
+          begin
+            aUser := data^.User;
+            show();
+          end;
         end;
     end;
   end;

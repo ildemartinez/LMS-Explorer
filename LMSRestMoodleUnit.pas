@@ -69,9 +69,9 @@ uses
   rest.Types,
   System.UITypes,
 
-  LMSUserPasswordFormUnit,
-  LMSConstsUnit,
-  LMSLogUnit;
+  LMS.Helper.Consts,
+  LMS.Helper.Log,
+  LMS.Form.UserPassword;
 
 { TLMSRestMoodle }
 
@@ -149,7 +149,7 @@ begin
       except
         On E: ERestException do
         begin
-          log('Error ' + aRestClient.BaseURL);
+          Log('Error ' + aRestClient.BaseURL);
         end
       end;
     end;

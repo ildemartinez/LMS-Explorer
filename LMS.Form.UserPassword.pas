@@ -1,4 +1,4 @@
-unit LMSUserPasswordFormUnit;
+unit LMS.Form.UserPassword;
 
 interface
 

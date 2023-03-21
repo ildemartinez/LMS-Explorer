@@ -1,4 +1,4 @@
-unit LMSUsersTreeViewUnit;
+unit LMS.TreeView.Users;
 
 interface
 
@@ -11,9 +11,10 @@ uses
   winapi.messages,
 
   VirtualTrees,
-  LMSCustomLMSVirtualStringTreeUnit,
+  LMS.TreeView.Custom,
 
   lmsnetworkunit,
+
   LMSPopupMenuUnit;
 
 type
@@ -54,13 +55,11 @@ uses
   vcl.ImgList, windows,
   dialogs,
   ShellApi,
-  LMSFormUnit,
+  // LMSFormUnit,
   generics.Collections,
-  LMSConstsUnit,
-  LMSCourseFormUnit,
-  LMSLogUnit,
-  LMSBrowserHelperunit,
-  LMSUtilsUnit;
+
+  LMS.Helper.Consts,
+  LMS.Helper.Browser;
 
 constructor TLMSUsersTreeView.Create(Owner: TComponent);
 begin

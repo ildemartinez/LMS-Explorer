@@ -1,4 +1,4 @@
-unit LMSFormUnit;
+unit LMS.Form.LMS;
 
 interface
 
@@ -7,9 +7,10 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkUnit, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls,
-  LMSUsersTreeViewUnit, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
+  Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
   Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, System.ImageList,
-  Vcl.ImgList;
+  Vcl.ImgList,
+  LMS.TreeView.Users;
 
 type
   TLMSForm = class(TForm)
@@ -58,8 +59,7 @@ implementation
 uses
   System.JSON,
 
-  LMSBrowserHelperUnit,
-  LMSLogUnit;
+  LMS.Helper.Browser;
 
 {$R *.dfm}
 

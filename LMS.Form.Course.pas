@@ -1,4 +1,4 @@
-unit LMSCourseFormUnit;
+unit LMS.Form.Course;
 
 interface
 
@@ -7,9 +7,11 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LMSNetworkUnit, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
-  LMSCourseUsersTreeViewUnit, System.Actions, Vcl.ActnList,
+  System.Actions, Vcl.ActnList,
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
-  Vcl.ActnMenus, System.ImageList, Vcl.ImgList;
+  Vcl.ActnMenus, System.ImageList, Vcl.ImgList,
+
+  LMS.TreeView.CourseUsers;
 
 type
   TLMSCourseForm = class(TForm)
@@ -65,12 +67,10 @@ uses
   Vcl.Clipbrd,
   ShellApi,
 
-  virtualtrees,
-
-  LMSConstsUnit,
-  LMSBrowserHelperUnit,
-  LMSLogUnit,
-  LMSExcelUnit;
+  LMS.Helper.Consts,
+  LMS.Helper.Browser,
+  LMS.Helper.Excel,
+  LMS.Helper.Log;
 
 {$R *.dfm}
 

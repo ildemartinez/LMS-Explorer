@@ -1,4 +1,4 @@
-unit LMSCategoryTreeViewUnit;
+unit LMS.TreeView.CourseCategory;
 
 interface
 
@@ -11,7 +11,7 @@ uses
   winapi.messages,
 
   VirtualTrees,
-  LMSCustomLMSVirtualStringTreeUnit,
+  LMS.TreeView.Custom,
 
   lmsnetworkunit,
   LMSPopupMenuUnit;
@@ -52,14 +52,13 @@ uses
   vcl.ImgList, windows,
   dialogs,
   ShellApi,
-  LMSFormUnit,
   generics.Collections,
-  lmsrttiunit,
-  LMSConstsUnit,
-  LMSCourseFormUnit,
-  LMSLogUnit,
-  LMSBrowserHelperunit,
-  LMSUtilsUnit;
+
+  LMS.Helper.Consts,
+  LMS.Helper.RTTI,
+  LMS.Helper.Browser,
+  LMS.Helper.Utils,
+  LMS.Form.Course;
 
 constructor TLMSCategoryTreeView.Create(Owner: TComponent);
 begin

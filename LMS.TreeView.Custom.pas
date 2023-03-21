@@ -1,4 +1,4 @@
-unit LMSCustomLMSVirtualStringTreeUnit;
+unit LMS.TreeView.Custom;
 
 interface
 
@@ -48,10 +48,9 @@ implementation
 uses
   System.SysUtils,
 
-  LMSRTTIUnit,
-  LMSUtilsUnit,
-  LMSLogUnit,
-  LMS.Util.ImageListFromResource;
+  LMS.Helper.Images,
+  LMS.Helper.RTTI,
+  LMS.Helper.Utils;
 
 procedure TLMSCustomLMSVirtualStringTree.CompareNodes(Sender: TBaseVirtualTree;
   Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);

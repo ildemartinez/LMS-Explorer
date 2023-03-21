@@ -88,8 +88,8 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Icon_MainIcon>LMSExplorer_Icon1.ico</Icon_MainIcon>
-        <VerInfo_Build>45</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.45;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>46</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.46;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <UWP_DelphiLogo44>resources\icons8-hacker-44.png</UWP_DelphiLogo44>
     </PropertyGroup>
@@ -114,45 +114,49 @@
         <RcCompile Include="ResourcesFile.rc">
             <Form>ResourcesFile.res</Form>
         </RcCompile>
-        <DCCReference Include="MainFormUnit.pas">
+        <DCCReference Include="LMS.Form.Main.pas">
             <Form>MainForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="LMSNetworkTreeViewUnit.pas"/>
+        <DCCReference Include="LMS.TreeView.Network.pas"/>
         <DCCReference Include="LMSNetworkUnit.pas"/>
         <DCCReference Include="LMSPopupMenuUnit.pas"/>
         <DCCReference Include="LMSRestMoodleUnit.pas"/>
-        <DCCReference Include="LMSLogUnit.pas"/>
-        <DCCReference Include="LMSFormUnit.pas">
+        <DCCReference Include="LMS.Helper.Log.pas"/>
+        <DCCReference Include="LMS.Form.LMS.pas">
             <Form>LMSForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="LMSAboutFormUnit.pas">
+        <DCCReference Include="LMS.Form.About.pas">
             <Form>AboutForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="LMSConstsUnit.pas"/>
-        <DCCReference Include="LMS.Util.ImageListFromResource.pas"/>
-        <DCCReference Include="LMSUserPasswordFormUnit.pas">
+        <DCCReference Include="LMS.Helper.Consts.pas"/>
+        <DCCReference Include="LMS.Helper.Images.pas"/>
+        <DCCReference Include="LMS.Form.UserPassword.pas">
             <Form>LMSUserPasswordForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="LMSCourseFormUnit.pas">
+        <DCCReference Include="LMS.Form.Course.pas">
             <Form>LMSCourseForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="LMSBrowserHelperUnit.pas"/>
-        <DCCReference Include="LMSUsersTreeViewUnit.pas"/>
-        <DCCReference Include="LMSUtilsUnit.pas"/>
-        <DCCReference Include="LMSCourseUsersTreeViewUnit.pas"/>
-        <DCCReference Include="LMSCustomLMSVirtualStringTreeUnit.pas"/>
-        <DCCReference Include="LMSCategoryFormUnit.pas">
+        <DCCReference Include="LMS.Helper.Browser.pas"/>
+        <DCCReference Include="LMS.TreeView.Users.pas"/>
+        <DCCReference Include="LMS.Helper.Utils.pas"/>
+        <DCCReference Include="LMS.TreeView.CourseUsers.pas"/>
+        <DCCReference Include="LMS.TreeView.Custom.pas"/>
+        <DCCReference Include="LMS.Form.Category.pas">
             <Form>LMSCategoryForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="LMSCategoryTreeViewUnit.pas"/>
-        <DCCReference Include="LMSExcelUnit.pas"/>
-        <DCCReference Include="LMSRTTIUnit.pas"/>
+        <DCCReference Include="LMS.TreeView.CourseCategory.pas"/>
+        <DCCReference Include="LMS.Helper.Excel.pas"/>
+        <DCCReference Include="LMS.Helper.RTTI.pas"/>
+        <DCCReference Include="LMS.Form.User.pas">
+            <Form>LMSUserForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

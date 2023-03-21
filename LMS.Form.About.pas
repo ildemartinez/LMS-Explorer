@@ -1,4 +1,4 @@
-unit LMSAboutFormUnit;
+unit LMS.Form.About;
 
 interface
 
@@ -24,7 +24,7 @@ var
 implementation
 
 uses
-  LMSBrowserHelperUnit;
+  LMS.Helper.Browser;
 
 {$R *.dfm}
 

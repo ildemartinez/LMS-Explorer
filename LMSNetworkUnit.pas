@@ -191,8 +191,9 @@ function GetGlobalNetwork: TLMSNetwork;
 implementation
 
 uses
-  LMSUtilsUnit,
-  LMSLogUnit, DateUtils;
+  DateUtils,
+  LMS.Helper.Utils,
+  LMS.Helper.Log;
 
 var
   _GlobalLMSNetWork: TLMSNetwork;
@@ -271,7 +272,7 @@ var
   aCategories: TJSonArray;
   Category: TJSONValue;
 begin
-  log('Retrieving LMS Categories');
+  // log('Retrieving LMS Categories');
   aCategories := aLMSConnection.GetCategories;
 
   if aCategories <> nil then
@@ -305,7 +306,7 @@ var
   course: TJSONValue;
   aCourseCategory: TLMSCategory;
 begin
-  log('Retrieving LMS Courses - may take some time');
+  // log('Retrieving LMS Courses - may take some time');
   aCourses := aLMSConnection.GetCourses;
 
   if aCourses <> nil then
@@ -376,7 +377,7 @@ begin
     end;
   end;
 
-    aUsers := aLMSConnection.GetUsersByEmail(aFilter);
+  aUsers := aLMSConnection.GetUsersByEmail(aFilter);
 
   if (aUsers <> nil) and (aUsers.count > 0) then
   begin
@@ -396,7 +397,7 @@ end;
 procedure TLMS.MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
   const aFunctionName: string);
 begin
-  log('error not service function not defined ' + aFunctionName +
+  Log('error not service function not defined ' + aFunctionName +
     ' please added it in the LMS service functions');
 end;
 

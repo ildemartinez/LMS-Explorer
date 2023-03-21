@@ -1,4 +1,4 @@
-unit LMS.Util.ImageListFromResource;
+unit LMS.Helper.Images;
 
 interface
 
