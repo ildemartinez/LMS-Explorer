@@ -8,7 +8,7 @@ uses
   LMS.TreeView.Network in 'LMS.TreeView.Network.pas',
   LMSNetworkUnit in 'LMSNetworkUnit.pas',
   LMSPopupMenuUnit in 'LMSPopupMenuUnit.pas',
-  LMSRestMoodleUnit in 'LMSRestMoodleUnit.pas',
+  LMS.Rest.Moodle in 'LMS.Rest.Moodle.pas',
   LMS.Helper.Log in 'LMS.Helper.Log.pas',
   LMS.Form.LMS in 'LMS.Form.LMS.pas' {LMSForm},
   LMS.Form.About in 'LMS.Form.About.pas' {AboutForm},

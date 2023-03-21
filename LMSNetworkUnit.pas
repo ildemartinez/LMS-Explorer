@@ -5,9 +5,11 @@ interface
 uses
   System.Classes,
   System.JSON,
-  Generics.Collections, dialogs, sysutils,
+  Generics.Collections,
+  dialogs,
+  sysutils,
 
-  LMSRestmoodleunit;
+  LMS.Rest.Moodle;
 
 type
 
@@ -42,7 +44,6 @@ type
     property Last_access: string read GetLastAccessAsString;
 
     property FilterContent: string read getFilterContent;
-
   end;
 
   TLMSUsers = TList<TLMSUser>;

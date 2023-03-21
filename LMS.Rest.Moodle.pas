@@ -1,4 +1,4 @@
-unit LMSRestMoodleUnit;
+unit LMS.Rest.Moodle;
 
 interface
 
