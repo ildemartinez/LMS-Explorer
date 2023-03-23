@@ -2,15 +2,15 @@ unit LMS.Helper.Log;
 
 interface
 
-procedure Log(message: string);
-procedure LogError(message: string);
+procedure Log(const message: string);
+procedure LogError(const message: string);
 
 implementation
 
 uses
   LMS.Form.Main;
 
-procedure Log(message: string);
+procedure Log(const message: string);
 begin
   if MainForm.memo1.visible = false then
     MainForm.memo1.visible := true;
@@ -18,7 +18,7 @@ begin
   MainForm.memo1.Lines.add(message);
 end;
 
-procedure LogError(message: string);
+procedure LogError(const message: string);
 begin
   MainForm.memo1.Lines.add('');
   MainForm.memo1.Lines.add('Error --------------');

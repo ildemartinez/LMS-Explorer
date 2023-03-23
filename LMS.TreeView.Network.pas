@@ -13,8 +13,9 @@ uses
   LMS.TreeView.Custom,
 
   winapi.messages,
-  lmsnetworkunit,
-  LMSPopupMenuUnit;
+  LMS._class.Network,
+
+  lmsnetworkunit;
 
 type
   TLMSNetworkTreeView = class(TLMSCustomLMSVirtualStringTree)
@@ -73,7 +74,7 @@ begin
 
   NodeDataSize := SizeOf(TTreeData);
 
-  PopupMenu := TLMSPopupMenu.Create(self);
+  PopupMenu := TPopupMenu.Create(self);
   // por el momento ponemos aquí las acciones
   { aMenuItem := TMenuItem.Create(self);
     aMenuItem.caption := 'Connect';

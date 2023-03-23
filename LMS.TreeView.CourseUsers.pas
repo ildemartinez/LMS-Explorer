@@ -13,8 +13,7 @@ uses
   VirtualTrees,
   LMS.TreeView.Custom,
 
-  lmsnetworkunit,
-  LMSPopupMenuUnit;
+  lmsnetworkunit;
 
 type
 
@@ -37,9 +36,6 @@ type
 
     procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
       var ChildCount: cardinal);
-    procedure MyDoInitNode(Sender: TBaseVirtualTree;
-      ParentNode, Node: PVirtualNode;
-      var InitialStates: TVirtualNodeInitStates);
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   public
@@ -93,7 +89,6 @@ begin
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
-  oninitnode := MyDoInitNode;
   OnNodeClick := NodeClick;
   OnNodeDblClick := NodeDblClick;
 
@@ -279,12 +274,6 @@ begin
         ChildCount := data^.Group.fUsersInGroup.count;
     end;
   end;
-end;
-
-procedure TLMSCourseUsersTreeView.MyDoInitNode(Sender: TBaseVirtualTree;
-  ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
-begin
-
 end;
 
 procedure TLMSCourseUsersTreeView.NodeClick(Sender: TBaseVirtualTree;

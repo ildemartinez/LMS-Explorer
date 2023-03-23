@@ -21,7 +21,7 @@ object LMSCourseForm: TLMSCourseForm
     Left = 0
     Top = 0
     Width = 930
-    Height = 26
+    Height = 28
     UseSystemFont = False
     ActionManager = ActionManager1
     Caption = 'ActionMainMenuBar1'
@@ -30,31 +30,37 @@ object LMSCourseForm: TLMSCourseForm
     ColorMap.HighlightColor = clWhite
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
+    EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
+    EdgeOuter = esNone
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -12
-    Font.Name = 'Segoe UI'
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
     Font.Style = []
     Spacing = 0
+    ExplicitHeight = 26
   end
   object Panel2: TPanel
     Left = 0
-    Top = 26
+    Top = 28
     Width = 930
-    Height = 462
+    Height = 460
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
+    ExplicitTop = 26
+    ExplicitHeight = 462
     object TabControl1: TTabControl
       Left = 1
       Top = 1
       Width = 928
-      Height = 358
+      Height = 356
       Align = alClient
       TabOrder = 0
       Tabs.Strings = (
         'Users and Groups')
       TabIndex = 0
+      ExplicitHeight = 358
       object Panel1: TPanel
         Left = 4
         Top = 24
@@ -76,11 +82,12 @@ object LMSCourseForm: TLMSCourseForm
     end
     object Panel3: TPanel
       Left = 1
-      Top = 359
+      Top = 357
       Width = 928
       Height = 102
       Align = alBottom
       TabOrder = 1
+      ExplicitTop = 359
       object Memo1: TMemo
         Left = 1
         Top = 1

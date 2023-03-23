@@ -7,7 +7,6 @@ uses
   LMS.Form.Main in 'LMS.Form.Main.pas' {MainForm},
   LMS.TreeView.Network in 'LMS.TreeView.Network.pas',
   LMSNetworkUnit in 'LMSNetworkUnit.pas',
-  LMSPopupMenuUnit in 'LMSPopupMenuUnit.pas',
   LMS.Rest.Moodle in 'LMS.Rest.Moodle.pas',
   LMS.Helper.Log in 'LMS.Helper.Log.pas',
   LMS.Form.LMS in 'LMS.Form.LMS.pas' {LMSForm},
@@ -25,7 +24,9 @@ uses
   LMS.TreeView.CourseCategory in 'LMS.TreeView.CourseCategory.pas',
   LMS.Helper.Excel in 'LMS.Helper.Excel.pas',
   LMS.Helper.RTTI in 'LMS.Helper.RTTI.pas',
-  LMS.Form.User in 'LMS.Form.User.pas' {LMSUserForm};
+  LMS.Form.User in 'LMS.Form.User.pas' {LMSUserForm},
+  LMS.Helper.Reports in 'LMS.Helper.Reports.pas',
+  LMS._class.Network in 'LMS._class.Network.pas';
 
 {$R *.res}
 

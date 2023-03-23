@@ -44,10 +44,6 @@ object LMSCategoryForm: TLMSCategoryForm
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    ExplicitLeft = -78
-    ExplicitTop = -163
-    ExplicitWidth = 930
-    ExplicitHeight = 462
     object TabControl1: TTabControl
       Left = 1
       Top = 1

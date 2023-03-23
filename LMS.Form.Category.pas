@@ -55,9 +55,11 @@ uses
 {$R *.dfm}
 
 procedure TLMSCategoryForm.Action1Execute(Sender: TObject);
+var
+  aCourse : TLMSCourse;
 begin
-  for var acourse in fCategory.fcourses do
-    OpenInBrowser(acourse);
+  for aCourse in fCategory.fcourses do
+    OpenInBrowser(aCourse);
 end;
 
 procedure TLMSCategoryForm.Action1Update(Sender: TObject);
@@ -66,9 +68,11 @@ begin
 end;
 
 procedure TLMSCategoryForm.Action2Execute(Sender: TObject);
+var
+  aCourse : TLMSCourse;
 begin
-  for var acourse in fCategory.fcourses do
-    OpenUsersInBrowser(acourse);
+  for aCourse in fCategory.fcourses do
+    OpenUsersInBrowser(aCourse);
 end;
 
 procedure TLMSCategoryForm.Action2Update(Sender: TObject);

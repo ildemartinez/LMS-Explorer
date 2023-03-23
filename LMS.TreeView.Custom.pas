@@ -121,8 +121,7 @@ begin
     else if (data^.node_type = ntCourse) then // and (Column = 0) then
     begin
       case data^.Course.groupmode of
-        0:
-          ;
+        //0: ;
         // ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_groups_no_groups');
         1:
           ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName

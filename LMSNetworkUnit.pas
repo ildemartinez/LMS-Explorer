@@ -135,6 +135,9 @@ type
 
   TLMS = class(TComponent)
   private
+
+    aLMSConnection: TLMSRestMoodle;
+
     procedure SetHost(const Value: string);
     procedure SetPassword(const Value: string);
     procedure SetService(const Value: string);
@@ -152,8 +155,6 @@ type
     categories: TList<TLMSCategory>;
     // All LMS courses
     courses: TList<TLMSCourse>;
-
-    aLMSConnection: TLMSRestMoodle;
 
     constructor Create(Owner: TComponent); override;
 
@@ -174,70 +175,12 @@ type
     property Host: string read GetHost write SetHost;
   end;
 
-  TLMSNetwork = class
-  private
-    fLMSList: TList<TLMS>;
-    function GetLMS(index: integer): TLMS;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure add(aLMS: TLMS);
-    function count: cardinal;
-
-    property item[index: integer]: TLMS read GetLMS;
-  end;
-
-function GetGlobalNetwork: TLMSNetwork;
-
 implementation
 
 uses
   DateUtils,
   LMS.Helper.Utils,
   LMS.Helper.Log;
-
-var
-  _GlobalLMSNetWork: TLMSNetwork;
-
-function GetGlobalNetwork: TLMSNetwork;
-begin
-  if _GlobalLMSNetWork = nil then
-    _GlobalLMSNetWork := TLMSNetwork.Create;
-
-  result := _GlobalLMSNetWork
-end;
-
-{ TLMSNetwork }
-
-procedure TLMSNetwork.add(aLMS: TLMS);
-begin
-  fLMSList.add(aLMS);
-
-end;
-
-function TLMSNetwork.count: cardinal;
-begin
-  result := fLMSList.count;
-end;
-
-constructor TLMSNetwork.Create;
-begin
-  fLMSList := TList<TLMS>.Create;
-end;
-
-destructor TLMSNetwork.Destroy;
-begin
-  fLMSList.free;
-
-  inherited;
-end;
-
-function TLMSNetwork.GetLMS(index: integer): TLMS;
-begin
-  result := fLMSList.items[index];
-end;
-
-{ TLMS }
 
 function TLMS.FirstLevelCategoriesCount: cardinal;
 begin
@@ -260,6 +203,8 @@ end;
 
 constructor TLMS.Create(Owner: TComponent);
 begin
+  inherited;
+
   aLMSConnection := TLMSRestMoodle.Create(self);
   aLMSConnection.OnFunctionNotAdded := MyOnFunctionNotAdded;
 
@@ -318,8 +263,7 @@ begin
       aCourse := TLMSCourse.Create(self);
 
       if course.GetValue<string>('format') = 'site' then
-      begin
-        // ignore de course site
+      begin; // ignore de course site
       end
       else
       begin

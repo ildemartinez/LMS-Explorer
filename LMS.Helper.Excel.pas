@@ -3,11 +3,22 @@ unit LMS.Helper.Excel;
 interface
 
 uses
-  LMSNetworkUnit,
-
   Excel2010;
 
-procedure ExportToExcel(const aLMSCourse: TLMSCourse);
+type
+  TExcelWorkSpace = class
+  private
+    LCID: Integer;
+  public
+    fXLA: TExcelApplication;
+    fXLWB: TExcelWorkbook;
+    fXLWS: TExcelWorkSheet;
+
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure ShowAndFinally;
+  end;
 
 implementation
 
@@ -15,68 +26,51 @@ uses
   Winapi.Windows,
   System.Variants;
 
-procedure ExportToExcel(const aLMSCourse: TLMSCourse);
-var
-  FXLA: TExcelApplication;
-  FXLWB: TExcelWorkbook;
-  FXLWS: TExcelWorkSheet;
-  LCID: Integer;
-begin
-  FXLA := TExcelApplication.Create(nil);
-  FXLWB := TExcelWorkbook.Create(nil);
-  FXLWS := TExcelWorkSheet.Create(nil);
+{ TExcelWorkSpace }
 
-  FXLA.AutoConnect := True;
+constructor TExcelWorkSpace.Create;
+begin
+  inherited;
+
+  fXLA := TExcelApplication.Create(nil);
+  fXLA.AutoConnect := True;
 
   // Get "local user ID"
   LCID := GetUserDefaultLCID;
 
   // Hide Excel while working
-  FXLA.Visible[LCID] := False;
-  try
-    // no prompts
-    FXLA.DisplayAlerts[LCID] := False;
+  fXLA.Visible[LCID] := False;
 
-    // add new workbook and connect WB wrapper
-    FXLWB.ConnectTo(FXLA.Workbooks.Add(xlWBATWorksheet, LCID));
+  // no prompts
+  fXLA.DisplayAlerts[LCID] := False;
 
-    // connect to sheet 1
-    FXLWS.ConnectTo(FXLWB.Worksheets[1] as _Worksheet);
+  fXLWB := TExcelWorkbook.Create(nil);
+  // add new workbook and connect WB wrapper
+  fXLWB.ConnectTo(fXLA.Workbooks.Add(xlWBATWorksheet, LCID));
 
-    // select the first worksheet
-    (FXLWB.Worksheets[1] as _Worksheet).Select(EmptyParam, LCID);
+  fXLWS := TExcelWorkSheet.Create(nil);
+  // connect to sheet 1
+  fXLWS.ConnectTo(fXLWB.Worksheets[1] as _Worksheet);
 
-    FXLWS.Cells.item[1, 1] := aLMSCourse.shortname;
-    FXLWS.Cells.item[1, 3] := aLMSCourse.fullname;
+  // select the first worksheet
+  (fXLWB.Worksheets[1] as _Worksheet).Select(EmptyParam, LCID);
+end;
 
-    var
-    aRow := 5;
-    if aLMSCourse.fUserGroups.Count > 0 then
-    begin
-      for var aGroup in aLMSCourse.fUserGroups do
-      begin
-        FXLWS.Cells.item[aRow, 2] := aGroup.Group;
-        inc(aRow);
+destructor TExcelWorkSpace.Destroy;
+begin
+  fXLWS.free;
+  fXLWB.free;
+  fXLA.free;
 
-        for var aUser in aGroup.fUsersInGroup do
-        begin
-          FXLWS.Cells.item[aRow, 3] := aUser.First_Name;
-          FXLWS.Cells.item[aRow, 4] := aUser.Last_Name;
-          FXLWS.Cells.item[aRow, 5] := aUser.fUserName;
-          inc(aRow);
-        end;
+  inherited;
+end;
 
-      end;
-    end;
+procedure TExcelWorkSpace.ShowAndFinally;
+begin
+  // failsafe always leave excel visible when we quit/disconnect.
+  fXLA.Visible[LCID] := True;
 
-  finally
-    // failsafe always leave excel visible when we quit/disconnect.
-    FXLA.Visible[LCID] := True;
-
-    FXLWS.Free;
-    FXLWB.Free;
-    FXLA.Free;
-  end;
+  free;
 end;
 
 end.

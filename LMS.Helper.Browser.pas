@@ -84,7 +84,7 @@ procedure OpenInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse); overload;
 begin
   ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
-    format(PROFILE_VIEW_IN_COURSE, [aUser.fid, aUser.fCourse.id])), nil, nil,
+    format(PROFILE_VIEW_IN_COURSE, [aUser.fid, aCourse.id])), nil, nil,
     0); // SW_SHOW);
 end;
 
@@ -92,7 +92,7 @@ procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse);
 begin
   ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
-    format(EDIT_PROFILE_IN_COURSE, [aUser.fid, aUser.fCourse.id])), nil, nil,
+    format(EDIT_PROFILE_IN_COURSE, [aUser.fid, aCourse.id])), nil, nil,
     0); // SW_SHOW);
 end;
 

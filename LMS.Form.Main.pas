@@ -41,12 +41,10 @@ type
     procedure Action3Update(Sender: TObject);
     procedure Action3Execute(Sender: TObject);
   private
-    { Private declarations }
-    procedure WmAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
-  public
-    { Public declarations }
     aLMSNetworkTreeView: TLMSNetworkTreeView;
 
+    procedure WmAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
+  public
     constructor Create(Owner: Tcomponent); override;
     destructor Destroy; override;
   end;
@@ -62,6 +60,7 @@ uses
   inifiles,
   System.JSON,
 
+  LMS._class.Network,
   LMS.Helper.Log,
   LMS.Form.About;
 

@@ -18,9 +18,6 @@ type
       LinkType: TSysLinkType);
   end;
 
-var
-  AboutForm: TAboutForm;
-
 implementation
 
 uses

@@ -69,7 +69,7 @@ uses
 
   LMS.Helper.Consts,
   LMS.Helper.Browser,
-  LMS.Helper.Excel,
+  LMS.Helper.Reports,
   LMS.Helper.Log;
 
 {$R *.dfm}

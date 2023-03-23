@@ -126,7 +126,6 @@ object AboutForm: TAboutForm
     TabOrder = 0
     UseVisualStyle = True
     OnLinkClick = LinkLabel1LinkClick
-    ExplicitTop = 155
     ExplicitWidth = 157
   end
   object LinkLabel2: TLinkLabel
