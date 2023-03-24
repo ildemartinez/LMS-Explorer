@@ -15,6 +15,10 @@ uses
 type
   TLMSUser = class(TInterfacedObject, ILMSUser)
   private
+    fid: integer;
+    fUserName: string;
+    flastcourseaccess: TDateTime;
+    fCourse: ILMSCourse;
     fEmail: string;
     fFullName: string;
     fFirstName: string;
@@ -23,22 +27,27 @@ type
     function getFilterContent: string;
     function GetLastAccessAsString: string;
     function GetRoles: string;
+    function GetEmail: string;
+    function GetFirstName: string;
+    function GetFullName: string;
+    function GetLastName: string;
+    function GetCourse: ILMSCourse;
+    function GetId: integer;
+    function GetUserName: string;
   public
-    fCourse: ILMSCourse;
-
-    fid: integer;
-    fUserName: string;
-    flastcourseaccess: TDateTime;
 
     procedure AssignByJson(const aJsonValue: TJSONValue);
 
     // Properties for view components, do not resource
-    property Full_Name: string read fFullName;
-    property First_Name: string read fFirstName;
-    property Last_Name: string read fLastName;
-    property Email: string read fEmail;
+    property Id : integer read GetId;
+    property UserName : string read GetUserName;
+    property Full_Name: string read GetFullName;
+    property First_Name: string read GetFirstName;
+    property Last_Name: string read GetLastName;
+    property Email: string read GetEmail;
     property Last_access: string read GetLastAccessAsString;
     property Roles: string read GetRoles;
+    property Course : ILMSCourse read GetCourse;
 
     property FilterContent: string read getFilterContent;
   end;
@@ -72,6 +81,9 @@ type
     fLMS: ILMS;
     fid: cardinal;
     fGroupMode: cardinal;
+    fshortname: string;
+    fFullName: string;
+    fdisplayname: string;
 
     // All users enrolled in this course
     fUsers: TLMSUsers;
@@ -92,12 +104,13 @@ type
     function GetUsers: TLMSUsers;
     procedure SetUserGroups(const Value: TLMSUserGroups);
     procedure SetUsers(const Value: TLMSUsers);
+    function GetFullName: string;
+    function GetShortName: string;
+    procedure SetFullName(const Value: string);
+    procedure SetShortName(const Value: string);
+    function GetDisplayName: string;
+    procedure SetDisplayName(const Value: string);
   public
-
-    shortname: string;
-    FullName: string;
-    displayname: string;
-
     constructor Create(const LMS: ILMS);
 
     procedure RefreshEnrolledUsers;
@@ -106,6 +119,10 @@ type
 
     // Pointer to the LMS parent
     property LMS: ILMS read GetLMS;
+
+    property DisplayName : string read GetDisplayName write SetDisplayName;
+    property shortname: string read GetShortName write SetShortName;
+    property FullName: string read GetFullName write SetFullName;
 
     property Id: cardinal read getId write SetId;
     // Returns the apropiated text to show information about courses
@@ -263,6 +280,11 @@ begin
   result := shortname + ' - ' + displayname;
 end;
 
+function TLMSCourse.GetDisplayName: string;
+begin
+  result := fdisplayname;
+end;
+
 procedure TLMSCourse.RefreshEnrolledUsers;
 var
   aUser: TLMSUser;
@@ -354,6 +376,16 @@ begin
 
 end;
 
+procedure TLMSCourse.SetDisplayName(const Value: string);
+begin
+fdisplayname := Value;
+end;
+
+procedure TLMSCourse.SetFullName(const Value: string);
+begin
+fFullName := Value;
+end;
+
 procedure TLMSCourse.SetGroupMode(const Value: cardinal);
 begin
   fGroupMode := Value;
@@ -362,6 +394,11 @@ end;
 procedure TLMSCourse.SetId(const Value: cardinal);
 begin
   fid := Value;
+end;
+
+procedure TLMSCourse.SetShortName(const Value: string);
+begin
+  fshortname := value;
 end;
 
 procedure TLMSCourse.SetUserGroups(const Value: TLMSUserGroups);
@@ -379,6 +416,11 @@ begin
   result := shortname + ' ' + FullName + ' ' + self.displayname
 end;
 
+function TLMSCourse.GetFullName: string;
+begin
+  result := fFullName;
+end;
+
 function TLMSCourse.GetGroupMode: cardinal;
 begin
   result := fGroupMode;
@@ -392,6 +434,11 @@ end;
 function TLMSCourse.GetLMS: ILMS;
 begin
   result := fLMS;
+end;
+
+function TLMSCourse.GetShortName: string;
+begin
+  result := fshortname;
 end;
 
 function TLMSCourse.GetStudentsCount: integer;
@@ -490,9 +537,34 @@ begin
     flastcourseaccess := unixtodatetime(timestamp);
 end;
 
+function TLMSUser.GetCourse: ILMSCourse;
+begin
+result := fCourse;
+end;
+
+function TLMSUser.GetEmail: string;
+begin
+  result := fEmail;
+end;
+
 function TLMSUser.getFilterContent: string;
 begin
   result := fEmail + ' ' + fFullName;
+end;
+
+function TLMSUser.GetFirstName: string;
+begin
+  result := fFirstName;
+end;
+
+function TLMSUser.GetFullName: string;
+begin
+  result := fFullName;
+end;
+
+function TLMSUser.GetId: integer;
+begin
+result := fid;
 end;
 
 function TLMSUser.GetLastAccessAsString: string;
@@ -502,9 +574,19 @@ begin
 
 end;
 
+function TLMSUser.GetLastName: string;
+begin
+  result := fLastName;
+end;
+
 function TLMSUser.GetRoles: string;
 begin
   result := fRoles;
+end;
+
+function TLMSUser.GetUserName: string;
+begin
+result := fUserName;
 end;
 
 end.

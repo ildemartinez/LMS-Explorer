@@ -33,12 +33,11 @@ object LMSCourseForm: TLMSCourseForm
     EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
     EdgeOuter = esNone
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
     Spacing = 0
-    ExplicitHeight = 26
   end
   object Panel2: TPanel
     Left = 0

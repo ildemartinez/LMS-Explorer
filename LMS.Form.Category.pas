@@ -37,7 +37,7 @@ type
     procedure Action2Update(Sender: TObject);
   private
     fCategory: TLMSCategory;
-    fCategoryTreeView :TLMSCategoryTreeView;
+    fCategoryTreeView: TLMSCategoryTreeView;
 
     procedure SetCategory(const Value: TLMSCategory);
     { Private declarations }
@@ -50,15 +50,16 @@ type
 implementation
 
 uses
+  LMS._interface.LMS,
   LMS.Helper.Browser;
 
 {$R *.dfm}
 
 procedure TLMSCategoryForm.Action1Execute(Sender: TObject);
 var
-  aCourse : TLMSCourse;
+  aCourse: ILMSCourse;
 begin
-  for aCourse in fCategory.fcourses do
+  for aCourse in fCategory.courses do
     OpenInBrowser(aCourse);
 end;
 
@@ -69,9 +70,9 @@ end;
 
 procedure TLMSCategoryForm.Action2Execute(Sender: TObject);
 var
-  aCourse : TLMSCourse;
+  aCourse: ILMSCourse;
 begin
-  for aCourse in fCategory.fcourses do
+  for aCourse in fCategory.courses do
     OpenUsersInBrowser(aCourse);
 end;
 

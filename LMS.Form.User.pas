@@ -7,16 +7,17 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
 
+  LMS._interface.LMS,
   LMSNetworkUnit;
 
 type
   TLMSUserForm = class(TForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    fLMSUser: TLMSUser;
-    procedure SetLMSUser(const Value: TLMSUser);
+    fLMSUser: ILMSUser;
+    procedure SetLMSUser(const Value: ILMSUser);
   public
-    property aUser: TLMSUser read fLMSUser write SetLMSUser;
+    property aUser: ILMSUser read fLMSUser write SetLMSUser;
   end;
 
 implementation
@@ -28,7 +29,7 @@ begin
   Action := caFree;
 end;
 
-procedure TLMSUserForm.SetLMSUser(const Value: TLMSUser);
+procedure TLMSUserForm.SetLMSUser(const Value: ILMSUser);
 begin
   fLMSUser := Value;
 

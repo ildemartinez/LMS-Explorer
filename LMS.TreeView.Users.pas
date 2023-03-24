@@ -22,7 +22,7 @@ type
   private
     fLMSUsers: TLMSUsers;
 
-    function GetSelectedUser: TLMSUser;
+    function GetSelectedUser: ILMSUser;
     procedure setLMSUsers(const Value: TLMSUsers);
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
@@ -43,7 +43,7 @@ type
     procedure Refreshh;
 
     property LMSUsers: TLMSUsers read fLMSUsers write setLMSUsers;
-    property SelectedUser: TLMSUser read GetSelectedUser;
+    property SelectedUser: ILMSUser read GetSelectedUser;
 
   end;
 
@@ -137,7 +137,7 @@ begin
 
 end;
 
-function TLMSUsersTreeView.GetSelectedUser: TLMSUser;
+function TLMSUsersTreeView.GetSelectedUser: ILMSUser;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -209,7 +209,7 @@ begin
         begin
           if CtrlPressed then
           begin
-            OpenInBrowser(data^.User, data^.User.fCourse);
+            OpenInBrowser(data^.User, data^.User.Course);
           end
           else
             { with TLMSForm.Create(self) do

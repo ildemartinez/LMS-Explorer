@@ -13,6 +13,7 @@ uses
   VirtualTrees,
   LMS.TreeView.Custom,
 
+  LMS._interface.LMS,
   lmsnetworkunit;
 
 type
@@ -25,7 +26,7 @@ type
     procedure setLMSCourse(const Value: TLMSCourse);
 
     function HasGroups: boolean;
-    function GetSelectedUser: TLMSUser;
+    function GetSelectedUser: ILMSUser;
 
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
@@ -45,7 +46,7 @@ type
     procedure Refreshh;
 
     property LMSCourse: TLMSCourse read fLMSCourse write setLMSCourse;
-    property SelectedUser: TLMSUser read GetSelectedUser;
+    property SelectedUser: ILMSUser read GetSelectedUser;
   end;
 
 implementation
@@ -131,7 +132,7 @@ begin
         ntGroup:
           begin
             data^.node_type := ntUser;
-            data^.User := parentdata.Group.fUsersInGroup[Node.Index];
+            data^.User := parentdata.Group.UsersInGroup[Node.Index];
             Exclude(Node.States, vsHasChildren);
           end;
         { data^.node_type := ntCategory;
@@ -218,7 +219,7 @@ begin
 
 end;
 
-function TLMSCourseUsersTreeView.GetSelectedUser: TLMSUser;
+function TLMSCourseUsersTreeView.GetSelectedUser: ILMSUser;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -249,13 +250,13 @@ begin
   case data^.node_type of
     ntGroup:
       if Column = 0 then
-        CellText := GetPropertyValue(data^.Group,
+        CellText := GetPropertyValue(TObject(data^.Group),
           TextToPropertyName(Header.Columns[Column].text))
         // CellText := data^.Group.fname
       else
         CellText := '';
     ntUser:
-      CellText := GetPropertyValue(data^.User,
+      CellText := GetPropertyValue(TObject(data^.User),
         TextToPropertyName(Header.Columns[Column].text));
   end;
 end;
@@ -271,7 +272,7 @@ begin
   begin
     case data^.node_type of
       ntGroup:
-        ChildCount := data^.Group.fUsersInGroup.count;
+        ChildCount := data^.Group.UsersInGroup.count;
     end;
   end;
 end;
@@ -298,7 +299,7 @@ begin
         begin
           if CtrlPressed then
           begin
-            OpenInBrowser(data^.User, data^.User.fCourse);
+            OpenInBrowser(data^.User, data^.User.Course);
           end
           else
             { with TLMSForm.Create(self) do

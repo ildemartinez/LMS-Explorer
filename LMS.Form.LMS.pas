@@ -12,6 +12,7 @@ uses
   Vcl.ImgList,
   LMS.TreeView.Users,
 
+  LMS._interface.LMS,
   LMS._class.LMS;
 
 type
@@ -41,16 +42,16 @@ type
     procedure Action4Execute(Sender: TObject);
     procedure Action5Execute(Sender: TObject);
   private
-    fLMS: TLMS;
+    fLMS: ILMS;
     fUsers: TLMSUsers;
     fLMSUsersTreeView: TLMSUsersTreeView;
-    procedure SetTLMS(const Value: TLMS);
+    procedure SetTLMS(const Value: ILMS);
     { Private declarations }
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;
 
-    property LMS: TLMS write SetTLMS;
+    property LMS: ILMS write SetTLMS;
   end;
 
 var
@@ -82,9 +83,7 @@ end;
 
 procedure TLMSForm.Action4Execute(Sender: TObject);
 begin
-
   OpenInBrowserByLMS(fLMS, fLMSUsersTreeView.SelectedUser);
-
 end;
 
 procedure TLMSForm.Action4Update(Sender: TObject);

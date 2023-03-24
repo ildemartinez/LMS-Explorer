@@ -10,6 +10,7 @@ uses
 type
   ILMS = interface;
   ILMSUser = interface;
+  ILMSCourse = interface;
 
   TLMSUsers = TList<ILMSUser>;
 
@@ -20,11 +21,13 @@ type
     procedure SetUsersInGroup(const Value: TLMSUsers);
     procedure SetId(const Value: cardinal);
     function GetGroupName: string;
-        procedure SetGroupName(const Value: string);
+    procedure SetGroupName(const Value: string);
+    function GetFilterContent: string;
 
     property Id: cardinal read getId write SetId;
     property GroupName: string read GetGroupName write SetGroupName;
     property UsersInGroup: TLMSUsers read GetUsersInGroup write SetUsersInGroup;
+    property FilterContent: string read GetFilterContent;
   end;
 
   TLMSUserGroups = TList<ILMSUserGroup>;
@@ -32,8 +35,25 @@ type
   ILMSUser = interface
     ['{F9286941-71B4-4B95-9E3E-201708B28483}']
     function GetRoles: string;
+    function GetFilterContent: string;
+    function GetEmail: string;
+    function GetFirstName: string;
+    function GetFullName: string;
+    function GetLastName: string;
+    function GetCourse: ILMSCourse;
+    function getId: integer;
+    function GetUserName: string;
+
+    property Id: integer read getId;
+    property UserName: string read GetUserName;
+    property Full_Name: string read GetFullName;
+    property First_Name: string read GetFirstName;
+    property Last_Name: string read GetLastName;
+    property Email: string read GetEmail;
+    property Course: ILMSCourse read GetCourse;
 
     property Roles: string read GetRoles;
+    property FilterContent: string read GetFilterContent;
   end;
 
   ILMSCourse = interface
@@ -48,11 +68,22 @@ type
     function GetUsers: TLMSUsers;
     procedure SetUserGroups(const Value: TLMSUserGroups);
     procedure SetUsers(const Value: TLMSUsers);
+    function GetFullName: string;
+    function GetShortName: string;
+    procedure SetFullName(const Value: string);
+    procedure SetShortName(const Value: string);
+    function GetDisplayName: string;
+    function getFilterContent: string;
+    procedure SetDisplayName(const Value: string);
 
     property LMS: ILMS read GetLMS;
+    property shortname: string read GetShortName write SetShortName;
+    property FullName: string read GetFullName write SetFullName;
+    property DisplayName: string read GetDisplayName write SetDisplayName;
     property Id: cardinal read getId;
     property GroupMode: cardinal read GetGroupMode write SetGroupMode;
     property Users: TLMSUsers read GetUsers write SetUsers;
+        property FilterContent: string read getFilterContent;
     // All course groups
     property UserGroups: TLMSUserGroups read GetUserGroups write SetUserGroups;
   end;
@@ -67,13 +98,19 @@ type
     procedure SetName(const Value: string);
     function GetCategories: TList<ILMSCategory>;
     function GetCourses: TList<ILMSCourse>;
+    function GetCoursesCount: cardinal;
+    function GetSubCategoriesCount: cardinal;
+    function GetLMS: ILMS;
 
+    property LMS: ILMS read GetLMS;
     property Id: cardinal read getId write SetId;
     property ParentCategory: cardinal read GetParentCategory
       write SetParentCategory;
     property Name: string read GetName write SetName;
     property Categories: TList<ILMSCategory> read GetCategories;
     property Courses: TList<ILMSCourse> read GetCourses;
+    property CoursesCount: cardinal read GetCoursesCount;
+    property SubCategoriesCount: cardinal read GetSubCategoriesCount;
   end;
 
   TListCategory = TList<ILMSCategory>;
@@ -108,6 +145,7 @@ type
     procedure Connect;
     function connected: boolean;
 
+    function GetCategoryById(Id: cardinal): ILMSCategory;
     function FirstLevelCategoriesCount: cardinal;
     // function GetCategoryById(Id: cardinal): TLMSCategory;
     // function GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;      const aFilter: string): integer;
@@ -121,6 +159,7 @@ type
     property Password: string write SetPassword;
     property Service: string write SetService;
     property Host: string read GetHost write SetHost;
+    property Categories: TListCategory read GetCategories write SetCategories;
 
     property aLMSConnection: TLMSRestMoodle read GetLMSConnection;
   end;

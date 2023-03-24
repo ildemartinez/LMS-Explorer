@@ -67,6 +67,8 @@ uses
   Vcl.Clipbrd,
   ShellApi,
 
+  LMS._interface.LMS,
+
   LMS.Helper.Consts,
   LMS.Helper.Browser,
   LMS.Helper.Reports,
@@ -91,7 +93,7 @@ end;
 
 procedure TLMSCourseForm.Action3Execute(Sender: TObject);
 var
-  SelectedUser: TLMSUser;
+  SelectedUser: ILMSUser;
 begin
   SelectedUser := fUsersTreeView.SelectedUser;
 
@@ -106,7 +108,7 @@ end;
 
 procedure TLMSCourseForm.Action4Execute(Sender: TObject);
 var
-  SelectedUser: TLMSUser;
+  SelectedUser: ILMSUser;
 begin
   SelectedUser := fUsersTreeView.SelectedUser;
 
@@ -137,7 +139,7 @@ end;
 
 procedure TLMSCourseForm.Action7Execute(Sender: TObject);
 var
-  SelectedUser: TLMSUser;
+  SelectedUser: ILMSUser;
 begin
   SelectedUser := fUsersTreeView.SelectedUser;
 
@@ -152,7 +154,7 @@ end;
 
 procedure TLMSCourseForm.Action8Execute(Sender: TObject);
 begin
-  ClipBoard.asText := fUsersTreeView.SelectedUser.fUserName;
+  ClipBoard.asText := fUsersTreeView.SelectedUser.UserName;
 end;
 
 procedure TLMSCourseForm.Action8Update(Sender: TObject);

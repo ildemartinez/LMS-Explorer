@@ -18,19 +18,22 @@ type
     aLMS: ILMS; // Pointer to LMS structure
     Course: ILMSCourse;
     User: ILMSUser;
-    case node_type: TNodeTypes of
-      ntCategory:
-        (Category: TLMSCategory);
-      ntGroup:
-        (Group: TLMSUserGroup);
-//      ntUser:
-  //      (User: TLMSUser);
-  end;
+    Category: ILMSCategory;
+    Group: ILMSUserGroup;
+    node_type: TNodeTypes;
+    // of
+      // ntCategory:
 
-  PTreeData = ^TTreeData;
+      // (Category: TLMSCategory);
+      // ntGroup:
+      // (Group: TLMSUserGroup);
+      // ntUser:
+      // (User: TLMSUser);
+    end;
 
-  TLMSCustomLMSVirtualStringTree = class(TCustomVirtualStringTree)
-  private
+    PTreeData = ^TTreeData;
+
+    TLMSCustomLMSVirtualStringTree = class(TCustomVirtualStringTree)private
     procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
       var ImageIndex: System.UITypes.TImageIndex);
@@ -69,7 +72,7 @@ begin
   begin
     Result := comparetext(GetPropertyValue(TObject(data1.User),
       TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
-      GetPropertyValue(tobject(data2.User),
+      GetPropertyValue(TObject(data2.User),
       TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
   end;
 end;

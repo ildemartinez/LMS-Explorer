@@ -3,16 +3,16 @@ unit LMS.Helper.Reports;
 interface
 
 uses
-  LMSNetworkUnit;
+  LMS._interface.LMS;
 
-procedure ExportToExcel(const aLMSCourse: TLMSCourse);
+procedure ExportToExcel(const aLMSCourse: ILMSCourse);
 
 implementation
 
 uses
   LMS.Helper.Excel;
 
-procedure ExportToExcel(const aLMSCourse: TLMSCourse);
+procedure ExportToExcel(const aLMSCourse: ILMSCourse);
 var
   ExcelWS: TExcelWorkSpace;
 //  LCID: Integer;
@@ -20,8 +20,8 @@ begin
   ExcelWS := TExcelWorkSpace.Create;
 
   try
-    ExcelWS.fXLWS.Cells.item[1, 1] := aLMSCourse.shortname;
-    ExcelWS.fXLWS.Cells.item[1, 3] := aLMSCourse.fullname;
+    ExcelWS.fXLWS.Cells.item[1, 1] := aLMSCourse.ShortName;
+    ExcelWS.fXLWS.Cells.item[1, 3] := aLMSCourse.FullName;
 
     var
     aRow := 5;
@@ -29,14 +29,14 @@ begin
     begin
       for var aGroup in aLMSCourse.UserGroups do
       begin
-        ExcelWS.fXLWS.Cells.item[aRow, 2] := aGroup.Group;
+        ExcelWS.fXLWS.Cells.item[aRow, 2] := aGroup.GroupName;
         inc(aRow);
 
-        for var aUser in aGroup.fUsersInGroup do
+        for var aUser in aGroup.UsersInGroup do
         begin
           ExcelWS.fXLWS.Cells.item[aRow, 3] := aUser.First_Name;
           ExcelWS.fXLWS.Cells.item[aRow, 4] := aUser.Last_Name;
-          ExcelWS.fXLWS.Cells.item[aRow, 5] := aUser.fUserName;
+          ExcelWS.fXLWS.Cells.item[aRow, 5] := aUser.UserName;
           inc(aRow);
         end;
 
@@ -48,7 +48,7 @@ begin
       begin
         ExcelWS.fXLWS.Cells.item[aRow, 3] := aUser.First_Name;
         ExcelWS.fXLWS.Cells.item[aRow, 4] := aUser.Last_Name;
-        ExcelWS.fXLWS.Cells.item[aRow, 5] := aUser.fUserName;
+        ExcelWS.fXLWS.Cells.item[aRow, 5] := aUser.UserName;
         inc(aRow);
       end;
     end;

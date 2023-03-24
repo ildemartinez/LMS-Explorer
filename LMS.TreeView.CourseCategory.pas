@@ -11,6 +11,8 @@ uses
   winapi.messages,
 
   VirtualTrees,
+
+  LMS._interface.LMS,
   LMS.TreeView.Custom,
 
   lmsnetworkunit;
@@ -21,7 +23,7 @@ type
   private
     fLMSCategory: TLMSCategory;
 
-    function GetSelectedUser: TLMSUser;
+    function GetSelectedUser: ILMSUser;
     procedure setLMSCategory(const Value: TLMSCategory);
 
   protected
@@ -41,7 +43,7 @@ type
     procedure FilterByText(const text: string);
 
     property Category: TLMSCategory read fLMSCategory write setLMSCategory;
-    property SelectedUser: TLMSUser read GetSelectedUser;
+    property SelectedUser: ILMSUser read GetSelectedUser;
   end;
 
 implementation
@@ -109,11 +111,11 @@ begin
     end
     else if parentdata.node_type = ntCourse then
     begin
-      if (parentdata.Course <> nil) and (parentdata.Course.fUserGroups.count > 0)
+      if (parentdata.Course <> nil) and (parentdata.Course.UserGroups.count > 0)
       then
       begin
         data^.node_type := ntGroup;
-        data^.Group := parentdata.Course.fUserGroups[Node.Index];
+        data^.Group := parentdata.Course.UserGroups[Node.Index];
         Include(Node.States, vsHasChildren);
         Include(Node.States, vsExpanded);
       end
@@ -121,7 +123,7 @@ begin
       else
       begin
         data^.node_type := ntUser;
-        data^.User := parentdata.Course.fUsers[Node.Index];
+        data^.User := parentdata.Course.Users[Node.Index];
         Exclude(Node.States, vsHasChildren);
       end;
 
@@ -131,7 +133,7 @@ begin
     else if parentdata.node_type = ntGroup then
     begin
       data^.node_type := ntUser;
-      data^.User := parentdata.Group.fUsersInGroup[Node.Index];
+      data^.User := parentdata.Group.UsersInGroup[Node.Index];
       Exclude(Node.States, vsHasChildren);
     end;
 
@@ -200,7 +202,7 @@ begin
 
 end;
 
-function TLMSCategoryTreeView.GetSelectedUser: TLMSUser;
+function TLMSCategoryTreeView.GetSelectedUser: ILMSUser;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -236,11 +238,11 @@ begin
         CellText := '';
     ntGroup:
       if Column = 1 then
-        CellText := data^.Group.Group
+        CellText := data^.Group.GroupName
       else
         CellText := '';
     ntUser:
-      CellText := GetPropertyValue(data^.User,
+      CellText := GetPropertyValue(tobject(data^.User),
         TextToPropertyName(Header.Columns[Column].text));
   end;
 end;
@@ -256,12 +258,12 @@ begin
   begin
     case data^.node_type of
       ntCourse:
-        if data^.Course.fUserGroups.count > 0 then
-          ChildCount := data^.Course.fUserGroups.count
+        if data^.Course.UserGroups.count > 0 then
+          ChildCount := data^.Course.UserGroups.count
         else
-          ChildCount := data^.Course.fUsers.count;
+          ChildCount := data^.Course.Users.count;
       ntGroup:
-        ChildCount := data^.Group.fUsersInGroup.count;
+        ChildCount := data^.Group.UsersInGroup.count;
     end;
   end;
 end;
@@ -288,7 +290,7 @@ begin
         begin
           if CtrlPressed then
           begin
-            OpenInBrowser(data^.User, data^.User.fCourse);
+            OpenInBrowser(data^.User, data^.User.Course);
           end
           else
             { with TLMSForm.Create(self) do

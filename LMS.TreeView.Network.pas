@@ -147,7 +147,7 @@ begin
             data^.node_type := ntCategory;
             data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
             data^.Category := parentdata^.aLMS.getcategorybyid
-              (parentdata^.Category.id).fcategories.items[Node.Index];
+              (parentdata^.Category.id).categories.items[Node.Index];
 
             if parentdata^.Category.SubCategoriesCount > 0 then
               Node.States := Node.States + [vsHasChildren, vsExpanded];
@@ -156,7 +156,7 @@ begin
           begin
             data^.node_type := ntCourse;
             data^.aLMS := parentdata^.aLMS;
-            data^.Course := parentdata^.Category.fcourses
+            data^.Course := parentdata^.Category.courses
               [Node.Index - parentdata^.Category.SubCategoriesCount];
           end;
         end;
