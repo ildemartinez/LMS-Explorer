@@ -9,13 +9,12 @@ uses
   dialogs,
   sysutils,
 
+  LMS._interface.LMS,
+  LMS._interface.Course,
   LMS.Rest.Moodle;
 
 type
-
-  TLMS = class;
   TLMSCategory = class;
-  TLMSCourse = class;
 
   TLMSUser = class
   private
@@ -27,7 +26,7 @@ type
     function getFilterContent: string;
     function GetLastAccessAsString: string;
   public
-    fCourse: TLMSCourse;
+    fCourse: ILMSCourse;
 
     fid: integer;
     fUserName: string;
@@ -67,18 +66,21 @@ type
 
   TLMSUserGroups = TList<TLMSUserGroup>;
 
-  TLMSCourse = class
+  TLMSCourse = class(TInterfacedObject, ILMSCourse)
   private
-    fLMS: TLMS;
+    fLMS: ILMS;
+    fid: cardinal;
 
     function getFilterContent: string;
     function GetDisplayContent: string;
-    function GetLMS: TLMS;
+    function GetLMS: ILMS;
 
     procedure RefreshUserGroups;
     function GetStudentsCount: integer;
+    function getId: cardinal;
+    procedure setId(const Value: cardinal);
   public
-    Id: cardinal;
+
     shortname: string;
     FullName: string;
     displayname: string;
@@ -89,15 +91,16 @@ type
     // All course groups
     fUserGroups: TLMSUserGroups;
 
-    constructor Create(const LMS: TLMS);
+    constructor Create(const LMS: ILMS);
 
     procedure RefreshEnrolledUsers;
     procedure GetCourseRoles(aCourseRoles: TStringlist);
     function GetUserCountByRol(const aRole: string): cardinal;
 
     // Pointer to the LMS parent
-    property LMS: TLMS read GetLMS;
+    property LMS: ILMS read GetLMS;
 
+    property Id: cardinal read getId write setId;
     // Returns the apropiated text to show information about courses
     property DisplayContent: string read GetDisplayContent;
 
@@ -110,11 +113,11 @@ type
 
   TLMSCategory = class
   private
-    fLMS: TLMS;
+    fLMS: ILMS;
 
     function GetCoursesCount: cardinal;
     function GetSubCategoriesCount: cardinal;
-    function GetLMS: TLMS;
+    function GetLMS: ILMS;
   public
     fcategories: TList<TLMSCategory>;
     fcourses: TList<TLMSCourse>;
@@ -123,17 +126,17 @@ type
     name: string;
     fparent: cardinal;
 
-    constructor Create(const parent: TLMS);
+    constructor Create(const parent: ILMS);
 
     // Pointer to the LMS parent
-    property LMS: TLMS read GetLMS;
+    property LMS: ILMS read GetLMS;
 
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
     property CoursesCount: cardinal read GetCoursesCount;
 
   end;
 
-  TLMS = class(TComponent)
+  TLMS = class(TComponent, ILMS)
   private
 
     aLMSConnection: TLMSRestMoodle;
@@ -169,10 +172,13 @@ type
     procedure GetCategories;
     procedure GetCourses;
 
+    function GetLMSConnection: TLMSRestMoodle;
+
     property User: string write SetUser;
     property Password: string write SetPassword;
     property Service: string write SetService;
     property Host: string read GetHost write SetHost;
+
   end;
 
 implementation
@@ -249,7 +255,7 @@ procedure TLMS.GetCourses;
 var
   aCourse: TLMSCourse;
   aCourses: TJSonArray;
-  course: TJSONValue;
+  Course: TJSONValue;
   aCourseCategory: TLMSCategory;
 begin
   // log('Retrieving LMS Courses - may take some time');
@@ -258,24 +264,24 @@ begin
   if aCourses <> nil then
   begin
     // log(aCourses.ToString);
-    for course in aCourses do
+    for Course in aCourses do
     begin
       aCourse := TLMSCourse.Create(self);
 
-      if course.GetValue<string>('format') = 'site' then
+      if Course.GetValue<string>('format') = 'site' then
       begin; // ignore de course site
       end
       else
       begin
-        aCourse.Id := course.GetValue<cardinal>('id');
-        aCourse.shortname := course.GetValue<string>('shortname');
-        aCourse.FullName := course.GetValue<string>('fullname');
-        aCourse.displayname := course.GetValue<string>('displayname');
-        aCourse.groupmode := course.GetValue<cardinal>('groupmode');
+        aCourse.Id := Course.GetValue<cardinal>('id');
+        aCourse.shortname := Course.GetValue<string>('shortname');
+        aCourse.FullName := Course.GetValue<string>('fullname');
+        aCourse.displayname := Course.GetValue<string>('displayname');
+        aCourse.groupmode := Course.GetValue<cardinal>('groupmode');
 
         // Have to check because the category function service could not be enable
         aCourseCategory := GetCategoryById
-          (course.GetValue<cardinal>('categoryid'));
+          (Course.GetValue<cardinal>('categoryid'));
         if aCourseCategory <> nil then
           aCourseCategory.fcourses.add(aCourse);
         //
@@ -351,6 +357,11 @@ begin
   result := aLMSConnection.Host;
 end;
 
+function TLMS.GetLMSConnection: TLMSRestMoodle;
+begin
+  result := aLMSConnection;
+end;
+
 procedure TLMS.SetHost(const Value: string);
 begin
   aLMSConnection.Host := Value;
@@ -390,7 +401,7 @@ end;
 
 { TLMSCategory }
 
-constructor TLMSCategory.Create(const parent: TLMS);
+constructor TLMSCategory.Create(const parent: ILMS);
 begin
   inherited Create;
 
@@ -405,7 +416,7 @@ begin
   result := fcourses.count;
 end;
 
-function TLMSCategory.GetLMS: TLMS;
+function TLMSCategory.GetLMS: ILMS;
 begin
   result := fLMS;
 end;
@@ -417,7 +428,7 @@ end;
 
 { TLMSCourse }
 
-constructor TLMSCourse.Create(const LMS: TLMS);
+constructor TLMSCourse.Create(const LMS: ILMS);
 begin
   inherited Create;
 
@@ -533,12 +544,22 @@ begin
 
 end;
 
+procedure TLMSCourse.setId(const Value: cardinal);
+begin
+  fid := Value;
+end;
+
 function TLMSCourse.getFilterContent: string;
 begin
   result := shortname + ' ' + FullName + ' ' + self.displayname
 end;
 
-function TLMSCourse.GetLMS: TLMS;
+function TLMSCourse.getId: cardinal;
+begin
+  result := fid;
+end;
+
+function TLMSCourse.GetLMS: ILMS;
 begin
   result := fLMS;
 end;

@@ -113,7 +113,7 @@ begin
   if parentdata = nil then
   begin
     data^.node_type := ntLMS;
-    data^.aLMS := fLMSNetwork.item[Node.Index];
+    data^.aLMS := fLMSNetwork[Node.Index];
 
     if (data^.aLMS.connected) then
     begin

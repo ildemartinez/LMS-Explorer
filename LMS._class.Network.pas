@@ -15,10 +15,11 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure add(aLMS: TLMS);
-    function count: cardinal;
 
-    property item[index: integer]: TLMS read GetLMS;
+    procedure Add(aLMS: TLMS);
+    function Count: cardinal;
+
+    property Items[index: integer]: TLMS read GetLMS; default;
   end;
 
 function GetGlobalNetwork: TLMSNetwork;
@@ -36,15 +37,14 @@ begin
   result := _GlobalLMSNetWork
 end;
 
-procedure TLMSNetwork.add(aLMS: TLMS);
+procedure TLMSNetwork.Add(aLMS: TLMS);
 begin
-  fLMSList.add(aLMS);
-
+  fLMSList.Add(aLMS);
 end;
 
-function TLMSNetwork.count: cardinal;
+function TLMSNetwork.Count: cardinal;
 begin
-  result := fLMSList.count;
+  result := fLMSList.Count;
 end;
 
 constructor TLMSNetwork.Create;
@@ -61,7 +61,7 @@ end;
 
 function TLMSNetwork.GetLMS(index: integer): TLMS;
 begin
-  result := fLMSList.items[index];
+  result := fLMSList[index];
 end;
 
 end.
