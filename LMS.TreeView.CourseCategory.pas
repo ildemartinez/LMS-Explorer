@@ -95,11 +95,11 @@ begin
     begin
 
       data^.node_type := ntCourse;
-      data^.Course := fLMSCategory.fcourses.items[Node.Index];
+      data^.Course := fLMSCategory.Courses[Node.Index];
 
       data^.Course.RefreshEnrolledUsers;
 
-      if (data^.Course.fUserGroups.count > 0) or (data^.Course.fUsers.count > 0)
+      if (data^.Course.UserGroups.count > 0) or (data^.Course.Users.count > 0)
       then
       begin
         Include(Node.States, vsHasChildren);

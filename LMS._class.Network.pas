@@ -4,22 +4,25 @@ interface
 
 uses
   Generics.Collections,
+
+  LMS._interface.LMS,
+  LMS._class.LMS,
   lmsnetworkunit;
 
 type
 
   TLMSNetwork = class
   private
-    fLMSList: TList<TLMS>;
-    function GetLMS(index: integer): TLMS;
+    fLMSList: TList<ILMS>;
+    function GetLMS(index: integer): ILMS;
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure Add(aLMS: TLMS);
+    procedure Add(aLMS: ILMS);
     function Count: cardinal;
 
-    property Items[index: integer]: TLMS read GetLMS; default;
+    property Items[index: integer]: ILMS read GetLMS; default;
   end;
 
 function GetGlobalNetwork: TLMSNetwork;
@@ -37,7 +40,7 @@ begin
   result := _GlobalLMSNetWork
 end;
 
-procedure TLMSNetwork.Add(aLMS: TLMS);
+procedure TLMSNetwork.Add(aLMS: ILMS);
 begin
   fLMSList.Add(aLMS);
 end;
@@ -49,7 +52,7 @@ end;
 
 constructor TLMSNetwork.Create;
 begin
-  fLMSList := TList<TLMS>.Create;
+  fLMSList := TList<ILMS>.Create;
 end;
 
 destructor TLMSNetwork.Destroy;
@@ -59,7 +62,7 @@ begin
   inherited;
 end;
 
-function TLMSNetwork.GetLMS(index: integer): TLMS;
+function TLMSNetwork.GetLMS(index: integer): ILMS;
 begin
   result := fLMSList[index];
 end;

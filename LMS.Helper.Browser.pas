@@ -4,7 +4,6 @@ interface
 
 uses
   LMS._interface.LMS,
-  LMS._interface.Course,
   LMSNetWorkUnit;
 
 // Opens Moodle instace, category or course at the default system browser
@@ -25,14 +24,14 @@ procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse);
 procedure OpenCreateUserInBrowser(const aLMS: ILMS);
 
-procedure OpenInBrowserByLMS(const aLMS: tlms; const aUser: TLMSUser);
-procedure OpenEditProfileByLMS(const aLMS: tlms; const aUser: TLMSUser);
+procedure OpenInBrowserByLMS(const aLMS: ILMS; const aUser: TLMSUser);
+procedure OpenEditProfileByLMS(const aLMS: ILMS; const aUser: TLMSUser);
 
 // Edit course
 procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
 
 // Services
-procedure OpenExternalServices(const aLMS: tlms);
+procedure OpenExternalServices(const aLMS: ILMS);
 
 implementation
 
@@ -86,16 +85,16 @@ procedure OpenInBrowser(const aUser: TLMSUser;
   const aCourse: ILMSCourse); overload;
 begin
   ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
-    format(PROFILE_VIEW_IN_COURSE, [aUser.fid, aCourse.id])), nil, nil,
-    0); // SW_SHOW);
+    format(PROFILE_VIEW_IN_COURSE, [aUser.fid, aCourse.id])), nil, nil, 0);
+  // SW_SHOW);
 end;
 
 procedure OpenEditProfileInBrowser(const aUser: TLMSUser;
   const aCourse: TLMSCourse);
 begin
   ShellExecute(0, 'open', PChar(aUser.fCourse.LMS.Host +
-    format(EDIT_PROFILE_IN_COURSE, [aUser.fid, aCourse.id])), nil, nil,
-    0); // SW_SHOW);
+    format(EDIT_PROFILE_IN_COURSE, [aUser.fid, aCourse.id])), nil, nil, 0);
+  // SW_SHOW);
 end;
 
 procedure OpenEditCourseInBrowser(const aCourse: TLMSCourse);
@@ -104,7 +103,7 @@ begin
     [aCourse.id])), nil, nil, 0); // SW_SHOW);
 end;
 
-procedure OpenExternalServices(const aLMS: tlms);
+procedure OpenExternalServices(const aLMS: ILMS);
 begin
   ShellExecute(0, 'open', PChar(aLMS.Host + ADMIN_SETTINGS_EXTERNALSERVICES),
     nil, nil, 0); // SW_SHOW);
@@ -129,16 +128,16 @@ begin
   ShellExecute(0, 'open', PChar(aLMS.Host + USERS_UPLOAD), nil, nil, 0);
 end;
 
-procedure OpenInBrowserByLMS(const aLMS: tlms; const aUser: TLMSUser);
+procedure OpenInBrowserByLMS(const aLMS: ILMS; const aUser: TLMSUser);
 begin
   ShellExecute(0, 'open', PChar(aLMS.Host + format(PROFILE_VIEW, [aUser.fid])),
     nil, nil, 0); // SW_SHOW);
 end;
 
-procedure OpenEditProfileByLMS(const aLMS: tlms; const aUser: TLMSUser);
+procedure OpenEditProfileByLMS(const aLMS: ILMS; const aUser: TLMSUser);
 begin
-  ShellExecute(0, 'open', PChar(aLMS.Host + format(EDIT_PROFILE,
-    [aUser.fid])), nil, nil, 0); // SW_SHOW);
+  ShellExecute(0, 'open', PChar(aLMS.Host + format(EDIT_PROFILE, [aUser.fid])),
+    nil, nil, 0); // SW_SHOW);
 end;
 
 end.

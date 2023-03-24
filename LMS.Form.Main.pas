@@ -60,7 +60,10 @@ uses
   inifiles,
   System.JSON,
 
+  LMS._interface.LMS,
+  LMS._class.LMS,
   LMS._class.Network,
+
   LMS.Helper.Log,
   LMS.Form.About;
 
@@ -147,7 +150,7 @@ begin
     for aSection in aSections do
     begin
       var
-        aLMS: TLMS := TLMS.Create(self);
+        aLMS: ILMS := TLMS.Create(self);
 
       aLMS.id := aSection;
 

@@ -159,8 +159,8 @@
         <DCCReference Include="LMS.Helper.Reports.pas"/>
         <DCCReference Include="LMS._class.Network.pas"/>
         <DCCReference Include="LMS._class.CourseCustom.pas"/>
-        <DCCReference Include="LMS._interface.Course.pas"/>
         <DCCReference Include="LMS._interface.LMS.pas"/>
+        <DCCReference Include="LMS._class.LMS.pas"/>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

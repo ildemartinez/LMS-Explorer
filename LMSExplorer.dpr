@@ -28,8 +28,8 @@ uses
   LMS.Helper.Reports in 'LMS.Helper.Reports.pas',
   LMS._class.Network in 'LMS._class.Network.pas',
   LMS._class.CourseCustom in 'LMS._class.CourseCustom.pas',
-  LMS._interface.Course in 'LMS._interface.Course.pas',
-  LMS._interface.LMS in 'LMS._interface.LMS.pas';
+  LMS._interface.LMS in 'LMS._interface.LMS.pas',
+  LMS._class.LMS in 'LMS._class.LMS.pas';
 
 {$R *.res}
 

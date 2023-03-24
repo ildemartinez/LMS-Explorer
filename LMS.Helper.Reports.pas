@@ -15,7 +15,7 @@ uses
 procedure ExportToExcel(const aLMSCourse: TLMSCourse);
 var
   ExcelWS: TExcelWorkSpace;
-  LCID: Integer;
+//  LCID: Integer;
 begin
   ExcelWS := TExcelWorkSpace.Create;
 
@@ -25,9 +25,9 @@ begin
 
     var
     aRow := 5;
-    if aLMSCourse.fUserGroups.Count > 0 then
+    if aLMSCourse.UserGroups.Count > 0 then
     begin
-      for var aGroup in aLMSCourse.fUserGroups do
+      for var aGroup in aLMSCourse.UserGroups do
       begin
         ExcelWS.fXLWS.Cells.item[aRow, 2] := aGroup.Group;
         inc(aRow);
@@ -44,7 +44,7 @@ begin
     end
     else
     begin
-      for var aUser in aLMSCourse.fUsers do
+      for var aUser in aLMSCourse.Users do
       begin
         ExcelWS.fXLWS.Cells.item[aRow, 3] := aUser.First_Name;
         ExcelWS.fXLWS.Cells.item[aRow, 4] := aUser.Last_Name;

@@ -67,7 +67,7 @@ uses
 
 function TLMSCourseUsersTreeView.HasGroups: boolean;
 begin
-  Result := fLMSCourse.fUserGroups.count > 0;
+  Result := fLMSCourse.UserGroups.count > 0;
 end;
 
 constructor TLMSCourseUsersTreeView.Create(Owner: TComponent);
@@ -108,10 +108,10 @@ begin
     begin
 
       // Has a group
-      if (LMSCourse <> nil) and (LMSCourse.fUserGroups.count > 0) then
+      if (LMSCourse <> nil) and (LMSCourse.UserGroups.count > 0) then
       begin
         data^.node_type := ntGroup;
-        data^.Group := fLMSCourse.fUserGroups[Node.Index];
+        data^.Group := fLMSCourse.UserGroups[Node.Index];
         Include(Node.States, vsHasChildren);
         Include(Node.States, vsExpanded);
       end
@@ -119,7 +119,7 @@ begin
       else
       begin
         data^.node_type := ntUser;
-        data^.User := fLMSCourse.fUsers[Node.Index];
+        data^.User := fLMSCourse.Users[Node.Index];
         Exclude(Node.States, vsHasChildren);
       end;
 
@@ -407,7 +407,7 @@ begin
 
     CreateColums;
 
-    RootNodeCount := fLMSCourse.fUserGroups.count;
+    RootNodeCount := fLMSCourse.UserGroups.count;
   end
   // Not has groups so only shows users
   else
@@ -415,7 +415,7 @@ begin
     CreateColums;
 
     RootNodeCount := 0;
-    RootNodeCount := fLMSCourse.fUsers.count;
+    RootNodeCount := fLMSCourse.Users.count;
   end;
 
   Header.AutoFitColumns(false, smaAllColumns, 0);

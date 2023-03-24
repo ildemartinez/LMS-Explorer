@@ -7,22 +7,24 @@ uses
   System.UITypes,
   VirtualTrees,
 
+  LMS._interface.LMS,
+  LMS._class.LMS,
   LMSNetworkUnit;
 
 type
   TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser);
 
   TTreeData = { packed } record
-    aLMS: tlms; // Pointer to LMS structure
+    aLMS: ILMS; // Pointer to LMS structure
+    Course: ILMSCourse;
+    User: ILMSUser;
     case node_type: TNodeTypes of
       ntCategory:
         (Category: TLMSCategory);
-      ntCourse:
-        (Course: TLMSCourse);
       ntGroup:
         (Group: TLMSUserGroup);
-      ntUser:
-        (User: TLMSUser);
+//      ntUser:
+  //      (User: TLMSUser);
   end;
 
   PTreeData = ^TTreeData;
@@ -65,9 +67,9 @@ begin
 
   if (data1.node_type = data2.node_type) and (data1.node_type = ntUser) then
   begin
-    Result := comparetext(GetPropertyValue(data1.User,
+    Result := comparetext(GetPropertyValue(TObject(data1.User),
       TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
-      GetPropertyValue(data2.User,
+      GetPropertyValue(tobject(data2.User),
       TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
   end;
 end;
@@ -121,7 +123,7 @@ begin
     else if (data^.node_type = ntCourse) then // and (Column = 0) then
     begin
       case data^.Course.groupmode of
-        //0: ;
+        // 0: ;
         // ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_groups_no_groups');
         1:
           ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName

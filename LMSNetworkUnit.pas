@@ -10,13 +10,10 @@ uses
   sysutils,
 
   LMS._interface.LMS,
-  LMS._interface.Course,
   LMS.Rest.Moodle;
 
 type
-  TLMSCategory = class;
-
-  TLMSUser = class
+  TLMSUser = class(TInterfacedObject, ILMSUser)
   private
     fEmail: string;
     fFullName: string;
@@ -25,6 +22,7 @@ type
     fRoles: string;
     function getFilterContent: string;
     function GetLastAccessAsString: string;
+    function GetRoles: string;
   public
     fCourse: ILMSCourse;
 
@@ -39,37 +37,46 @@ type
     property First_Name: string read fFirstName;
     property Last_Name: string read fLastName;
     property Email: string read fEmail;
-    property Roles: string read fRoles;
     property Last_access: string read GetLastAccessAsString;
+    property Roles: string read GetRoles;
 
     property FilterContent: string read getFilterContent;
   end;
 
-  TLMSUsers = TList<TLMSUser>;
-
-  TLMSUserGroup = class
+  TLMSUserGroup = class(TInterfacedObject, ILMSUserGroup)
   private
     fid: cardinal;
     fGroupName: string;
-    function getId: cardinal;
-    function getFilterContent: string;
-  public
     // Users in this group
     fUsersInGroup: TLMSUsers;
 
+    function getId: cardinal;
+    function getFilterContent: string;
+    function GetUsersInGroup: TLMSUsers;
+    procedure SetUsersInGroup(const Value: TLMSUsers);
+    procedure SetId(const Value: cardinal);
+    function GetGroupName: string;
+    procedure SetGroupName(const Value: string);
+  public
+
     constructor Create;
 
-    property Id: cardinal read getId;
-    property Group: string read fGroupName;
+    property Id: cardinal read getId write SetId;
+    property GroupName: string read GetGroupName write SetGroupName;
     property FilterContent: string read getFilterContent;
+    property UsersInGroup: TLMSUsers read GetUsersInGroup write SetUsersInGroup;
   end;
-
-  TLMSUserGroups = TList<TLMSUserGroup>;
 
   TLMSCourse = class(TInterfacedObject, ILMSCourse)
   private
     fLMS: ILMS;
     fid: cardinal;
+    fGroupMode: cardinal;
+
+    // All users enrolled in this course
+    fUsers: TLMSUsers;
+    // All course groups
+    fUserGroups: TLMSUserGroups;
 
     function getFilterContent: string;
     function GetDisplayContent: string;
@@ -78,18 +85,18 @@ type
     procedure RefreshUserGroups;
     function GetStudentsCount: integer;
     function getId: cardinal;
-    procedure setId(const Value: cardinal);
+    procedure SetId(const Value: cardinal);
+    function GetGroupMode: cardinal;
+    procedure SetGroupMode(const Value: cardinal);
+    function GetUserGroups: TLMSUserGroups;
+    function GetUsers: TLMSUsers;
+    procedure SetUserGroups(const Value: TLMSUserGroups);
+    procedure SetUsers(const Value: TLMSUsers);
   public
 
     shortname: string;
     FullName: string;
     displayname: string;
-    groupmode: cardinal;
-
-    // All users enrolled in this course
-    fUsers: TLMSUsers;
-    // All course groups
-    fUserGroups: TLMSUserGroups;
 
     constructor Create(const LMS: ILMS);
 
@@ -100,7 +107,7 @@ type
     // Pointer to the LMS parent
     property LMS: ILMS read GetLMS;
 
-    property Id: cardinal read getId write setId;
+    property Id: cardinal read getId write SetId;
     // Returns the apropiated text to show information about courses
     property DisplayContent: string read GetDisplayContent;
 
@@ -109,75 +116,49 @@ type
 
     Property StudentsCount: integer read GetStudentsCount;
 
+    property GroupMode: cardinal read GetGroupMode write SetGroupMode;
+
+    property Users: TLMSUsers read GetUsers write SetUsers;
+    // All course groups
+    property UserGroups: TLMSUserGroups read GetUserGroups write SetUserGroups;
   end;
 
-  TLMSCategory = class
+  TLMSCategory = class(TInterfacedObject, ILMSCategory)
   private
     fLMS: ILMS;
+    fid: cardinal;
+    fParentCategory: cardinal;
+    fName: string;
+
+    fcategories: TList<ILMSCategory>;
+    fcourses: TList<ILMSCourse>;
 
     function GetCoursesCount: cardinal;
     function GetSubCategoriesCount: cardinal;
     function GetLMS: ILMS;
+    function GetParentCategory: cardinal;
+    procedure SetParentCategory(const Value: cardinal);
+    function getId: cardinal;
+    procedure SetId(const Value: cardinal);
+    function GetName: string;
+    procedure SetName(const Value: string);
+    function GetCategories: TList<ILMSCategory>;
+    function GetCourses: TList<ILMSCourse>;
   public
-    fcategories: TList<TLMSCategory>;
-    fcourses: TList<TLMSCourse>;
-    Id: cardinal;
     // categoryid : cardinal;
-    name: string;
-    fparent: cardinal;
-
     constructor Create(const parent: ILMS);
 
     // Pointer to the LMS parent
     property LMS: ILMS read GetLMS;
 
+    property Id: cardinal read getId write SetId;
+    property Name: string read GetName write SetName;
+    property ParentCategory: cardinal read GetParentCategory
+      write SetParentCategory;
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
+    property Courses: TList<ILMSCourse> read GetCourses;
     property CoursesCount: cardinal read GetCoursesCount;
-
-  end;
-
-  TLMS = class(TComponent, ILMS)
-  private
-
-    aLMSConnection: TLMSRestMoodle;
-
-    procedure SetHost(const Value: string);
-    procedure SetPassword(const Value: string);
-    procedure SetService(const Value: string);
-    procedure SetUser(const Value: string);
-    function GetHost: string;
-
-    procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
-      const aFunctionName: string);
-
-  public
-    Id: string;
-    autoconnect: boolean;
-
-    // All LMS categories
-    categories: TList<TLMSCategory>;
-    // All LMS courses
-    courses: TList<TLMSCourse>;
-
-    constructor Create(Owner: TComponent); override;
-
-    procedure Connect;
-    function connected: boolean;
-
-    function FirstLevelCategoriesCount: cardinal;
-    function GetCategoryById(Id: cardinal): TLMSCategory;
-    function GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
-      const aFilter: string): integer;
-
-    procedure GetCategories;
-    procedure GetCourses;
-
-    function GetLMSConnection: TLMSRestMoodle;
-
-    property User: string write SetUser;
-    property Password: string write SetPassword;
-    property Service: string write SetService;
-    property Host: string read GetHost write SetHost;
+    property Categories: TList<ILMSCategory> read GetCategories;
 
   end;
 
@@ -188,217 +169,6 @@ uses
   LMS.Helper.Utils,
   LMS.Helper.Log;
 
-function TLMS.FirstLevelCategoriesCount: cardinal;
-begin
-  result := 0;
-
-  for var Category in categories do
-    if Category.fparent = 0 then
-      inc(result);
-end;
-
-procedure TLMS.Connect;
-begin
-  aLMSConnection.Connect;
-end;
-
-function TLMS.connected: boolean;
-begin
-  result := aLMSConnection.connected;
-end;
-
-constructor TLMS.Create(Owner: TComponent);
-begin
-  inherited;
-
-  aLMSConnection := TLMSRestMoodle.Create(self);
-  aLMSConnection.OnFunctionNotAdded := MyOnFunctionNotAdded;
-
-  categories := TList<TLMSCategory>.Create;
-  courses := TList<TLMSCourse>.Create;
-end;
-
-procedure TLMS.GetCategories;
-var
-  aCategory: TLMSCategory;
-  aCategories: TJSonArray;
-  Category: TJSONValue;
-begin
-  // log('Retrieving LMS Categories');
-  aCategories := aLMSConnection.GetCategories;
-
-  if aCategories <> nil then
-  begin
-    // log(aCategories.ToString);
-
-    for Category in aCategories do
-    begin
-      // Add to a global category list
-      aCategory := TLMSCategory.Create(self);
-      aCategory.Id := Category.GetValue<cardinal>('id');
-      aCategory.name := Category.GetValue<string>('name');
-      aCategory.fparent := Category.GetValue<cardinal>('parent');
-      categories.add(aCategory);
-    end;
-
-    // Add it to the parent category list
-    // Each category has its own subcategory list
-    for aCategory in categories do
-    begin
-      if aCategory.fparent <> 0 then
-        GetCategoryById(aCategory.fparent).fcategories.add(aCategory);
-    end;
-  end;
-end;
-
-procedure TLMS.GetCourses;
-var
-  aCourse: TLMSCourse;
-  aCourses: TJSonArray;
-  Course: TJSONValue;
-  aCourseCategory: TLMSCategory;
-begin
-  // log('Retrieving LMS Courses - may take some time');
-  aCourses := aLMSConnection.GetCourses;
-
-  if aCourses <> nil then
-  begin
-    // log(aCourses.ToString);
-    for Course in aCourses do
-    begin
-      aCourse := TLMSCourse.Create(self);
-
-      if Course.GetValue<string>('format') = 'site' then
-      begin; // ignore de course site
-      end
-      else
-      begin
-        aCourse.Id := Course.GetValue<cardinal>('id');
-        aCourse.shortname := Course.GetValue<string>('shortname');
-        aCourse.FullName := Course.GetValue<string>('fullname');
-        aCourse.displayname := Course.GetValue<string>('displayname');
-        aCourse.groupmode := Course.GetValue<cardinal>('groupmode');
-
-        // Have to check because the category function service could not be enable
-        aCourseCategory := GetCategoryById
-          (Course.GetValue<cardinal>('categoryid'));
-        if aCourseCategory <> nil then
-          aCourseCategory.fcourses.add(aCourse);
-        //
-
-      end;
-    end;
-  end;
-
-end;
-
-function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
-  const aFilter: string): integer;
-var
-  aUsers: TJSonArray;
-  User: TJSONValue;
-  aUser: TLMSUser;
-begin
-
-  aUsers := aLMSConnection.GetUsersByFirstName(aFilter);
-
-  if (aUsers <> nil) and (aUsers.count > 0) then
-  begin
-    // log(aUsers.ToString);
-    for User in aUsers do
-    begin
-      aUser := TLMSUser.Create;
-      aUser.AssignByJson(User);
-      // aUser.fCourse.fLMS := self;  // set the LMS of the user
-      aLMSUsers.add(aUser);
-    end;
-  end;
-
-  aUsers := aLMSConnection.GetUsersByLastName(aFilter);
-
-  if (aUsers <> nil) and (aUsers.count > 0) then
-  begin
-    // log(aUsers.ToString);
-    for User in aUsers do
-    begin
-      aUser := TLMSUser.Create;
-      aUser.AssignByJson(User);
-      // aUser.fCourse.fLMS := self;  // set the LMS of the user
-      aLMSUsers.add(aUser);
-    end;
-  end;
-
-  aUsers := aLMSConnection.GetUsersByEmail(aFilter);
-
-  if (aUsers <> nil) and (aUsers.count > 0) then
-  begin
-    // log(aUsers.ToString);
-    for User in aUsers do
-    begin
-      aUser := TLMSUser.Create;
-      aUser.AssignByJson(User);
-      // aUser.fCourse.fLMS := self;  // set the LMS of the user
-      aLMSUsers.add(aUser);
-    end;
-  end;
-
-  result := aLMSUsers.count;
-end;
-
-procedure TLMS.MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
-  const aFunctionName: string);
-begin
-  Log('error not service function not defined ' + aFunctionName +
-    ' please added it in the LMS service functions');
-end;
-
-function TLMS.GetHost: string;
-begin
-  result := aLMSConnection.Host;
-end;
-
-function TLMS.GetLMSConnection: TLMSRestMoodle;
-begin
-  result := aLMSConnection;
-end;
-
-procedure TLMS.SetHost(const Value: string);
-begin
-  aLMSConnection.Host := Value;
-end;
-
-procedure TLMS.SetPassword(const Value: string);
-begin
-  aLMSConnection.Password := Value;
-end;
-
-procedure TLMS.SetService(const Value: string);
-begin
-  aLMSConnection.Service := Value;
-end;
-
-procedure TLMS.SetUser(const Value: string);
-begin
-  aLMSConnection.User := Value;
-end;
-
-function TLMS.GetCategoryById(Id: cardinal): TLMSCategory;
-var
-  cat: TLMSCategory;
-begin
-  result := nil;
-
-  for cat in categories do
-  begin
-    if (cat.Id = Id) then
-    begin
-      result := cat;
-      break;
-    end;
-  end;
-
-end;
-
 { TLMSCategory }
 
 constructor TLMSCategory.Create(const parent: ILMS);
@@ -407,8 +177,18 @@ begin
 
   fLMS := parent;
 
-  fcourses := TList<TLMSCourse>.Create;
-  fcategories := TList<TLMSCategory>.Create;
+  fcourses := TList<ILMSCourse>.Create;
+  fcategories := TList<ILMSCategory>.Create;
+end;
+
+function TLMSCategory.GetCategories: TList<ILMSCategory>;
+begin
+  result := fcategories;
+end;
+
+function TLMSCategory.GetCourses: TList<ILMSCourse>;
+begin
+  result := fcourses;
 end;
 
 function TLMSCategory.GetCoursesCount: cardinal;
@@ -416,14 +196,44 @@ begin
   result := fcourses.count;
 end;
 
+function TLMSCategory.getId: cardinal;
+begin
+  result := fid;
+end;
+
 function TLMSCategory.GetLMS: ILMS;
 begin
   result := fLMS;
 end;
 
+function TLMSCategory.GetName: string;
+begin
+  result := fName;
+end;
+
+function TLMSCategory.GetParentCategory: cardinal;
+begin
+  result := fParentCategory;
+end;
+
 function TLMSCategory.GetSubCategoriesCount: cardinal;
 begin
   result := fcategories.count;
+end;
+
+procedure TLMSCategory.SetId(const Value: cardinal);
+begin
+  fid := Value;
+end;
+
+procedure TLMSCategory.SetName(const Value: string);
+begin
+  fName := Value;
+end;
+
+procedure TLMSCategory.SetParentCategory(const Value: cardinal);
+begin
+  fParentCategory := Value;
 end;
 
 { TLMSCourse }
@@ -441,11 +251,11 @@ end;
 
 procedure TLMSCourse.GetCourseRoles(aCourseRoles: TStringlist);
 var
-  aUser: TLMSUser;
+  aUser: ILMSUser;
 begin
   for aUser in fUsers do
-    if aCourseRoles.IndexOf(aUser.fRoles) < 0 then
-      aCourseRoles.add(aUser.fRoles);
+    if aCourseRoles.IndexOf(aUser.Roles) < 0 then
+      aCourseRoles.add(aUser.Roles);
 end;
 
 function TLMSCourse.GetDisplayContent: string;
@@ -504,8 +314,8 @@ begin
         begin
           for var agroup in self.fUserGroups do
           begin
-            if agroup.fid = Group.GetValue<cardinal>('id') then
-              agroup.fUsersInGroup.add(aUser)
+            if agroup.Id = Group.GetValue<cardinal>('id') then
+              agroup.UsersInGroup.add(aUser)
           end;
 
         end;
@@ -519,7 +329,7 @@ procedure TLMSCourse.RefreshUserGroups;
 var
   aUserGroups: TJSonArray;
   agroup: TJSONValue;
-  aUserGroup: TLMSUserGroup;
+  aUserGroup: ILMSUserGroup;
 begin
   fUserGroups.Clear;
 
@@ -532,8 +342,8 @@ begin
     begin
       aUserGroup := TLMSUserGroup.Create;
 
-      aUserGroup.fid := agroup.GetValue<cardinal>('id');
-      aUserGroup.fGroupName := agroup.GetValue<string>('name');
+      aUserGroup.Id := agroup.GetValue<cardinal>('id');
+      aUserGroup.GroupName := agroup.GetValue<string>('name');
       { aUser.fFirstName := User.GetValue<string>('firstname');
         aUser.fLastName := User.GetValue<string>('lastname');
         aUser.fFullName := User.GetValue<string>('fullname');
@@ -544,14 +354,34 @@ begin
 
 end;
 
-procedure TLMSCourse.setId(const Value: cardinal);
+procedure TLMSCourse.SetGroupMode(const Value: cardinal);
+begin
+  fGroupMode := Value;
+end;
+
+procedure TLMSCourse.SetId(const Value: cardinal);
 begin
   fid := Value;
+end;
+
+procedure TLMSCourse.SetUserGroups(const Value: TLMSUserGroups);
+begin
+  fUserGroups := Value;
+end;
+
+procedure TLMSCourse.SetUsers(const Value: TLMSUsers);
+begin
+  fUsers := Value;
 end;
 
 function TLMSCourse.getFilterContent: string;
 begin
   result := shortname + ' ' + FullName + ' ' + self.displayname
+end;
+
+function TLMSCourse.GetGroupMode: cardinal;
+begin
+  result := fGroupMode;
 end;
 
 function TLMSCourse.getId: cardinal;
@@ -566,12 +396,12 @@ end;
 
 function TLMSCourse.GetStudentsCount: integer;
 var
-  aUser: TLMSUser;
+  aUser: ILMSUser;
 begin
   result := 0;
   for aUser in fUsers do
   begin
-    if aUser.fRoles = 'student' then
+    if aUser.Roles = 'student' then
       inc(result);
 
   end;
@@ -580,14 +410,24 @@ end;
 
 function TLMSCourse.GetUserCountByRol(const aRole: string): cardinal;
 var
-  aUser: TLMSUser;
+  aUser: ILMSUser;
 begin
   result := 0;
   for aUser in fUsers do
   begin
-    if aUser.fRoles = aRole then
+    if aUser.Roles = aRole then
       inc(result);
   end;
+end;
+
+function TLMSCourse.GetUserGroups: TLMSUserGroups;
+begin
+  result := fUserGroups;
+end;
+
+function TLMSCourse.GetUsers: TLMSUsers;
+begin
+  result := fUsers;
 end;
 
 { TLMSUserGroup }
@@ -602,9 +442,34 @@ begin
   result := fGroupName;
 end;
 
+function TLMSUserGroup.GetGroupName: string;
+begin
+  result := fGroupName;
+end;
+
 function TLMSUserGroup.getId: cardinal;
 begin
   result := fid;
+end;
+
+function TLMSUserGroup.GetUsersInGroup: TLMSUsers;
+begin
+  result := fUsersInGroup;
+end;
+
+procedure TLMSUserGroup.SetGroupName(const Value: string);
+begin
+  fGroupName := Value;
+end;
+
+procedure TLMSUserGroup.SetId(const Value: cardinal);
+begin
+  fid := Value;
+end;
+
+procedure TLMSUserGroup.SetUsersInGroup(const Value: TLMSUsers);
+begin
+  fUsersInGroup := Value;
 end;
 
 { TLMSUser }
@@ -635,6 +500,11 @@ begin
 
   result := FormatDateTimeNever(flastcourseaccess);
 
+end;
+
+function TLMSUser.GetRoles: string;
+begin
+  result := fRoles;
 end;
 
 end.

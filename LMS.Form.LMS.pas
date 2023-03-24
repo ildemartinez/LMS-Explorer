@@ -10,7 +10,9 @@ uses
   Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
   Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, System.ImageList,
   Vcl.ImgList,
-  LMS.TreeView.Users;
+  LMS.TreeView.Users,
+
+  LMS._class.LMS;
 
 type
   TLMSForm = class(TForm)
