@@ -14,13 +14,11 @@ type
   IUser = interface;
   ICourse = interface;
 
-  TLMSUsers = TList<IUser>;
-
   IUsersGroup = interface
     ['{586BCC1C-EA18-4D15-A788-3BF00EFD328F}']
     function getId: cardinal;
-    function GetUsersInGroup: TLMSUsers;
-    procedure SetUsersInGroup(const Value: TLMSUsers);
+    function GetUsersInGroup: TList<IUser>;
+    procedure SetUsersInGroup(const Value: TList<IUser>);
     procedure SetId(const Value: cardinal);
     function GetGroupName: string;
     procedure SetGroupName(const Value: string);
@@ -28,7 +26,7 @@ type
 
     property Id: cardinal read getId write SetId;
     property GroupName: string read GetGroupName write SetGroupName;
-    property UsersInGroup: TLMSUsers read GetUsersInGroup write SetUsersInGroup;
+    property UsersInGroup: TList<IUser> read GetUsersInGroup write SetUsersInGroup;
     property FilterContent: string read GetFilterContent;
   end;
 
@@ -46,7 +44,7 @@ type
     procedure SetCourse(const Value: ICourse);
     function getId: integer;
     function GetUserName: string;
-    procedure SetRoles(const value: string);
+    procedure SetRoles(const Value: string);
 
     procedure AssignByJson(const aJsonValue: TJSONValue);
 
@@ -71,9 +69,9 @@ type
     procedure RefreshUserGroups;
     procedure RefreshEnrolledUsers;
     function GetUserGroups: TLMSUserGroups;
-    function GetUsers: TLMSUsers;
+    function GetUsers: TList<IUser>;
     procedure SetUserGroups(const Value: TLMSUserGroups);
-    procedure SetUsers(const Value: TLMSUsers);
+    procedure SetUsers(const Value: TList<IUser>);
     function GetFullName: string;
     function GetShortName: string;
     procedure SetFullName(const Value: string);
@@ -91,7 +89,7 @@ type
     property DisplayName: string read GetDisplayName write SetDisplayName;
     property Id: cardinal read getId;
     property GroupMode: cardinal read GetGroupMode write SetGroupMode;
-    property Users: TLMSUsers read GetUsers write SetUsers;
+    property Users: TList<IUser> read GetUsers write SetUsers;
     property FilterContent: string read GetFilterContent;
     property DisplayContent: string read GetDisplayContent;
     // All course groups
@@ -103,9 +101,7 @@ type
     function GetParentCategory: cardinal;
     procedure SetParentCategory(const Value: cardinal);
     function getId: cardinal;
-    procedure SetId(const Value: cardinal);
     function GetName: string;
-    procedure SetName(const Value: string);
     function GetCategories: TList<ICategory>;
     function GetCourses: TList<ICourse>;
     function GetCoursesCount: cardinal;
@@ -113,17 +109,15 @@ type
     function GetLMS: ILMS;
 
     property LMS: ILMS read GetLMS;
-    property Id: cardinal read getId write SetId;
+    property Id: cardinal read getId;
     property ParentCategory: cardinal read GetParentCategory
       write SetParentCategory;
-    property Name: string read GetName write SetName;
+    property Name: string read GetName;
     property Categories: TList<ICategory> read GetCategories;
     property Courses: TList<ICourse> read GetCourses;
     property CoursesCount: cardinal read GetCoursesCount;
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
   end;
-
-  TListCategory = TList<ICategory>;
 
   ILMS = interface
     ['{F67CAF42-24D9-4906-BE7A-09E9A669D9F1}']
@@ -135,8 +129,8 @@ type
     procedure SetUser(const Value: string);
     function GetHost: string;
 
-    procedure SetCategories(const Value: TListCategory);
-    function GetCategories: TListCategory;
+    procedure SetCategories(const Value: TList<ICategory>);
+    function GetCategories: TList<ICategory>;
     procedure GetCategoriesFromConnection;
 
     function getId: string;
@@ -145,7 +139,7 @@ type
     function GetAutoConnect: boolean;
     procedure SetAutoConnect(const Value: boolean);
 
-    function GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
+    function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
       const aFilter: string): integer;
 
     procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
@@ -173,7 +167,7 @@ type
     property Password: string write SetPassword;
     property Service: string write SetService;
     property Host: string read GetHost write SetHost;
-    property Categories: TListCategory read GetCategories write SetCategories;
+    property Categories: TList<ICategory> read GetCategories write SetCategories;
 
     property aLMSConnection: TLMSRestMoodle read GetLMSConnection;
   end;

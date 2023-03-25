@@ -377,7 +377,7 @@ begin
       ntCourse:
         with TLMSCourseForm.Create(self) do
         begin
-          aCourse := data^.Course;
+          Course := data^.Course;
           show();
         end;
 

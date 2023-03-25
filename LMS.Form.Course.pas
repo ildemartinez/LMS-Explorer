@@ -54,12 +54,9 @@ type
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: ICourse;
     procedure SetaCourse(const Value: ICourse);
-    { Private declarations }
   public
-    { Public declarations }
     constructor Create(Owner: TComponent); override;
-    property aCourse: ICourse read fCourse write SetaCourse;
-
+    property Course: ICourse read fCourse write SetaCourse;
   end;
 
 implementation
@@ -129,11 +126,10 @@ end;
 procedure TLMSCourseForm.Action6Execute(Sender: TObject);
 begin
   // Refresh de users query
-  aCourse := fCourse;
+  Course := fCourse;
 
   // Requery the filter
   Edit1Change(Edit1);
-
 end;
 
 procedure TLMSCourseForm.Action7Execute(Sender: TObject);

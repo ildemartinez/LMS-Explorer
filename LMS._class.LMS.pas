@@ -7,7 +7,6 @@ uses
   Generics.Collections,
 
   LMS._interface.LMS,
- // lmsnetworkunit,
   LMS.Rest.Moodle;
 
 type
@@ -16,11 +15,10 @@ type
   private
     fId: string;
     fautoconnect: boolean;
-
-    aLMSConnection: TLMSRestMoodle;
+    fConnection: TLMSRestMoodle;
 
     // All LMS categories
-    fCategories: TListCategory;
+    fCategories: TList<ICategory>;
 
     procedure SetHost(const Value: string);
     procedure SetPassword(const Value: string);
@@ -35,12 +33,9 @@ type
     procedure SetId(const aId: string);
     function GetAutoConnect: boolean;
     procedure SetAutoConnect(const Value: boolean);
-    procedure SetCategories(const Value: TListCategory);
-    function GetCategories: TListCategory;
+    procedure SetCategories(const Value: TList<ICategory>);
+    function GetCategories: TList<ICategory>;
   public
-
-    // All LMS courses
-    courses: TList<ICourse>;
 
     constructor Create(Owner: TComponent); override;
 
@@ -49,7 +44,7 @@ type
 
     function FirstLevelCategoriesCount: cardinal;
     function GetCategoryById(Id: cardinal): ICategory;
-    function GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
+    function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
       const aFilter: string): integer;
 
     procedure GetCategoriesFromConnection;
@@ -64,7 +59,7 @@ type
     property Service: string write SetService;
     property Host: string read GetHost write SetHost;
 
-    property Categories: TListCategory read GetCategories write SetCategories;
+    property Categories: TList<ICategory> read GetCategories write SetCategories;
 
   end;
 
@@ -74,6 +69,7 @@ uses
   System.JSON,
 
   LMS._class.User,
+  LMS._class.Course,
   LMSNetworkunit,
   LMS.Helper.Log;
 
@@ -88,23 +84,24 @@ end;
 
 procedure TLMS.Connect;
 begin
-  aLMSConnection.Connect;
+  fConnection.Connect;
 end;
 
 function TLMS.connected: boolean;
 begin
-  result := aLMSConnection.connected;
+  result := fConnection.connected;
 end;
 
 constructor TLMS.Create(Owner: TComponent);
 begin
   inherited;
 
-  aLMSConnection := TLMSRestMoodle.Create(self);
-  aLMSConnection.OnFunctionNotAdded := MyOnFunctionNotAdded;
+  // Create the Rest Moodle Connection
+  fConnection := TLMSRestMoodle.Create(self);
+  fConnection.OnFunctionNotAdded := MyOnFunctionNotAdded;
 
+  // LMS Categories
   Categories := TList<ICategory>.Create;
-  courses := TList<ICourse>.Create;
 end;
 
 function TLMS.GetAutoConnect: boolean;
@@ -119,7 +116,7 @@ var
   Category: TJSONValue;
 begin
   // log('Retrieving LMS Categories');
-  aCategories := aLMSConnection.GetCategories;
+  aCategories := fConnection.GetCategories;
 
   if aCategories <> nil then
   begin
@@ -128,10 +125,7 @@ begin
     for Category in aCategories do
     begin
       // Add to a global category list
-      aCategory := TLMSCategory.Create(self);
-      aCategory.Id := Category.GetValue<cardinal>('id');
-      aCategory.name := Category.GetValue<string>('name');
-      aCategory.ParentCategory := Category.GetValue<cardinal>('parent');
+      aCategory := TLMSCategory.Create(self, Category);
       Categories.add(aCategory);
     end;
 
@@ -145,7 +139,7 @@ begin
   end;
 end;
 
-function TLMS.GetCategories: TListCategory;
+function TLMS.GetCategories: TList<ICategory>;
 begin
   result := fCategories;
 end;
@@ -158,7 +152,7 @@ var
   aCourseCategory: ICategory;
 begin
   // log('Retrieving LMS Courses - may take some time');
-  aCourses := aLMSConnection.GetCourses;
+  aCourses := fConnection.GetCourses;
 
   if aCourses <> nil then
   begin
@@ -191,29 +185,14 @@ begin
 
 end;
 
-function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
+function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
   const aFilter: string): integer;
 var
   aUsers: TJSonArray;
   User: TJSONValue;
   aUser: IUser;
 begin
-
-  aUsers := aLMSConnection.GetUsersByFirstName(aFilter);
-
-  if (aUsers <> nil) and (aUsers.count > 0) then
-  begin
-    // log(aUsers.ToString);
-    for User in aUsers do
-    begin
-      aUser := TUser.Create;
-      aUser.AssignByJson(User);
-      // aUser.fCourse.fLMS := self;  // set the LMS of the user
-      aLMSUsers.add(aUser);
-    end;
-  end;
-
-  aUsers := aLMSConnection.GetUsersByLastName(aFilter);
+  aUsers := fConnection.GetUsersByFirstName(aFilter);
 
   if (aUsers <> nil) and (aUsers.count > 0) then
   begin
@@ -227,7 +206,21 @@ begin
     end;
   end;
 
-  aUsers := aLMSConnection.GetUsersByEmail(aFilter);
+  aUsers := fConnection.GetUsersByLastName(aFilter);
+
+  if (aUsers <> nil) and (aUsers.count > 0) then
+  begin
+    // log(aUsers.ToString);
+    for User in aUsers do
+    begin
+      aUser := TUser.Create;
+      aUser.AssignByJson(User);
+      // aUser.fCourse.fLMS := self;  // set the LMS of the user
+      aLMSUsers.add(aUser);
+    end;
+  end;
+
+  aUsers := fConnection.GetUsersByEmail(aFilter);
 
   if (aUsers <> nil) and (aUsers.count > 0) then
   begin
@@ -253,7 +246,7 @@ end;
 
 function TLMS.GetHost: string;
 begin
-  result := aLMSConnection.Host;
+  result := fConnection.Host;
 end;
 
 function TLMS.GetId: string;
@@ -263,7 +256,7 @@ end;
 
 function TLMS.GetLMSConnection: TLMSRestMoodle;
 begin
-  result := aLMSConnection;
+  result := fConnection;
 end;
 
 procedure TLMS.SetAutoConnect(const Value: boolean);
@@ -271,14 +264,14 @@ begin
   fautoconnect := Value;
 end;
 
-procedure TLMS.SetCategories(const Value: TListCategory);
+procedure TLMS.SetCategories(const Value: TList<ICategory>);
 begin
   fCategories := Value;
 end;
 
 procedure TLMS.SetHost(const Value: string);
 begin
-  aLMSConnection.Host := Value;
+  fConnection.Host := Value;
 end;
 
 procedure TLMS.SetId(const aId: string);
@@ -288,17 +281,17 @@ end;
 
 procedure TLMS.SetPassword(const Value: string);
 begin
-  aLMSConnection.Password := Value;
+  fConnection.Password := Value;
 end;
 
 procedure TLMS.SetService(const Value: string);
 begin
-  aLMSConnection.Service := Value;
+  fConnection.Service := Value;
 end;
 
 procedure TLMS.SetUser(const Value: string);
 begin
-  aLMSConnection.User := Value;
+  fConnection.User := Value;
 end;
 
 function TLMS.GetCategoryById(Id: cardinal): ICategory;

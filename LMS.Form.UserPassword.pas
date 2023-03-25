@@ -21,9 +21,7 @@ type
     function GetUserName: string;
     procedure SetPassword(const Value: string);
     procedure SetUsername(const Value: string);
-    { Private declarations }
   public
-    { Public declarations }
     constructor Create(Owner: TComponent); override;
 
     property Username: string read GetUserName write SetUsername;
@@ -33,7 +31,6 @@ type
 implementation
 
 {$R *.dfm}
-{ TLMSUserPasswordForm }
 
 constructor TLMSUserPasswordForm.Create(Owner: TComponent);
 begin

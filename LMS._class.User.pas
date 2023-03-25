@@ -112,9 +112,7 @@ end;
 
 function TUser.GetLastAccessAsString: string;
 begin
-
   result := FormatDateTimeNever(flastcourseaccess);
-
 end;
 
 function TUser.GetLastName: string;

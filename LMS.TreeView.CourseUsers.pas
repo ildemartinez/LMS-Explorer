@@ -5,14 +5,12 @@ interface
 uses
   System.SysUtils,
   System.Classes,
-  System.Types,
-  System.UITypes,
-  vcl.Menus,
-  winapi.messages,
+
+  Generics.Collections,
 
   VirtualTrees,
-  LMS.TreeView.Custom,
 
+  LMS.TreeView.Custom,
   LMS._interface.LMS,
   lmsnetworkunit;
 
@@ -21,13 +19,12 @@ type
   TLMSCourseUsersTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
     fLMSCourse: ICourse;
-    fLMSUsers: TLMSUsers;
+    fLMSUsers: TList<IUser>;
 
     procedure setLMSCourse(const Value: ICourse);
 
     function HasGroups: boolean;
     function GetSelectedUser: IUser;
-
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
@@ -57,7 +54,6 @@ uses
   windows,
   dialogs,
   ShellApi,
-  generics.Collections,
 
   LMS.Helper.Consts,
   LMS.Helper.Browser,
@@ -329,7 +325,7 @@ begin
         begin
           with TLMSUserForm.Create(self) do
           begin
-            aUser := data^.User;
+            User := data^.User;
             show();
           end;
         end;

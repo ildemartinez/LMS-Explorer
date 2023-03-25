@@ -7,6 +7,7 @@ uses
   System.Classes,
   System.Types,
   System.UITypes,
+  Generics.Collections,
   vcl.Menus,
   winapi.messages,
 
@@ -20,10 +21,10 @@ type
 
   TLMSUsersTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-    fLMSUsers: TLMSUsers;
+    fLMSUsers: TList<IUser>;
 
     function GetSelectedUser: IUser;
-    procedure setLMSUsers(const Value: TLMSUsers);
+    procedure setLMSUsers(const Value: TList<IUser>);
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
@@ -42,7 +43,7 @@ type
     procedure FilterByText(const text: string);
     procedure Refreshh;
 
-    property LMSUsers: TLMSUsers read fLMSUsers write setLMSUsers;
+    property LMSUsers: TList<IUser> read fLMSUsers write setLMSUsers;
     property SelectedUser: IUser read GetSelectedUser;
 
   end;
@@ -54,8 +55,6 @@ uses
   vcl.ImgList, windows,
   dialogs,
   ShellApi,
-  // LMSFormUnit,
-  generics.Collections,
 
   LMS.Helper.Consts,
   LMS.Helper.Browser;
@@ -228,7 +227,7 @@ begin
   Header.AutoFitColumns(false, smaAllColumns, 0);
 end;
 
-procedure TLMSUsersTreeView.setLMSUsers(const Value: TLMSUsers);
+procedure TLMSUsersTreeView.setLMSUsers(const Value: TList<IUser>);
 begin
   fLMSUsers := Value;
 

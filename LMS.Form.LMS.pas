@@ -10,8 +10,10 @@ uses
   Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
   Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, System.ImageList,
   Vcl.ImgList,
-  LMS.TreeView.Users,
 
+  Generics.Collections,
+
+  LMS.TreeView.Users,
   LMS._interface.LMS,
   LMS._class.LMS;
 
@@ -43,7 +45,7 @@ type
     procedure Action5Execute(Sender: TObject);
   private
     fLMS: ILMS;
-    fUsers: TLMSUsers;
+    fUsers: TList<IUser>;
     fLMSUsersTreeView: TLMSUsersTreeView;
     procedure SetTLMS(const Value: ILMS);
     { Private declarations }
@@ -107,7 +109,7 @@ begin
 
   PageControl1.ActivePageIndex := 0;
 
-  fUsers := TLMSUsers.Create;
+  fUsers := TList<IUser>.Create;
 
   fLMSUsersTreeView := TLMSUsersTreeView.Create(self);
   fLMSUsersTreeView.Parent := TabSheet1;

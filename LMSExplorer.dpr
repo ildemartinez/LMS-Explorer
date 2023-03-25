@@ -27,10 +27,10 @@ uses
   LMS.Form.User in 'LMS.Form.User.pas' {LMSUserForm},
   LMS.Helper.Reports in 'LMS.Helper.Reports.pas',
   LMS._class.Network in 'LMS._class.Network.pas',
-  LMS._class.CourseCustom in 'LMS._class.CourseCustom.pas',
   LMS._interface.LMS in 'LMS._interface.LMS.pas',
   LMS._class.LMS in 'LMS._class.LMS.pas',
-  LMS._class.User in 'LMS._class.User.pas';
+  LMS._class.User in 'LMS._class.User.pas',
+  LMS._class.Course in 'LMS._class.Course.pas';
 
 {$R *.res}
 

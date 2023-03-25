@@ -63,7 +63,8 @@ type
 implementation
 
 uses
-  forms, sysutils,
+  forms,
+  sysutils,
   System.Generics.Collections,
   Dialogs,
   rest.Types,

@@ -15,9 +15,10 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     fLMSUser: IUser;
+
     procedure SetLMSUser(const Value: IUser);
   public
-    property aUser: IUser read fLMSUser write SetLMSUser;
+    property User: IUser read fLMSUser write SetLMSUser;
   end;
 
 implementation
