@@ -20,6 +20,7 @@ uses
 
   Vcl.ComCtrls, Vcl.ExtCtrls,
 
+  LMS._interface.LMS,
   LMS.TreeView.CourseCategory;
 
 type
@@ -36,28 +37,27 @@ type
     procedure Action2Execute(Sender: TObject);
     procedure Action2Update(Sender: TObject);
   private
-    fCategory: TLMSCategory;
+    fCategory: ICategory;
     fCategoryTreeView: TLMSCategoryTreeView;
 
-    procedure SetCategory(const Value: TLMSCategory);
+    procedure SetCategory(const Value: ICategory);
     { Private declarations }
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;
-    property aCategory: TLMSCategory read fCategory write SetCategory;
+    property aCategory: ICategory read fCategory write SetCategory;
   end;
 
 implementation
 
 uses
-  LMS._interface.LMS,
   LMS.Helper.Browser;
 
 {$R *.dfm}
 
 procedure TLMSCategoryForm.Action1Execute(Sender: TObject);
 var
-  aCourse: ILMSCourse;
+  aCourse: ICourse;
 begin
   for aCourse in fCategory.courses do
     OpenInBrowser(aCourse);
@@ -70,7 +70,7 @@ end;
 
 procedure TLMSCategoryForm.Action2Execute(Sender: TObject);
 var
-  aCourse: ILMSCourse;
+  aCourse: ICourse;
 begin
   for aCourse in fCategory.courses do
     OpenUsersInBrowser(aCourse);
@@ -95,7 +95,7 @@ begin
   Action := caFree;
 end;
 
-procedure TLMSCategoryForm.SetCategory(const Value: TLMSCategory);
+procedure TLMSCategoryForm.SetCategory(const Value: ICategory);
 begin
   fCategory := Value;
 

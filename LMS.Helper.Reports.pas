@@ -5,14 +5,14 @@ interface
 uses
   LMS._interface.LMS;
 
-procedure ExportToExcel(const aLMSCourse: ILMSCourse);
+procedure ExportToExcel(const aLMSCourse: ICourse);
 
 implementation
 
 uses
   LMS.Helper.Excel;
 
-procedure ExportToExcel(const aLMSCourse: ILMSCourse);
+procedure ExportToExcel(const aLMSCourse: ICourse);
 var
   ExcelWS: TExcelWorkSpace;
 //  LCID: Integer;

@@ -29,7 +29,8 @@ uses
   LMS._class.Network in 'LMS._class.Network.pas',
   LMS._class.CourseCustom in 'LMS._class.CourseCustom.pas',
   LMS._interface.LMS in 'LMS._interface.LMS.pas',
-  LMS._class.LMS in 'LMS._class.LMS.pas';
+  LMS._class.LMS in 'LMS._class.LMS.pas',
+  LMS._class.User in 'LMS._class.User.pas';
 
 {$R *.res}
 

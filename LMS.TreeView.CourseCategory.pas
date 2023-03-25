@@ -21,10 +21,10 @@ type
 
   TLMSCategoryTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-    fLMSCategory: TLMSCategory;
+    fLMSCategory: ICategory;
 
-    function GetSelectedUser: ILMSUser;
-    procedure setLMSCategory(const Value: TLMSCategory);
+    function GetSelectedUser: IUser;
+    procedure setLMSCategory(const Value: ICategory);
 
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
@@ -42,8 +42,8 @@ type
 
     procedure FilterByText(const text: string);
 
-    property Category: TLMSCategory read fLMSCategory write setLMSCategory;
-    property SelectedUser: ILMSUser read GetSelectedUser;
+    property Category: ICategory read fLMSCategory write setLMSCategory;
+    property SelectedUser: IUser read GetSelectedUser;
   end;
 
 implementation
@@ -202,7 +202,7 @@ begin
 
 end;
 
-function TLMSCategoryTreeView.GetSelectedUser: ILMSUser;
+function TLMSCategoryTreeView.GetSelectedUser: IUser;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -303,7 +303,7 @@ begin
   end;
 end;
 
-procedure TLMSCategoryTreeView.setLMSCategory(const Value: TLMSCategory);
+procedure TLMSCategoryTreeView.setLMSCategory(const Value: ICategory);
 begin
   fLMSCategory := Value;
 

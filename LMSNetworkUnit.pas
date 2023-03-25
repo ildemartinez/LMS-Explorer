@@ -13,46 +13,9 @@ uses
   LMS.Rest.Moodle;
 
 type
-  TLMSUser = class(TInterfacedObject, ILMSUser)
-  private
-    fid: integer;
-    fUserName: string;
-    flastcourseaccess: TDateTime;
-    fCourse: ILMSCourse;
-    fEmail: string;
-    fFullName: string;
-    fFirstName: string;
-    fLastName: string;
-    fRoles: string;
-    function getFilterContent: string;
-    function GetLastAccessAsString: string;
-    function GetRoles: string;
-    function GetEmail: string;
-    function GetFirstName: string;
-    function GetFullName: string;
-    function GetLastName: string;
-    function GetCourse: ILMSCourse;
-    function GetId: integer;
-    function GetUserName: string;
-  public
+  
 
-    procedure AssignByJson(const aJsonValue: TJSONValue);
-
-    // Properties for view components, do not resource
-    property Id : integer read GetId;
-    property UserName : string read GetUserName;
-    property Full_Name: string read GetFullName;
-    property First_Name: string read GetFirstName;
-    property Last_Name: string read GetLastName;
-    property Email: string read GetEmail;
-    property Last_access: string read GetLastAccessAsString;
-    property Roles: string read GetRoles;
-    property Course : ILMSCourse read GetCourse;
-
-    property FilterContent: string read getFilterContent;
-  end;
-
-  TLMSUserGroup = class(TInterfacedObject, ILMSUserGroup)
+  TLMSUserGroup = class(TInterfacedObject, IUsersGroup)
   private
     fid: cardinal;
     fGroupName: string;
@@ -76,7 +39,7 @@ type
     property UsersInGroup: TLMSUsers read GetUsersInGroup write SetUsersInGroup;
   end;
 
-  TLMSCourse = class(TInterfacedObject, ILMSCourse)
+  TLMSCourse = class(TInterfacedObject, ICourse)
   private
     fLMS: ILMS;
     fid: cardinal;
@@ -140,15 +103,15 @@ type
     property UserGroups: TLMSUserGroups read GetUserGroups write SetUserGroups;
   end;
 
-  TLMSCategory = class(TInterfacedObject, ILMSCategory)
+  TLMSCategory = class(TInterfacedObject, ICategory)
   private
     fLMS: ILMS;
     fid: cardinal;
     fParentCategory: cardinal;
     fName: string;
 
-    fcategories: TList<ILMSCategory>;
-    fcourses: TList<ILMSCourse>;
+    fcategories: TList<ICategory>;
+    fcourses: TList<ICourse>;
 
     function GetCoursesCount: cardinal;
     function GetSubCategoriesCount: cardinal;
@@ -159,8 +122,8 @@ type
     procedure SetId(const Value: cardinal);
     function GetName: string;
     procedure SetName(const Value: string);
-    function GetCategories: TList<ILMSCategory>;
-    function GetCourses: TList<ILMSCourse>;
+    function GetCategories: TList<ICategory>;
+    function GetCourses: TList<ICourse>;
   public
     // categoryid : cardinal;
     constructor Create(const parent: ILMS);
@@ -173,9 +136,9 @@ type
     property ParentCategory: cardinal read GetParentCategory
       write SetParentCategory;
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
-    property Courses: TList<ILMSCourse> read GetCourses;
+    property Courses: TList<ICourse> read GetCourses;
     property CoursesCount: cardinal read GetCoursesCount;
-    property Categories: TList<ILMSCategory> read GetCategories;
+    property Categories: TList<ICategory> read GetCategories;
 
   end;
 
@@ -183,6 +146,8 @@ implementation
 
 uses
   DateUtils,
+
+  LMS._class.User,
   LMS.Helper.Utils,
   LMS.Helper.Log;
 
@@ -194,16 +159,16 @@ begin
 
   fLMS := parent;
 
-  fcourses := TList<ILMSCourse>.Create;
-  fcategories := TList<ILMSCategory>.Create;
+  fcourses := TList<ICourse>.Create;
+  fcategories := TList<ICategory>.Create;
 end;
 
-function TLMSCategory.GetCategories: TList<ILMSCategory>;
+function TLMSCategory.GetCategories: TList<ICategory>;
 begin
   result := fcategories;
 end;
 
-function TLMSCategory.GetCourses: TList<ILMSCourse>;
+function TLMSCategory.GetCourses: TList<ICourse>;
 begin
   result := fcourses;
 end;
@@ -268,7 +233,7 @@ end;
 
 procedure TLMSCourse.GetCourseRoles(aCourseRoles: TStringlist);
 var
-  aUser: ILMSUser;
+  aUser: IUser;
 begin
   for aUser in fUsers do
     if aCourseRoles.IndexOf(aUser.Roles) < 0 then
@@ -287,7 +252,7 @@ end;
 
 procedure TLMSCourse.RefreshEnrolledUsers;
 var
-  aUser: TLMSUser;
+  aUser: IUser;
   aUsers: TJSonArray;
   User: TJSONValue;
 
@@ -309,8 +274,8 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TLMSUser.Create;
-      aUser.fCourse := self;
+      aUser := TUser.Create;
+      aUser.Course := self;
       aUser.AssignByJson(User);
 
       // Get user roles
@@ -318,9 +283,9 @@ begin
       begin
         arealrol := rol.GetValue<string>('name');
         if arealrol = '' then
-          aUser.fRoles := aUser.fRoles + rol.GetValue<string>('shortname')
+          aUser.Roles := aUser.Roles + rol.GetValue<string>('shortname')
         else
-          aUser.fRoles := aUser.fRoles + arealrol;
+          aUser.Roles := aUser.Roles + arealrol;
       end;
 
       // Add user to users list
@@ -351,7 +316,7 @@ procedure TLMSCourse.RefreshUserGroups;
 var
   aUserGroups: TJSonArray;
   agroup: TJSONValue;
-  aUserGroup: ILMSUserGroup;
+  aUserGroup: IUsersGroup;
 begin
   fUserGroups.Clear;
 
@@ -443,21 +408,19 @@ end;
 
 function TLMSCourse.GetStudentsCount: integer;
 var
-  aUser: ILMSUser;
+  aUser: IUser;
 begin
   result := 0;
   for aUser in fUsers do
   begin
     if aUser.Roles = 'student' then
       inc(result);
-
   end;
-
 end;
 
 function TLMSCourse.GetUserCountByRol(const aRole: string): cardinal;
 var
-  aUser: ILMSUser;
+  aUser: IUser;
 begin
   result := 0;
   for aUser in fUsers do
@@ -519,74 +482,5 @@ begin
   fUsersInGroup := Value;
 end;
 
-{ TLMSUser }
-
-procedure TLMSUser.AssignByJson(const aJsonValue: TJSONValue);
-var
-  timestamp: Int64;
-begin
-  fid := aJsonValue.GetValue<cardinal>('id');
-  fUserName := aJsonValue.GetValue<string>('username');
-  fFirstName := aJsonValue.GetValue<string>('firstname');
-  fLastName := aJsonValue.GetValue<string>('lastname');
-  fFullName := aJsonValue.GetValue<string>('fullname');
-  fEmail := aJsonValue.GetValue<string>('email');
-
-  // Some rest query does not return some fields so we have to check
-  if aJsonValue.TryGetValue<Int64>('lastcourseaccess', timestamp) then
-    flastcourseaccess := unixtodatetime(timestamp);
-end;
-
-function TLMSUser.GetCourse: ILMSCourse;
-begin
-result := fCourse;
-end;
-
-function TLMSUser.GetEmail: string;
-begin
-  result := fEmail;
-end;
-
-function TLMSUser.getFilterContent: string;
-begin
-  result := fEmail + ' ' + fFullName;
-end;
-
-function TLMSUser.GetFirstName: string;
-begin
-  result := fFirstName;
-end;
-
-function TLMSUser.GetFullName: string;
-begin
-  result := fFullName;
-end;
-
-function TLMSUser.GetId: integer;
-begin
-result := fid;
-end;
-
-function TLMSUser.GetLastAccessAsString: string;
-begin
-
-  result := FormatDateTimeNever(flastcourseaccess);
-
-end;
-
-function TLMSUser.GetLastName: string;
-begin
-  result := fLastName;
-end;
-
-function TLMSUser.GetRoles: string;
-begin
-  result := fRoles;
-end;
-
-function TLMSUser.GetUserName: string;
-begin
-result := fUserName;
-end;
 
 end.

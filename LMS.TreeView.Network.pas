@@ -282,7 +282,7 @@ begin
     case data^.node_type of
       ntLMS:
         begin
-          data^.aLMS.GetCategories;
+          data^.aLMS.GetCategoriesFromconnection;
           data^.aLMS.GetCourses;
           ChildCount := data^.aLMS.FirstLevelCategoriesCount;
         end;

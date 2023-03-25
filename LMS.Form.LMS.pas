@@ -144,7 +144,7 @@ begin
   Action := caFree;
 end;
 
-procedure TLMSForm.SetTLMS(const Value: TLMS);
+procedure TLMSForm.SetTLMS(const Value: ILMS);
 begin
   fLMS := Value;
 

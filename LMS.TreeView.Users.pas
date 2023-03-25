@@ -22,7 +22,7 @@ type
   private
     fLMSUsers: TLMSUsers;
 
-    function GetSelectedUser: ILMSUser;
+    function GetSelectedUser: IUser;
     procedure setLMSUsers(const Value: TLMSUsers);
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
@@ -43,7 +43,7 @@ type
     procedure Refreshh;
 
     property LMSUsers: TLMSUsers read fLMSUsers write setLMSUsers;
-    property SelectedUser: ILMSUser read GetSelectedUser;
+    property SelectedUser: IUser read GetSelectedUser;
 
   end;
 
@@ -137,7 +137,7 @@ begin
 
 end;
 
-function TLMSUsersTreeView.GetSelectedUser: ILMSUser;
+function TLMSUsersTreeView.GetSelectedUser: IUser;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;

@@ -11,6 +11,7 @@ uses
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
   Vcl.ActnMenus, System.ImageList, Vcl.ImgList,
 
+  LMS._interface.LMS,
   LMS.TreeView.CourseUsers;
 
 type
@@ -51,13 +52,13 @@ type
     procedure actExportExecute(Sender: TObject);
   private
     fUsersTreeView: TLMSCourseUsersTreeView;
-    fCourse: TLMSCourse;
-    procedure SetaCourse(const Value: TLMSCourse);
+    fCourse: ICourse;
+    procedure SetaCourse(const Value: ICourse);
     { Private declarations }
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;
-    property aCourse: TLMSCourse read fCourse write SetaCourse;
+    property aCourse: ICourse read fCourse write SetaCourse;
 
   end;
 
@@ -66,8 +67,6 @@ implementation
 uses
   Vcl.Clipbrd,
   ShellApi,
-
-  LMS._interface.LMS,
 
   LMS.Helper.Consts,
   LMS.Helper.Browser,
@@ -93,7 +92,7 @@ end;
 
 procedure TLMSCourseForm.Action3Execute(Sender: TObject);
 var
-  SelectedUser: ILMSUser;
+  SelectedUser: IUser;
 begin
   SelectedUser := fUsersTreeView.SelectedUser;
 
@@ -108,7 +107,7 @@ end;
 
 procedure TLMSCourseForm.Action4Execute(Sender: TObject);
 var
-  SelectedUser: ILMSUser;
+  SelectedUser: IUser;
 begin
   SelectedUser := fUsersTreeView.SelectedUser;
 
@@ -139,7 +138,7 @@ end;
 
 procedure TLMSCourseForm.Action7Execute(Sender: TObject);
 var
-  SelectedUser: ILMSUser;
+  SelectedUser: IUser;
 begin
   SelectedUser := fUsersTreeView.SelectedUser;
 
@@ -188,7 +187,7 @@ begin
     [fCourse.id])), nil, nil, 0); // SW_SHOW);
 end;
 
-procedure TLMSCourseForm.SetaCourse(const Value: TLMSCourse);
+procedure TLMSCourseForm.SetaCourse(const Value: ICourse);
 var
   aRole: string;
   aRolesList: TStringList;

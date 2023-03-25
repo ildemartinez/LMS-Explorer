@@ -16,10 +16,10 @@ type
 
   TTreeData = { packed } record
     aLMS: ILMS; // Pointer to LMS structure
-    Course: ILMSCourse;
-    User: ILMSUser;
-    Category: ILMSCategory;
-    Group: ILMSUserGroup;
+    Course: ICourse;
+    User: IUser;
+    Category: ICategory;
+    Group: IUsersGroup;
     node_type: TNodeTypes;
     // of
       // ntCategory:

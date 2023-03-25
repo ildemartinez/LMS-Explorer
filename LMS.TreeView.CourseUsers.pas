@@ -20,13 +20,13 @@ type
 
   TLMSCourseUsersTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-    fLMSCourse: TLMSCourse;
+    fLMSCourse: ICourse;
     fLMSUsers: TLMSUsers;
 
-    procedure setLMSCourse(const Value: TLMSCourse);
+    procedure setLMSCourse(const Value: ICourse);
 
     function HasGroups: boolean;
-    function GetSelectedUser: ILMSUser;
+    function GetSelectedUser: IUser;
 
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
@@ -45,8 +45,8 @@ type
     procedure FilterByText(const text: string);
     procedure Refreshh;
 
-    property LMSCourse: TLMSCourse read fLMSCourse write setLMSCourse;
-    property SelectedUser: ILMSUser read GetSelectedUser;
+    property LMSCourse: ICourse read fLMSCourse write setLMSCourse;
+    property SelectedUser: IUser read GetSelectedUser;
   end;
 
 implementation
@@ -219,7 +219,7 @@ begin
 
 end;
 
-function TLMSCourseUsersTreeView.GetSelectedUser: ILMSUser;
+function TLMSCourseUsersTreeView.GetSelectedUser: IUser;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -342,7 +342,7 @@ begin
   RootNodeCount := fLMSUsers.count;
 end;
 
-procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: TLMSCourse);
+procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: ICourse);
 
   procedure CreateColums;
   begin

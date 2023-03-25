@@ -7,7 +7,7 @@ uses
   Generics.Collections,
 
   LMS._interface.LMS,
-  lmsnetworkunit,
+ // lmsnetworkunit,
   LMS.Rest.Moodle;
 
 type
@@ -40,7 +40,7 @@ type
   public
 
     // All LMS courses
-    courses: TList<TLMSCourse>;
+    courses: TList<ICourse>;
 
     constructor Create(Owner: TComponent); override;
 
@@ -48,7 +48,7 @@ type
     function connected: boolean;
 
     function FirstLevelCategoriesCount: cardinal;
-    function GetCategoryById(Id: cardinal): ILMSCategory;
+    function GetCategoryById(Id: cardinal): ICategory;
     function GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
       const aFilter: string): integer;
 
@@ -73,6 +73,8 @@ implementation
 uses
   System.JSON,
 
+  LMS._class.User,
+  LMSNetworkunit,
   LMS.Helper.Log;
 
 function TLMS.FirstLevelCategoriesCount: cardinal;
@@ -101,8 +103,8 @@ begin
   aLMSConnection := TLMSRestMoodle.Create(self);
   aLMSConnection.OnFunctionNotAdded := MyOnFunctionNotAdded;
 
-  Categories := TList<ILMSCategory>.Create;
-  courses := TList<TLMSCourse>.Create;
+  Categories := TList<ICategory>.Create;
+  courses := TList<ICourse>.Create;
 end;
 
 function TLMS.GetAutoConnect: boolean;
@@ -112,7 +114,7 @@ end;
 
 procedure TLMS.GetCategoriesFromConnection;
 var
-  aCategory: ILMSCategory;
+  aCategory: ICategory;
   aCategories: TJSonArray;
   Category: TJSONValue;
 begin
@@ -153,7 +155,7 @@ var
   aCourse: TLMSCourse;
   aCourses: TJSonArray;
   Course: TJSONValue;
-  aCourseCategory: ILMSCategory;
+  aCourseCategory: ICategory;
 begin
   // log('Retrieving LMS Courses - may take some time');
   aCourses := aLMSConnection.GetCourses;
@@ -194,7 +196,7 @@ function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;
 var
   aUsers: TJSonArray;
   User: TJSONValue;
-  aUser: TLMSUser;
+  aUser: IUser;
 begin
 
   aUsers := aLMSConnection.GetUsersByFirstName(aFilter);
@@ -204,7 +206,7 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TLMSUser.Create;
+      aUser := TUser.Create;
       aUser.AssignByJson(User);
       // aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
@@ -218,7 +220,7 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TLMSUser.Create;
+      aUser := TUser.Create;
       aUser.AssignByJson(User);
       // aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
@@ -232,7 +234,7 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TLMSUser.Create;
+      aUser := TUser.Create;
       aUser.AssignByJson(User);
       // aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
@@ -299,9 +301,9 @@ begin
   aLMSConnection.User := Value;
 end;
 
-function TLMS.GetCategoryById(Id: cardinal): ILMSCategory;
+function TLMS.GetCategoryById(Id: cardinal): ICategory;
 var
-  cat: ILMSCategory;
+  cat: ICategory;
 begin
   result := nil;
 

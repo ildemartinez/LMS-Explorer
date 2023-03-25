@@ -14,10 +14,10 @@ type
   TLMSUserForm = class(TForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    fLMSUser: ILMSUser;
-    procedure SetLMSUser(const Value: ILMSUser);
+    fLMSUser: IUser;
+    procedure SetLMSUser(const Value: IUser);
   public
-    property aUser: ILMSUser read fLMSUser write SetLMSUser;
+    property aUser: IUser read fLMSUser write SetLMSUser;
   end;
 
 implementation
@@ -29,7 +29,7 @@ begin
   Action := caFree;
 end;
 
-procedure TLMSUserForm.SetLMSUser(const Value: ILMSUser);
+procedure TLMSUserForm.SetLMSUser(const Value: IUser);
 begin
   fLMSUser := Value;
 
