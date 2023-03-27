@@ -13,9 +13,7 @@ uses
   LMS.TreeView.Custom,
 
   winapi.messages,
-  LMS._class.Network,
-
-  lmsnetworkunit;
+  LMS._class.Network;
 
 type
   TLMSNetworkTreeView = class(TLMSCustomLMSVirtualStringTree)

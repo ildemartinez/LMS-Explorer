@@ -6,7 +6,7 @@ uses
   Vcl.Forms,
   LMS.Form.Main in 'LMS.Form.Main.pas' {MainForm},
   LMS.TreeView.Network in 'LMS.TreeView.Network.pas',
-  LMSNetworkUnit in 'LMSNetworkUnit.pas',
+  LMS._class.UsersGroup in 'LMS._class.UsersGroup.pas',
   LMS.Rest.Moodle in 'LMS.Rest.Moodle.pas',
   LMS.Helper.Log in 'LMS.Helper.Log.pas',
   LMS.Form.LMS in 'LMS.Form.LMS.pas' {LMSForm},
@@ -30,7 +30,8 @@ uses
   LMS._interface.LMS in 'LMS._interface.LMS.pas',
   LMS._class.LMS in 'LMS._class.LMS.pas',
   LMS._class.User in 'LMS._class.User.pas',
-  LMS._class.Course in 'LMS._class.Course.pas';
+  LMS._class.Course in 'LMS._class.Course.pas',
+  LMS._class.Category in 'LMS._class.Category.pas';
 
 {$R *.res}
 

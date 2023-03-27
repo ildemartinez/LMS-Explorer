@@ -8,8 +8,7 @@ uses
   VirtualTrees,
 
   LMS._interface.LMS,
-  LMS._class.LMS,
-  LMSNetworkUnit;
+  LMS._class.LMS;
 
 type
   TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser);

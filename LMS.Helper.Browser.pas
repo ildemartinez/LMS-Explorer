@@ -3,8 +3,7 @@ unit LMS.Helper.Browser;
 interface
 
 uses
-  LMS._interface.LMS,
-  LMSNetWorkUnit;
+  LMS._interface.LMS;
 
 // Opens Moodle instace, category or course at the default system browser
 procedure OpenInBrowser(const aURL: string); overload;

@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  LMSNetworkUnit, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls,
+  Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls,
   Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Actions,
   Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, System.ImageList,
   Vcl.ImgList,
@@ -126,7 +126,8 @@ begin
 
     fUsers.Clear;
 
-    aUsersCount := fLMS.GetUsersByAlmostAllFields(fUsers, '%' + Edit1.Text + '%');
+    aUsersCount := fLMS.GetUsersByAlmostAllFields(fUsers,
+      '%' + Edit1.Text + '%');
 
     if aUsersCount > 0 then
       fLMSUsersTreeView.Refreshh;
@@ -153,6 +154,6 @@ begin
   caption := fLMS.Id;
 end;
 
-//initialization
-//ReportMemoryLeaksOnShutdown := True;
+// initialization
+// ReportMemoryLeaksOnShutdown := True;
 end.

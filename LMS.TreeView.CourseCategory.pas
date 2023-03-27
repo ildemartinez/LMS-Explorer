@@ -13,9 +13,7 @@ uses
   VirtualTrees,
 
   LMS._interface.LMS,
-  LMS.TreeView.Custom,
-
-  lmsnetworkunit;
+  LMS.TreeView.Custom;
 
 type
 

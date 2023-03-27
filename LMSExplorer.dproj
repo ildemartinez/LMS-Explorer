@@ -88,8 +88,8 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Icon_MainIcon>LMSExplorer_Icon1.ico</Icon_MainIcon>
-        <VerInfo_Build>93</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.93;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>106</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.106;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <UWP_DelphiLogo44>resources\icons8-hacker-44.png</UWP_DelphiLogo44>
     </PropertyGroup>
@@ -119,7 +119,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="LMS.TreeView.Network.pas"/>
-        <DCCReference Include="LMSNetworkUnit.pas"/>
+        <DCCReference Include="LMS._class.UsersGroup.pas"/>
         <DCCReference Include="LMS.Rest.Moodle.pas"/>
         <DCCReference Include="LMS.Helper.Log.pas"/>
         <DCCReference Include="LMS.Form.LMS.pas">
@@ -162,6 +162,7 @@
         <DCCReference Include="LMS._class.LMS.pas"/>
         <DCCReference Include="LMS._class.User.pas"/>
         <DCCReference Include="LMS._class.Course.pas"/>
+        <DCCReference Include="LMS._class.Category.pas"/>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

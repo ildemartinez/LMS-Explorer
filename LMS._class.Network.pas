@@ -6,8 +6,7 @@ uses
   Generics.Collections,
 
   LMS._interface.LMS,
-  LMS._class.LMS,
-  lmsnetworkunit;
+  LMS._class.LMS;
 
 type
 

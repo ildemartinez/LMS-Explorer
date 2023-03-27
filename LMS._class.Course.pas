@@ -79,7 +79,7 @@ uses
   System.JSON,
 
   LMS._class.User,
-  lmsnetworkunit;
+  LMS._class.UsersGroup;
 
 constructor TLMSCourse.Create(const LMS: ILMS);
 begin
@@ -188,7 +188,7 @@ begin
     // log(aUserGroups.ToString);
     for agroup in aUserGroups do
     begin
-      aUserGroup := TLMSUserGroup.Create;
+      aUserGroup := TUsersGroup.Create;
 
       aUserGroup.Id := agroup.GetValue<cardinal>('id');
       aUserGroup.GroupName := agroup.GetValue<string>('name');

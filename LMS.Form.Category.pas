@@ -15,7 +15,7 @@ uses
   Vcl.Forms,
   Vcl.Dialogs,
 
-  LMSNetworkUnit, System.Actions, Vcl.ActnList, Vcl.ToolWin, Vcl.ActnMan,
+  System.Actions, Vcl.ActnList, Vcl.ToolWin, Vcl.ActnMan,
   Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls,
 
   Vcl.ComCtrls, Vcl.ExtCtrls,

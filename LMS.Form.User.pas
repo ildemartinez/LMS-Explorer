@@ -7,8 +7,7 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
 
-  LMS._interface.LMS,
-  LMSNetworkUnit;
+  LMS._interface.LMS;
 
 type
   TLMSUserForm = class(TForm)

@@ -6,8 +6,9 @@ uses
   System.Classes,
   Generics.Collections,
 
-  LMS._interface.LMS,
-  LMS.Rest.Moodle;
+  LMS._interface.LMS
+  //LMS.Rest.Moodle
+  ;
 
 type
 
@@ -36,7 +37,6 @@ type
     procedure SetCategories(const Value: TList<ICategory>);
     function GetCategories: TList<ICategory>;
   public
-
     constructor Create(Owner: TComponent); override;
 
     procedure Connect;
@@ -60,7 +60,6 @@ type
     property Host: string read GetHost write SetHost;
 
     property Categories: TList<ICategory> read GetCategories write SetCategories;
-
   end;
 
 implementation
@@ -70,7 +69,7 @@ uses
 
   LMS._class.User,
   LMS._class.Course,
-  LMSNetworkunit,
+  LMS._class.Category,
   LMS.Helper.Log;
 
 function TLMS.FirstLevelCategoriesCount: cardinal;
@@ -125,7 +124,7 @@ begin
     for Category in aCategories do
     begin
       // Add to a global category list
-      aCategory := TLMSCategory.Create(self, Category);
+      aCategory := TCategory.Create(self, Category);
       Categories.add(aCategory);
     end;
 

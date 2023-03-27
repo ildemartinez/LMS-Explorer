@@ -59,7 +59,6 @@ object LMSCourseForm: TLMSCourseForm
       Tabs.Strings = (
         'Users and Groups')
       TabIndex = 0
-      ExplicitHeight = 358
       object Panel1: TPanel
         Left = 4
         Top = 24
