@@ -21,21 +21,20 @@ type
     // All users enrolled in this course
     fUsers: TList<IUser>;
     // All course groups
-    fUserGroups: TLMSUserGroups;
+    fUserGroups: TList<IUsersGroup>;
 
     function getFilterContent: string;
     function GetDisplayContent: string;
     function GetLMS: ILMS;
 
     procedure RefreshUserGroups;
-    function GetStudentsCount: integer;
     function getId: cardinal;
     procedure SetId(const Value: cardinal);
     function GetGroupMode: cardinal;
     procedure SetGroupMode(const Value: cardinal);
-    function GetUserGroups: TLMSUserGroups;
+    function GetUserGroups: TList<IUsersGroup>;
     function GetUsers: TList<IUser>;
-    procedure SetUserGroups(const Value: TLMSUserGroups);
+    procedure SetUserGroups(const Value: TList<IUsersGroup>);
     procedure SetUsers(const Value: TList<IUser>);
     function GetFullName: string;
     function GetShortName: string;
@@ -43,8 +42,11 @@ type
     procedure SetShortName(const Value: string);
     function GetDisplayName: string;
     procedure SetDisplayName(const Value: string);
+    function GetCategory: ICategory;
+    property Category : ICategory read GetCategory;
   public
     constructor Create(const LMS: ILMS);
+    destructor Destroy; override;
 
     procedure RefreshEnrolledUsers;
     procedure GetCourseRoles(aCourseRoles: TStringlist);
@@ -64,13 +66,11 @@ type
     // Return the course information that can be filtered from
     property FilterContent: string read getFilterContent;
 
-    Property StudentsCount: integer read GetStudentsCount;
-
     property GroupMode: cardinal read GetGroupMode write SetGroupMode;
 
     property Users: TList<IUser> read GetUsers write SetUsers;
     // All course groups
-    property UserGroups: TLMSUserGroups read GetUserGroups write SetUserGroups;
+    property UserGroups: TList<IUsersGroup> read GetUserGroups write SetUserGroups;
   end;
 
 implementation
@@ -86,10 +86,36 @@ begin
   inherited Create;
 
   fUsers := TList<IUser>.Create;
-  fUserGroups := TLMSUserGroups.Create;
+  fUserGroups := TList<IUsersGroup>.Create;
 
   fLMS := LMS;
+end;
 
+destructor TLMSCourse.Destroy;
+begin
+  fUserGroups.free;
+  fUsers.free;
+
+  inherited;
+end;
+
+function TLMSCourse.GetCategory: ICategory;
+var
+  cat: ICategory;
+  cour: ICourse;
+begin
+  result := nil;
+
+  for cat in flms.Categories do
+  begin
+    for cour in cat.Courses do
+
+      if (cour.Id = Id) then
+      begin
+        result := cat;
+        break;
+      end;
+  end;
 end;
 
 procedure TLMSCourse.GetCourseRoles(aCourseRoles: TStringlist);
@@ -135,9 +161,8 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TUser.Create;
+      aUser := TUser.Create(fLMS,User);
       aUser.Course := self;
-      aUser.AssignByJson(User);
 
       // Get user roles
       for rol in User.GetValue<TJSonArray>('roles') do
@@ -227,7 +252,7 @@ begin
   fshortname := Value;
 end;
 
-procedure TLMSCourse.SetUserGroups(const Value: TLMSUserGroups);
+procedure TLMSCourse.SetUserGroups(const Value: TList<IUsersGroup>);
 begin
   fUserGroups := Value;
 end;
@@ -267,18 +292,6 @@ begin
   result := fshortname;
 end;
 
-function TLMSCourse.GetStudentsCount: integer;
-var
-  aUser: IUser;
-begin
-  result := 0;
-  for aUser in fUsers do
-  begin
-    if aUser.Roles = 'student' then
-      inc(result);
-  end;
-end;
-
 function TLMSCourse.GetUserCountByRol(const aRole: string): cardinal;
 var
   aUser: IUser;
@@ -291,7 +304,7 @@ begin
   end;
 end;
 
-function TLMSCourse.GetUserGroups: TLMSUserGroups;
+function TLMSCourse.GetUserGroups: TList<IUsersGroup>;
 begin
   result := fUserGroups;
 end;

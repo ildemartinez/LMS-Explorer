@@ -6,9 +6,8 @@ uses
   System.Classes,
   Generics.Collections,
 
-  LMS._interface.LMS
-  //LMS.Rest.Moodle
-  ;
+  LMS._interface.LMS,
+  LMS.Rest.Moodle;
 
 type
 
@@ -46,6 +45,7 @@ type
     function GetCategoryById(Id: cardinal): ICategory;
     function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
       const aFilter: string): integer;
+    function GetCourseById(const Id: cardinal): ICourse;
 
     procedure GetCategoriesFromConnection;
     procedure GetCourses;
@@ -59,7 +59,8 @@ type
     property Service: string write SetService;
     property Host: string read GetHost write SetHost;
 
-    property Categories: TList<ICategory> read GetCategories write SetCategories;
+    property Categories: TList<ICategory> read GetCategories
+      write SetCategories;
   end;
 
 implementation
@@ -143,6 +144,26 @@ begin
   result := fCategories;
 end;
 
+function TLMS.GetCourseById(const Id: cardinal): ICourse;
+var
+  cat: ICategory;
+  cour: ICourse;
+begin
+  result := nil;
+
+  for cat in Categories do
+  begin
+    for cour in cat.Courses do
+
+      if (cour.Id = Id) then
+      begin
+        result := cour;
+        break;
+      end;
+  end;
+
+end;
+
 procedure TLMS.GetCourses;
 var
   aCourse: TLMSCourse;
@@ -175,7 +196,7 @@ begin
         aCourseCategory := GetCategoryById
           (Course.GetValue<cardinal>('categoryid'));
         if aCourseCategory <> nil then
-          aCourseCategory.courses.add(aCourse);
+          aCourseCategory.Courses.add(aCourse);
         //
 
       end;
@@ -198,8 +219,7 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TUser.Create;
-      aUser.AssignByJson(User);
+      aUser := TUser.Create(self, User);
       // aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
     end;
@@ -212,8 +232,7 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TUser.Create;
-      aUser.AssignByJson(User);
+      aUser := TUser.Create(self, User);
       // aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
     end;
@@ -226,8 +245,7 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TUser.Create;
-      aUser.AssignByJson(User);
+      aUser := TUser.Create(self, User);
       // aUser.fCourse.fLMS := self;  // set the LMS of the user
       aLMSUsers.add(aUser);
     end;

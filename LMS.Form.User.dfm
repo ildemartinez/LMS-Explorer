@@ -16,4 +16,13 @@ object LMSUserForm: TLMSUserForm
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
+  object Memo1: TMemo
+    Left = 120
+    Top = 32
+    Width = 281
+    Height = 177
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 0
+  end
 end

@@ -7,10 +7,11 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
 
-  LMS._interface.LMS;
+  LMS._interface.LMS, Vcl.StdCtrls;
 
 type
   TLMSUserForm = class(TForm)
+    Memo1: TMemo;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     fLMSUser: IUser;
@@ -33,7 +34,13 @@ procedure TLMSUserForm.SetLMSUser(const Value: IUser);
 begin
   fLMSUser := Value;
 
-  caption := fLMSUser.Full_Name;
+  caption := fLMSUser.Full_Name + fLMSUser.OtherEnrolledCourses.Count.ToString;
+
+  for var course in fLMSUser.OtherEnrolledCourses do
+begin
+  memo1.Lines.add(course.FullName);
+  Memo1.Lines.add(course.Category.Name);
+end;
 end;
 
 end.

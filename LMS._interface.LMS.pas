@@ -13,6 +13,7 @@ type
   ILMS = interface;
   IUser = interface;
   ICourse = interface;
+  ICategory = interface;
 
   IUsersGroup = interface
     ['{586BCC1C-EA18-4D15-A788-3BF00EFD328F}']
@@ -26,11 +27,10 @@ type
 
     property Id: cardinal read getId write SetId;
     property GroupName: string read GetGroupName write SetGroupName;
-    property UsersInGroup: TList<IUser> read GetUsersInGroup write SetUsersInGroup;
+    property UsersInGroup: TList<IUser> read GetUsersInGroup
+      write SetUsersInGroup;
     property FilterContent: string read GetFilterContent;
   end;
-
-  TLMSUserGroups = TList<IUsersGroup>;
 
   IUser = interface
     ['{F9286941-71B4-4B95-9E3E-201708B28483}']
@@ -45,9 +45,10 @@ type
     function getId: integer;
     function GetUserName: string;
     procedure SetRoles(const Value: string);
+    function GetLMS: ILMS;
+    function GetOtherEnrolledCourses: TList<ICourse>;
 
-    procedure AssignByJson(const aJsonValue: TJSONValue);
-
+    property LMS: ILMS read GetLMS;
     property Id: integer read getId;
     property UserName: string read GetUserName;
     property Full_Name: string read GetFullName;
@@ -55,6 +56,7 @@ type
     property Last_Name: string read GetLastName;
     property Email: string read GetEmail;
     property Course: ICourse read GetCourse write SetCourse;
+    property OtherEnrolledCourses: TList<ICourse> read GetOtherEnrolledCourses;
 
     property Roles: string read GetRoles write SetRoles;
     property FilterContent: string read GetFilterContent;
@@ -68,9 +70,9 @@ type
     procedure SetGroupMode(const Value: cardinal);
     procedure RefreshUserGroups;
     procedure RefreshEnrolledUsers;
-    function GetUserGroups: TLMSUserGroups;
+    function GetUserGroups: TList<IUsersGroup>;
     function GetUsers: TList<IUser>;
-    procedure SetUserGroups(const Value: TLMSUserGroups);
+    procedure SetUserGroups(const Value: TList<IUsersGroup>);
     procedure SetUsers(const Value: TList<IUser>);
     function GetFullName: string;
     function GetShortName: string;
@@ -82,8 +84,10 @@ type
     function GetDisplayContent: string;
     procedure GetCourseRoles(aCourseRoles: TStringlist);
     function GetUserCountByRol(const aRole: string): cardinal;
+    function GetCategory : ICategory;
 
     property LMS: ILMS read GetLMS;
+    property Category : ICategory read GetCategory;
     property shortname: string read GetShortName write SetShortName;
     property FullName: string read GetFullName write SetFullName;
     property DisplayName: string read GetDisplayName write SetDisplayName;
@@ -93,7 +97,8 @@ type
     property FilterContent: string read GetFilterContent;
     property DisplayContent: string read GetDisplayContent;
     // All course groups
-    property UserGroups: TLMSUserGroups read GetUserGroups write SetUserGroups;
+    property UserGroups: TList<IUsersGroup> read GetUserGroups
+      write SetUserGroups;
   end;
 
   ICategory = interface
@@ -154,6 +159,7 @@ type
     function connected: boolean;
 
     function GetCategoryById(Id: cardinal): ICategory;
+    function GetCourseById(const Id: cardinal): ICourse;
     function FirstLevelCategoriesCount: cardinal;
     // function GetCategoryById(Id: cardinal): TLMSCategory;
     // function GetUsersByAlmostAllFields(var aLMSUsers: TLMSUsers;      const aFilter: string): integer;
@@ -167,7 +173,8 @@ type
     property Password: string write SetPassword;
     property Service: string write SetService;
     property Host: string read GetHost write SetHost;
-    property Categories: TList<ICategory> read GetCategories write SetCategories;
+    property Categories: TList<ICategory> read GetCategories
+      write SetCategories;
 
     property aLMSConnection: TLMSRestMoodle read GetLMSConnection;
   end;

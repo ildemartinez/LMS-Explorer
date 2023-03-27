@@ -15,7 +15,6 @@ uses
 procedure ExportToExcel(const aLMSCourse: ICourse);
 var
   ExcelWS: TExcelWorkSpace;
-//  LCID: Integer;
 begin
   ExcelWS := TExcelWorkSpace.Create;
 

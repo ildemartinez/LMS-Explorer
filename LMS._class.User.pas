@@ -4,11 +4,14 @@ interface
 
 uses
   System.JSON,
+  Generics.Collections,
+
   LMS._interface.LMS;
 
 type
   TUser = class(TInterfacedObject, IUser)
   private
+    fLMS: ILMS;
     fid: integer;
     fUserName: string;
     flastcourseaccess: TDateTime;
@@ -18,6 +21,7 @@ type
     fFirstName: string;
     fLastName: string;
     fRoles: string;
+    fOtherEnrolledCourses: TList<ICourse>;
     function getFilterContent: string;
     function GetLastAccessAsString: string;
     function GetRoles: string;
@@ -30,11 +34,14 @@ type
     function GetUserName: string;
     procedure SetCourse(const value: ICourse);
     procedure SetRoles(const value: string);
+    function getLMS: ILMS;
+    function GetOtherEnrolledCourses: TList<ICourse>;
   public
-
-    procedure AssignByJson(const aJsonValue: TJSONValue);
+    constructor Create(const LMS: ILMS; const aJSONValue: TJSONValue);
+    // procedure AssignByJson(const aJsonValue: TJSONValue);
 
     // Properties for view components, do not resource
+    property LMS: ILMS read getLMS;
     property Id: integer read GetId;
     property UserName: string read GetUserName;
     property Full_Name: string read GetFullName;
@@ -46,28 +53,47 @@ type
     property Course: ICourse read GetCourse write SetCourse;
 
     property FilterContent: string read getFilterContent;
+    property OtherEnrolledCourses: TList<ICourse> read GetOtherEnrolledCourses;
   end;
 
 implementation
 
 uses
-  DateUtils,
-  LMS.Helper.Utils;
+  DateUtils, sysutils,
+  LMS.Helper.Utils,
+  LMS.Helper.Log;
 
-procedure TUser.AssignByJson(const aJsonValue: TJSONValue);
+constructor TUser.Create(const LMS: ILMS; const aJSONValue: TJSONValue);
 var
   timestamp: Int64;
+  enrolledcourses: TJSONArray;
+  aOtherCourse: ICourse;
 begin
-  fid := aJsonValue.GetValue<cardinal>('id');
-  fUserName := aJsonValue.GetValue<string>('username');
-  fFirstName := aJsonValue.GetValue<string>('firstname');
-  fLastName := aJsonValue.GetValue<string>('lastname');
-  fFullName := aJsonValue.GetValue<string>('fullname');
-  fEmail := aJsonValue.GetValue<string>('email');
+  // Log(aJSONValue.ToString);
+
+  fOtherEnrolledCourses := TList<ICourse>.Create;
+
+  fLMS := LMS;
+  fid := aJSONValue.GetValue<cardinal>('id');
+  fUserName := aJSONValue.GetValue<string>('username');
+  fFirstName := aJSONValue.GetValue<string>('firstname');
+  fLastName := aJSONValue.GetValue<string>('lastname');
+  fFullName := aJSONValue.GetValue<string>('fullname');
+  fEmail := aJSONValue.GetValue<string>('email');
 
   // Some rest query does not return some fields so we have to check
-  if aJsonValue.TryGetValue<Int64>('lastcourseaccess', timestamp) then
+  if aJSONValue.TryGetValue<Int64>('lastcourseaccess', timestamp) then
     flastcourseaccess := unixtodatetime(timestamp);
+
+  if aJSONValue.TryGetValue<TJSONArray>('enrolledcourses', enrolledcourses) then
+    for var acourse in enrolledcourses do
+    begin
+      // Log(inttostr(acourse.GetValue<integer>('id')));
+
+      aOtherCourse := fLMS.getCourseById(acourse.GetValue<integer>('id'));
+      OtherEnrolledCourses.add(aOtherCourse);
+    end;
+
 end;
 
 function TUser.GetCourse: ICourse;
@@ -83,6 +109,11 @@ end;
 procedure TUser.SetRoles(const value: string);
 begin
   fRoles := value;
+end;
+
+function TUser.GetOtherEnrolledCourses: TList<ICourse>;
+begin
+  result := fOtherEnrolledCourses;
 end;
 
 function TUser.getFilterContent: string;
@@ -118,6 +149,11 @@ end;
 function TUser.GetLastName: string;
 begin
   result := fLastName;
+end;
+
+function TUser.getLMS: ILMS;
+begin
+  result := fLMS;
 end;
 
 function TUser.GetRoles: string;
