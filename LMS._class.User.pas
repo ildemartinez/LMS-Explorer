@@ -69,8 +69,6 @@ var
   enrolledcourses: TJSONArray;
   aOtherCourse: ICourse;
 begin
-  // Log(aJSONValue.ToString);
-
   fOtherEnrolledCourses := TList<ICourse>.Create;
 
   fLMS := LMS;
@@ -88,12 +86,9 @@ begin
   if aJSONValue.TryGetValue<TJSONArray>('enrolledcourses', enrolledcourses) then
     for var acourse in enrolledcourses do
     begin
-      // Log(inttostr(acourse.GetValue<integer>('id')));
-
       aOtherCourse := fLMS.getCourseById(acourse.GetValue<integer>('id'));
       OtherEnrolledCourses.add(aOtherCourse);
     end;
-
 end;
 
 function TUser.GetCourse: ICourse;

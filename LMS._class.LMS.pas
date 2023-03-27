@@ -42,7 +42,7 @@ type
     function connected: boolean;
 
     function FirstLevelCategoriesCount: cardinal;
-    function GetCategoryById(Id: cardinal): ICategory;
+    function GetCategoryById(const Id: cardinal): ICategory;
     function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
       const aFilter: string): integer;
     function GetCourseById(const Id: cardinal): ICourse;
@@ -311,7 +311,7 @@ begin
   fConnection.User := Value;
 end;
 
-function TLMS.GetCategoryById(Id: cardinal): ICategory;
+function TLMS.GetCategoryById(const Id: cardinal): ICategory;
 var
   cat: ICategory;
 begin

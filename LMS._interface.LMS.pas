@@ -158,7 +158,7 @@ type
     procedure Connect;
     function connected: boolean;
 
-    function GetCategoryById(Id: cardinal): ICategory;
+    function GetCategoryById(const Id: cardinal): ICategory;
     function GetCourseById(const Id: cardinal): ICourse;
     function FirstLevelCategoriesCount: cardinal;
     // function GetCategoryById(Id: cardinal): TLMSCategory;

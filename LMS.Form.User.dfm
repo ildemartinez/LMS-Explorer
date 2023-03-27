@@ -2,8 +2,8 @@ object LMSUserForm: TLMSUserForm
   Left = 0
   Top = 0
   Caption = 'LMSUserForm'
-  ClientHeight = 245
-  ClientWidth = 508
+  ClientHeight = 461
+  ClientWidth = 801
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,12 +17,16 @@ object LMSUserForm: TLMSUserForm
   PixelsPerInch = 96
   TextHeight = 13
   object Memo1: TMemo
-    Left = 120
-    Top = 32
-    Width = 281
+    Left = 0
+    Top = 284
+    Width = 801
     Height = 177
+    Align = alBottom
     Lines.Strings = (
       'Memo1')
     TabOrder = 0
+    ExplicitLeft = 120
+    ExplicitTop = 32
+    ExplicitWidth = 281
   end
 end

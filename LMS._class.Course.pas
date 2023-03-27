@@ -43,7 +43,6 @@ type
     function GetDisplayName: string;
     procedure SetDisplayName(const Value: string);
     function GetCategory: ICategory;
-    property Category : ICategory read GetCategory;
   public
     constructor Create(const LMS: ILMS);
     destructor Destroy; override;
