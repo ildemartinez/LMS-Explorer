@@ -66,16 +66,16 @@ uses
 procedure TLMSCustomLMSVirtualStringTree.BeforePaint(Sender: TBaseVirtualTree;
   TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  data1: PTreeData;
 begin
-  if Node.Index mod 2 = 0 then
+  data1 := Sender.GetNodeData(Node);
+
+  if (Node.Index mod 2 = 1) or (data1^.node_type = ntCategory) then
     // TargetCanvas.Brush.Color := $00F7E6D5 ;
     // else
     TargetCanvas.Brush.Color := $00FBF2EA;
-  {
-    if Sender = ipTree then
-    if IpAddresses[ PVirtualNode( Node ).Index ].Highlighted then
-    TargetCanvas.Brush.Color := clYellow;
-  }
+
   TargetCanvas.FillRect(CellRect);
 end;
 
