@@ -12,7 +12,8 @@ object MainForm: TMainForm
   Font.Style = []
   FormStyle = fsMDIForm
   OldCreateOrder = False
-  OnShow = FormShow
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
@@ -96,6 +97,13 @@ object MainForm: TMainForm
           item
             Items = <
               item
+                Action = actExit
+              end>
+            Caption = '&File'
+          end
+          item
+            Items = <
+              item
                 Action = WindowCascade1
                 ImageIndex = 17
               end
@@ -114,20 +122,20 @@ object MainForm: TMainForm
           item
             Items = <
               item
-                Action = Action1
+                Action = actAbout
                 Caption = '&About'
               end>
             Caption = '&Help'
           end>
         ActionBar = ActionMainMenuBar1
       end>
-    Left = 608
-    Top = 152
+    Left = 544
+    Top = 224
     StyleName = 'Platform Default'
-    object Action1: TAction
+    object actAbout: TAction
       Category = 'Help'
       Caption = 'About'
-      OnExecute = Action1Execute
+      OnExecute = actAboutExecute
     end
     object WindowCascade1: TWindowCascade
       Category = 'Window'
@@ -148,6 +156,11 @@ object MainForm: TMainForm
       Hint = 'Close all windows'
       OnExecute = Action2Execute
       OnUpdate = Action2Update
+    end
+    object actExit: TAction
+      Category = 'File'
+      Caption = 'Exit'
+      OnExecute = actExitExecute
     end
   end
   object CoursesActionManager: TActionManager
@@ -171,5 +184,18 @@ object MainForm: TMainForm
       OnExecute = Action3Execute
       OnUpdate = Action3Update
     end
+  end
+  object TrayIcon1: TTrayIcon
+    BalloonTitle = 'Notice'
+    BalloonTimeout = 5000
+    BalloonFlags = bfInfo
+    OnDblClick = TrayIcon1DblClick
+    Left = 472
+    Top = 72
+  end
+  object ApplicationEvents1: TApplicationEvents
+    OnMinimize = ApplicationEvents1Minimize
+    Left = 592
+    Top = 72
   end
 end

@@ -11,16 +11,16 @@ uses
   Vcl.PlatformDefaultStyleActnCtrls, REST.Types, REST.Client,
   Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls, Vcl.StdActns,
 
-  LMS.TreeView.Network;
+  LMS.TreeView.Network, Vcl.AppEvnts;
 
 const
-  WM_AFTER_SHOW = WM_USER + 300;
+  WM_AFTER_CREATE = WM_USER + 300;
 
 type
   TMainForm = class(TForm)
     ActionMainMenuBar1: TActionMainMenuBar;
     MainActionManager: TActionManager;
-    Action1: TAction;
+    actAbout: TAction;
     Memo1: TMemo;
     WindowCascade1: TWindowCascade;
     WindowMinimizeAll1: TWindowMinimizeAll;
@@ -31,21 +31,28 @@ type
     ActionMainMenuBar2: TActionMainMenuBar;
     Edit1: TEdit;
     Action3: TAction;
+    TrayIcon1: TTrayIcon;
+    ApplicationEvents1: TApplicationEvents;
+    actExit: TAction;
 
-    procedure FormShow(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
-    procedure Action1Execute(Sender: TObject);
+    procedure actAboutExecute(Sender: TObject);
     procedure Action2Execute(Sender: TObject);
     procedure Action2Update(Sender: TObject);
     procedure Action3Update(Sender: TObject);
     procedure Action3Execute(Sender: TObject);
+    procedure ApplicationEvents1Minimize(Sender: TObject);
+    procedure TrayIcon1DblClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure actExitExecute(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     aLMSNetworkTreeView: TLMSNetworkTreeView;
 
-    procedure WmAfterShow(var Msg: TMessage); message WM_AFTER_SHOW;
+    procedure MinimizeToTray;
+    procedure WmAfterCreate(var Msg: TMessage); message WM_AFTER_CREATE;
   public
     constructor Create(Owner: Tcomponent); override;
-    destructor Destroy; override;
   end;
 
 var
@@ -66,7 +73,7 @@ uses
   LMS.Helper.Log,
   LMS.Form.About;
 
-procedure TMainForm.Action1Execute(Sender: TObject);
+procedure TMainForm.actAboutExecute(Sender: TObject);
 begin
   with TAboutForm.Create(self) do
   begin
@@ -99,6 +106,17 @@ begin
   Action3.Enabled := Edit1.Text <> '';
 end;
 
+procedure TMainForm.actExitExecute(Sender: TObject);
+begin
+  actExit.Checked := true;
+  Close;
+end;
+
+procedure TMainForm.ApplicationEvents1Minimize(Sender: TObject);
+begin
+  MinimizeToTray;
+end;
+
 constructor TMainForm.Create(Owner: Tcomponent);
 begin
   inherited;
@@ -108,23 +126,51 @@ begin
   aLMSNetworkTreeView.Align := alClient;
 end;
 
-destructor TMainForm.Destroy;
-begin
-
-  inherited;
-end;
-
 procedure TMainForm.Edit1Change(Sender: TObject);
 begin
   aLMSNetworkTreeView.FilterByText(TEdit(Sender).Text);
 end;
 
-procedure TMainForm.FormShow(Sender: TObject);
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  PostMessage(self.Handle, WM_AFTER_SHOW, 0, 0);
+  if actExit.Checked then
+  begin
+    CanClose := true;
+  end
+  else
+  begin
+    CanClose := false;
+    MinimizeToTray;
+  end;
 end;
 
-procedure TMainForm.WmAfterShow(var Msg: TMessage);
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  PostMessage(self.Handle, WM_AFTER_CREATE, 0, 0);
+end;
+
+procedure TMainForm.MinimizeToTray;
+begin
+  Hide();
+  WindowState := wsMinimized;
+
+  TrayIcon1.Visible := true;
+  TrayIcon1.Animate := true;
+  TrayIcon1.ShowBalloonHint;
+
+  TrayIcon1.BalloonHint := 'LMS Explorer is minimized here';
+  TrayIcon1.BalloonTimeout := 5000;
+end;
+
+procedure TMainForm.TrayIcon1DblClick(Sender: TObject);
+begin
+  TrayIcon1.Visible := false;
+  Show();
+  WindowState := wsNormal;
+  Application.BringToFront();
+end;
+
+procedure TMainForm.WmAfterCreate(var Msg: TMessage);
 var
   aIniFile: TIniFile;
   aSections: TStrings;

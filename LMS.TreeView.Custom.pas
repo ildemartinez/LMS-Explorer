@@ -5,6 +5,7 @@ interface
 uses
   System.classes,
   System.UITypes,
+  System.Types,
   VirtualTrees,
 
   LMS._interface.LMS,
@@ -21,18 +22,19 @@ type
     Group: IUsersGroup;
     node_type: TNodeTypes;
     // of
-      // ntCategory:
+    // ntCategory:
 
-      // (Category: TLMSCategory);
-      // ntGroup:
-      // (Group: TLMSUserGroup);
-      // ntUser:
-      // (User: TLMSUser);
-    end;
+    // (Category: TLMSCategory);
+    // ntGroup:
+    // (Group: TLMSUserGroup);
+    // ntUser:
+    // (User: TLMSUser);
+  end;
 
-    PTreeData = ^TTreeData;
+  PTreeData = ^TTreeData;
 
-    TLMSCustomLMSVirtualStringTree = class(TCustomVirtualStringTree)private
+  TLMSCustomLMSVirtualStringTree = class(TCustomVirtualStringTree)
+  private
     procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
       var ImageIndex: System.UITypes.TImageIndex);
@@ -40,6 +42,11 @@ type
     procedure HeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure CompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode;
       Column: TColumnIndex; var Result: Integer);
+
+    procedure BeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas;
+      Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode;
+      CellRect: TRect; var ContentRect: TRect);
+
   public
     constructor Create(Owner: TComponent); override;
 
@@ -55,6 +62,22 @@ uses
   LMS.Helper.Images,
   LMS.Helper.RTTI,
   LMS.Helper.Utils;
+
+procedure TLMSCustomLMSVirtualStringTree.BeforePaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+begin
+  if Node.Index mod 2 = 0 then
+    // TargetCanvas.Brush.Color := $00F7E6D5 ;
+    // else
+    TargetCanvas.Brush.Color := $00FBF2EA;
+  {
+    if Sender = ipTree then
+    if IpAddresses[ PVirtualNode( Node ).Index ].Highlighted then
+    TargetCanvas.Brush.Color := clYellow;
+  }
+  TargetCanvas.FillRect(CellRect);
+end;
 
 procedure TLMSCustomLMSVirtualStringTree.CompareNodes(Sender: TBaseVirtualTree;
   Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
@@ -84,6 +107,8 @@ begin
   OnGetImageIndex := MyGetImageIndex;
   OnCompareNodes := CompareNodes;
   OnHeaderClick := HeaderClick;
+
+  OnBeforeCellPaint := BeforePaint;
 end;
 
 procedure TLMSCustomLMSVirtualStringTree.FocusSelectedNode;
