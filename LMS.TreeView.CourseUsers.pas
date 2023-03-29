@@ -58,8 +58,7 @@ uses
   LMS.Helper.Browser,
   LMS.Helper.Utils,
   LMS.Helper.RTTI,
-  LMS.Form.User,
-  LMS.Form.Course;
+  LMS.Helper.FormFactory;
 
 function TLMSCourseUsersTreeView.HasGroups: boolean;
 begin
@@ -313,7 +312,6 @@ var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
 begin
-
   aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
 
   while aVirtualNodeEnumerator.MoveNext do
@@ -321,13 +319,7 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     case data^.node_type of
       ntUser:
-        begin
-          with TLMSUserForm.Create(self) do
-          begin
-            User := data^.User;
-            show();
-          end;
-        end;
+        ViewForm(data^.User)
     end;
   end;
 end;

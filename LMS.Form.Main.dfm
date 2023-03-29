@@ -79,7 +79,7 @@ object MainForm: TMainForm
       Font.Style = []
       Spacing = 0
     end
-    object Edit1: TEdit
+    object edFilter: TEdit
       Left = 1
       Top = 1
       Width = 279
@@ -87,7 +87,9 @@ object MainForm: TMainForm
       Align = alTop
       TabOrder = 1
       TextHint = 'Filter courses'
-      OnChange = Edit1Change
+      OnChange = edFilterChange
+      ExplicitLeft = -4
+      ExplicitTop = 6
     end
   end
   object MainActionManager: TActionManager
@@ -98,6 +100,7 @@ object MainForm: TMainForm
             Items = <
               item
                 Action = actExit
+                Caption = '&Exit'
               end>
             Caption = '&File'
           end

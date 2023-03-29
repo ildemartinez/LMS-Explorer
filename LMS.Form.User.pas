@@ -13,7 +13,6 @@ uses
 
 type
   TLMSUserForm = class(TForm)
-    Memo1: TMemo;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     fLMSUser: IUser;
@@ -50,12 +49,6 @@ begin
   caption := fLMSUser.Full_Name;
 
   UserCoursesTreeView.Courses := fLMSUser.OtherEnrolledCourses;
-
-  for var course in fLMSUser.OtherEnrolledCourses do
-  begin
-    Memo1.Lines.add(course.FullName);
-    Memo1.Lines.add(course.Category.Name);
-  end;
 end;
 
 end.

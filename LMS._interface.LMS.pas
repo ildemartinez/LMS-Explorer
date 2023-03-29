@@ -84,10 +84,10 @@ type
     function GetDisplayContent: string;
     procedure GetCourseRoles(aCourseRoles: TStringlist);
     function GetUserCountByRol(const aRole: string): cardinal;
-    function GetCategory : ICategory;
+    function GetCategory: ICategory;
 
     property LMS: ILMS read GetLMS;
-    property Category : ICategory read GetCategory;
+    property Category: ICategory read GetCategory;
     property shortname: string read GetShortName write SetShortName;
     property FullName: string read GetFullName write SetFullName;
     property DisplayName: string read GetDisplayName write SetDisplayName;

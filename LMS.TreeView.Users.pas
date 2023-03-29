@@ -34,8 +34,6 @@ type
     procedure MyDoInitNode(Sender: TBaseVirtualTree;
       ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
-    procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
-
   public
     constructor Create(Owner: TComponent); override;
 
@@ -77,7 +75,6 @@ begin
 
   OnGetText := MyDoGetText;
   oninitnode := MyDoInitNode;
-  OnNodeClick := NodeClick;
 end;
 
 procedure TLMSUsersTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -183,41 +180,6 @@ procedure TLMSUsersTreeView.MyDoInitNode(Sender: TBaseVirtualTree;
   ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 begin
 
-end;
-
-procedure TLMSUsersTreeView.NodeClick(Sender: TBaseVirtualTree;
-  const HitInfo: THitInfo);
-var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-  CtrlPressed: boolean;
-  // ShiftPressed: boolean;
-begin
-
-  CtrlPressed := (GetKeyState(VK_CONTROL) and $8000) = $8000;
-  // ShiftPressed := (GetKeyState(VK_SHIFT) and $8000) = $8000;
-
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    case data^.node_type of
-      ntUser:
-        begin
-          if CtrlPressed then
-          begin
-            OpenInBrowser(data^.User, data^.User.Course);
-          end
-          else
-            { with TLMSForm.Create(self) do
-              begin
-              LMS := data^.aLMS;
-              show();
-              end; }
-        end;
-    end;
-  end;
 end;
 
 procedure TLMSUsersTreeView.Refreshh;

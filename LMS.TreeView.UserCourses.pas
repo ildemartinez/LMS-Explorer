@@ -22,28 +22,22 @@ type
   private
     fCourses: TList<ICourse>;
 
-    function GetSelectedUser: IUser;
-        procedure setCourses(const Value: TList<ICourse>);
+    procedure setCourses(const Value: TList<ICourse>);
+    procedure MyDblClick(Sender: TObject);
+    function GetSelectedCourse: ICourse;
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
 
     procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-
-    procedure MyDoInitNode(Sender: TBaseVirtualTree;
-      ParentNode, Node: PVirtualNode;
-      var InitialStates: TVirtualNodeInitStates);
-    procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
-
   public
     constructor Create(Owner: TComponent); override;
 
     procedure FilterByText(const text: string);
-    procedure Refreshh;
 
     property Courses: TList<ICourse> read fCourses write setCourses;
-    property SelectedUser: IUser read GetSelectedUser;
+    property SelectedCourse: ICourse read GetSelectedCourse;
 
   end;
 
@@ -55,6 +49,7 @@ uses
   dialogs,
   ShellApi,
 
+  LMS.Helper.FormFactory,
   LMS.Helper.Consts,
   LMS.Helper.Browser;
 
@@ -76,24 +71,22 @@ begin
   TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
 
   OnGetText := MyDoGetText;
-  oninitnode := MyDoInitNode;
-  OnNodeClick := NodeClick;
+  OnDblClick := MyDblClick;
+end;
+
+procedure TLMSUserCoursesTreeView.MyDblClick(Sender: TObject);
+begin
+  ViewForm(SelectedCourse);
 end;
 
 procedure TLMSUserCoursesTreeView.DoInitNode(Parent, Node: PVirtualNode;
   var InitStates: TVirtualNodeInitStates);
 var
-  data, parentdata: PTreeData;
+  data: PTreeData;
 begin
   data := GetNodeData(Node);
-  parentdata := GetNodeData(Parent);
-
-  if parentdata = nil then
-  begin
-    data^.node_type := ntUser;
-    data^.course := Courses[node.Index];
-    Exclude(Node.States, vsHasChildren);
-  end
+  data^.node_type := ntCourse;
+  data^.Course := Courses[Node.Index];
 end;
 
 procedure TLMSUserCoursesTreeView.FilterByText(const text: string);
@@ -135,7 +128,7 @@ begin
 
 end;
 
-function TLMSUserCoursesTreeView.GetSelectedUser: IUser;
+function TLMSUserCoursesTreeView.GetSelectedCourse: ICourse;
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -147,9 +140,9 @@ begin
   while aVirtualNodeEnumerator.MoveNext do
   begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
-    if data^.node_type = ntUser then
+    if data^.node_type = ntCourse then
     begin
-      result := data^.User;
+      result := data^.Course;
       // refactor ... exit if not more
     end;
   end;
@@ -168,68 +161,13 @@ begin
       CellText := data^.Course.shortname;
     1:
       CellText := data^.Course.FullName;
-
-    2:
-      CellText := data^.User.Last_Name;
-
-    3:
-      CellText := data^.User.Email;
-
   end;
-
-end;
-
-procedure TLMSUserCoursesTreeView.MyDoInitNode(Sender: TBaseVirtualTree;
-  ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
-begin
-
-end;
-
-procedure TLMSUserCoursesTreeView.NodeClick(Sender: TBaseVirtualTree;
-  const HitInfo: THitInfo);
-var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-  CtrlPressed: boolean;
-  // ShiftPressed: boolean;
-begin
-
-  CtrlPressed := (GetKeyState(VK_CONTROL) and $8000) = $8000;
-  // ShiftPressed := (GetKeyState(VK_SHIFT) and $8000) = $8000;
-
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    case data^.node_type of
-      ntUser:
-        begin
-          if CtrlPressed then
-          begin
-            OpenInBrowser(data^.User, data^.User.Course);
-          end
-          else
-            { with TLMSForm.Create(self) do
-              begin
-              LMS := data^.aLMS;
-              show();
-              end; }
-        end;
-    end;
-  end;
-end;
-
-procedure TLMSUserCoursesTreeView.Refreshh;
-begin
-  RootNodeCount := Courses.Count;
-  Header.AutoFitColumns(false, smaAllColumns, 0);
 end;
 
 procedure TLMSUserCoursesTreeView.setCourses(const Value: TList<ICourse>);
 begin
 
-   fCourses := Value;
+  fCourses := Value;
   Header.Columns.Clear;
 
   with Header do
@@ -246,27 +184,13 @@ begin
       Options := Options + [coAutoSpring, coResizable];
     end;
 
-    { with Columns.add do
-      begin
-      text := 'Last name';
-      Options := Options + [coAutoSpring, coResizable];
-      end;
-
-      with Columns.add do
-      begin
-      text := 'Email';
-      Options := Options + [coAutoSpring, coResizable];
-      end; }
-
     Options := Options + [hovisible, hoAutoSpring, hoAutoResize,
       hoDblClickResize];
     AutoSizeIndex := Columns.GetLastVisibleColumn;
   end;
 
   RootNodeCount := Courses.Count;
-
   Header.AutoFitColumns(false, smaAllColumns, 0);
-
 end;
 
 end.

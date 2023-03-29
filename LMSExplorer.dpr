@@ -32,7 +32,8 @@ uses
   LMS._class.User in 'LMS._class.User.pas',
   LMS._class.Course in 'LMS._class.Course.pas',
   LMS._class.Category in 'LMS._class.Category.pas',
-  LMS.TreeView.UserCourses in 'LMS.TreeView.UserCourses.pas';
+  LMS.TreeView.UserCourses in 'LMS.TreeView.UserCourses.pas',
+  LMS.Helper.FormFactory in 'LMS.Helper.FormFactory.pas';
 
 {$R *.res}
 

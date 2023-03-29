@@ -29,13 +29,13 @@ type
     Splitter1: TSplitter;
     CoursesActionManager: TActionManager;
     ActionMainMenuBar2: TActionMainMenuBar;
-    Edit1: TEdit;
+    edFilter: TEdit;
     Action3: TAction;
     TrayIcon1: TTrayIcon;
     ApplicationEvents1: TApplicationEvents;
     actExit: TAction;
 
-    procedure Edit1Change(Sender: TObject);
+    procedure edFilterChange(Sender: TObject);
     procedure actAboutExecute(Sender: TObject);
     procedure Action2Execute(Sender: TObject);
     procedure Action2Update(Sender: TObject);
@@ -95,15 +95,15 @@ end;
 
 procedure TMainForm.Action3Execute(Sender: TObject);
 begin
-  Edit1.Text := '';
-  Edit1.OnChange(Edit1);
+  edFilter.Text := '';
+  edFilter.OnChange(edFilter);
 
-  aLMSNetworkTreeView.focusselectedNode;
+  aLMSNetworkTreeView.FocusSelectedNode;
 end;
 
 procedure TMainForm.Action3Update(Sender: TObject);
 begin
-  Action3.Enabled := Edit1.Text <> '';
+  Action3.Enabled := edFilter.Text <> '';
 end;
 
 procedure TMainForm.actExitExecute(Sender: TObject);
@@ -121,12 +121,17 @@ constructor TMainForm.Create(Owner: Tcomponent);
 begin
   inherited;
 
+  top := 0;
+  left := 0;
+  ClientWidth := Screen.Width;
+  ClientHeight := Screen.Height;
+
   aLMSNetworkTreeView := TLMSNetworkTreeView.Create(self);
   aLMSNetworkTreeView.parent := Panel1;
   aLMSNetworkTreeView.Align := alClient;
 end;
 
-procedure TMainForm.Edit1Change(Sender: TObject);
+procedure TMainForm.edFilterChange(Sender: TObject);
 begin
   aLMSNetworkTreeView.FilterByText(TEdit(Sender).Text);
 end;

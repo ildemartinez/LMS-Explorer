@@ -45,7 +45,7 @@ type
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;
-    property aCategory: ICategory read fCategory write SetCategory;
+    property Category: ICategory read fCategory write SetCategory;
   end;
 
 implementation
@@ -65,7 +65,7 @@ end;
 
 procedure TLMSCategoryForm.Action1Update(Sender: TObject);
 begin
-  Action1.Enabled := aCategory.SubCategoriesCount = 0;
+  Action1.Enabled := Category.SubCategoriesCount = 0;
 end;
 
 procedure TLMSCategoryForm.Action2Execute(Sender: TObject);
@@ -78,7 +78,7 @@ end;
 
 procedure TLMSCategoryForm.Action2Update(Sender: TObject);
 begin
-  Action2.Enabled := aCategory.SubCategoriesCount = 0;
+  Action2.Enabled := Category.SubCategoriesCount = 0;
 end;
 
 constructor TLMSCategoryForm.Create(Owner: TComponent);

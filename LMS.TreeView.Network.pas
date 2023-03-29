@@ -3,16 +3,15 @@ unit LMS.TreeView.Network;
 interface
 
 uses
+  winapi.messages,
   System.SysUtils,
   System.Classes,
   System.Types,
   System.UITypes,
-  vcl.Menus,
 
   VirtualTrees,
-  LMS.TreeView.Custom,
 
-  winapi.messages,
+  LMS.TreeView.Custom,
   LMS._class.Network;
 
 type
@@ -20,14 +19,11 @@ type
   private
     fLMSNetwork: TLMSNetwork;
 
-    // fPopupMenu: TLMSPopupMenu;
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
     procedure SetLMSNetwork(const Value: TLMSNetwork);
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
-    // procedure MenuItemClick(Sender: TObject);
-    procedure MenuItem2Click(Sender: TObject);
     procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
@@ -38,7 +34,6 @@ type
       TextType: TVSTTextType);
 
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
-
     procedure HandleMouseDblClick(var Message: TWMMouse;
       const HitInfo: THitInfo); override;
   public
@@ -46,7 +41,6 @@ type
     procedure FilterByText(const text: string);
 
     property LMSNetwork: TLMSNetwork write SetLMSNetwork;
-
   end;
 
 implementation
@@ -61,29 +55,14 @@ uses
   LMS.Helper.Consts,
   LMS.Helper.Browser,
   LMS.Form.LMS,
-  LMS.Form.Course,
+  LMS.Helper.FormFactory,
   LMS.Form.Category;
 
 constructor TLMSNetworkTreeView.Create(Owner: TComponent);
-var
-  aMenuItem: TMenuItem;
 begin
   inherited;
 
   NodeDataSize := SizeOf(TTreeData);
-
-  PopupMenu := TPopupMenu.Create(self);
-  // por el momento ponemos aquí las acciones
-  { aMenuItem := TMenuItem.Create(self);
-    aMenuItem.caption := 'Connect';
-    aMenuItem.OnClick := MenuItemClick;
-    PopupMenu.items.add(aMenuItem); }
-  //
-
-  aMenuItem := TMenuItem.Create(self);
-  aMenuItem.caption := 'Locate in LMS';
-  aMenuItem.OnClick := MenuItem2Click;
-  PopupMenu.items.add(aMenuItem);
 
   TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
     [toRightClickSelect];
@@ -94,10 +73,6 @@ begin
   OnNodeDblClick := NodeDblClick;
   OnNodeClick := NodeClick;
   OnPaintText := MyDoPaintText;
-
-  {
-    OnGetPopupMenu := MyDoGetPopupmenu; }
-
 end;
 
 procedure TLMSNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -208,47 +183,9 @@ end;
 procedure TLMSNetworkTreeView.HandleMouseDblClick(var Message: TWMMouse;
   const HitInfo: THitInfo);
 begin
+  // Avoid to collapse/expand category node at dbclick
   DoNodeDblClick(HitInfo);
 end;
-
-procedure TLMSNetworkTreeView.MenuItem2Click(Sender: TObject);
-var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-begin
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    case data^.node_type of
-      ntLMS:
-        OpenInBrowser(data^.aLMS);
-      ntCategory:
-        OpenInBrowser(data^.Category);
-      ntCourse:
-        OpenInBrowser(data^.Course);
-    end;
-  end;
-end;
-{
-  procedure TLMSNetworkTreeView.MenuItemClick(Sender: TObject);
-  var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-  begin
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-  data := GetNodeData(aVirtualNodeEnumerator.Current);
-  if data^.node_type = ntLMS then
-  begin
-  data^.aLMS.Connect;
-  self.ReinitNode(aVirtualNodeEnumerator.Current, true);
-  end
-  end;
-  end; }
 
 procedure TLMSNetworkTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
@@ -358,30 +295,14 @@ begin
       ntLMS:
         begin
           Expanded[aVirtualNodeEnumerator.Current] := true;
-
-          with TLMSForm.Create(self) do
-          begin
-            LMS := data^.aLMS;
-            show();
-          end;
+          ViewForm(data^.aLMS);
         end;
       ntCategory:
-
-        with TLMSCategoryForm.Create(self) do
-        begin
-          aCategory := data^.Category;
-          show();
-        end;
+        ViewForm(data^.Category);
       ntCourse:
-        with TLMSCourseForm.Create(self) do
-        begin
-          Course := data^.Course;
-          show();
-        end;
-
+        ViewForm(data^.Course);
     end;
   end;
-
 end;
 
 procedure TLMSNetworkTreeView.SetLMSNetwork(const Value: TLMSNetwork);
