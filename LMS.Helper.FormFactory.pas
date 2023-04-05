@@ -6,9 +6,10 @@ uses
   LMS._interface.LMS;
 
 procedure ViewForm(const aCourse: ICourse); overload;
+procedure ViewForm(const aCourse: ICourse; const aUser: IUser); overload;
 procedure ViewForm(const aCategory: ICategory); overload;
 procedure ViewForm(const aLMS: ILMS); overload;
-procedure ViewForm(const aUser : IUser); overload;
+procedure ViewForm(const aUser: IUser); overload;
 
 implementation
 
@@ -18,6 +19,16 @@ uses
   LMS.Form.Category,
   LMS.Form.User,
   LMS.Form.LMS;
+
+procedure ViewForm(const aCourse: ICourse; const aUser: IUser);
+begin
+  with TLMSCourseForm.Create(MainForm) do
+  begin
+    Course := aCourse;
+    show();
+    FilterUser := aUser; // Lets force select this user
+  end;
+end;
 
 procedure ViewForm(const aCourse: ICourse);
 begin
@@ -46,7 +57,7 @@ begin
   end;
 end;
 
-procedure ViewForm(const aUser : IUser); overload;
+procedure ViewForm(const aUser: IUser); overload;
 begin
   with TLMSUserForm.Create(MainForm) do
   begin
@@ -54,6 +65,5 @@ begin
     show();
   end;
 end;
-
 
 end.

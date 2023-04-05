@@ -138,7 +138,7 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  if actExit.Checked then
+  if (actExit.Checked) or (DebugHook <> 0) then
   begin
     CanClose := true;
   end

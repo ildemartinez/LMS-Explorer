@@ -48,7 +48,7 @@ begin
 
   caption := fLMSUser.Full_Name;
 
-  UserCoursesTreeView.Courses := fLMSUser.OtherEnrolledCourses;
+  UserCoursesTreeView.User := value; // . Courses := fLMSUser.OtherEnrolledCourses;
 end;
 
 end.

@@ -53,6 +53,7 @@ uses
   windows,
   dialogs,
   ShellApi,
+  Variants, typinfo,
 
   LMS.Helper.Consts,
   LMS.Helper.Browser,
@@ -238,6 +239,9 @@ procedure TLMSCourseUsersTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   var CellText: string);
 var
   data: PTreeData;
+
+  propName: string;
+  propValue: Variant;
 begin
   data := GetNodeData(Node);
 
@@ -250,8 +254,13 @@ begin
       else
         CellText := '';
     ntUser:
-      CellText := GetPropertyValue(TObject(data^.User),
-        TextToPropertyName(Header.Columns[Column].text));
+      begin
+        // propName := TextToPropertyName(Header.Columns[Column].text);
+        // propValue := GetPropValue(TObject(data^.User), propName);
+        // CellText := VarToStr(propValue);
+        CellText := GetPropertyValue(TObject(data^.User),
+          TextToPropertyName(Header.Columns[Column].text));
+      end;
   end;
 end;
 
@@ -367,6 +376,12 @@ procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: ICourse);
       with Columns.add do
       begin
         text := 'Last access';
+        Options := Options + [coAutoSpring, coResizable];
+      end;
+
+      with Columns.add do
+      begin
+        text := 'Last access from';
         Options := Options + [coAutoSpring, coResizable];
       end;
 

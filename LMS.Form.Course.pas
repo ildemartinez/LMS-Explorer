@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
   System.Actions, Vcl.ActnList,
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
   Vcl.ActnMenus, System.ImageList, Vcl.ImgList,
@@ -54,9 +54,11 @@ type
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: ICourse;
     procedure SetaCourse(const Value: ICourse);
+    procedure SetFilterUser(const Value: IUser);
   public
     constructor Create(Owner: TComponent); override;
     property Course: ICourse read fCourse write SetaCourse;
+    property FilterUser: IUser write SetFilterUser;
   end;
 
 implementation
@@ -206,6 +208,12 @@ begin
   Memo1.lines.EndUpdate;
 
   aRolesList.free;
+end;
+
+procedure TLMSCourseForm.SetFilterUser(const Value: IUser);
+begin
+  Edit1.text := Value.Full_Name;
+  Edit1Change(edit1);
 end;
 
 end.

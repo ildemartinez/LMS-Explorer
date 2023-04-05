@@ -88,8 +88,6 @@ object MainForm: TMainForm
       TabOrder = 1
       TextHint = 'Filter courses'
       OnChange = edFilterChange
-      ExplicitLeft = -4
-      ExplicitTop = 6
     end
   end
   object MainActionManager: TActionManager

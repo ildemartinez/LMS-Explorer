@@ -21,10 +21,11 @@ type
   TLMSUserCoursesTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
     fCourses: TList<ICourse>;
+    fUser: IUser;
 
-    procedure setCourses(const Value: TList<ICourse>);
     procedure MyDblClick(Sender: TObject);
     function GetSelectedCourse: ICourse;
+    procedure SetUser(const Value: IUser);
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
@@ -36,7 +37,7 @@ type
 
     procedure FilterByText(const text: string);
 
-    property Courses: TList<ICourse> read fCourses write setCourses;
+    property User : IUser read fUser write SetUser;
     property SelectedCourse: ICourse read GetSelectedCourse;
 
   end;
@@ -76,7 +77,7 @@ end;
 
 procedure TLMSUserCoursesTreeView.MyDblClick(Sender: TObject);
 begin
-  ViewForm(SelectedCourse);
+  ViewForm(SelectedCourse, User);
 end;
 
 procedure TLMSUserCoursesTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -86,7 +87,7 @@ var
 begin
   data := GetNodeData(Node);
   data^.node_type := ntCourse;
-  data^.Course := Courses[Node.Index];
+  data^.Course := fCourses[Node.Index];
 end;
 
 procedure TLMSUserCoursesTreeView.FilterByText(const text: string);
@@ -164,10 +165,12 @@ begin
   end;
 end;
 
-procedure TLMSUserCoursesTreeView.setCourses(const Value: TList<ICourse>);
+procedure TLMSUserCoursesTreeView.SetUser(const Value: IUser);
 begin
+  fUser := Value;
 
-  fCourses := Value;
+  fCourses := fUser.OtherEnrolledCourses;
+
   Header.Columns.Clear;
 
   with Header do
@@ -189,7 +192,7 @@ begin
     AutoSizeIndex := Columns.GetLastVisibleColumn;
   end;
 
-  RootNodeCount := Courses.Count;
+  RootNodeCount := fCourses.Count;
   Header.AutoFitColumns(false, smaAllColumns, 0);
 end;
 

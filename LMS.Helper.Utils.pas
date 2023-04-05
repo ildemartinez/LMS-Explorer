@@ -9,7 +9,6 @@ function FormatDateTimeNever(const aDateTime: TDateTime): string;
 // p.e. Header column "Full name" -> property Full_name
 function TextToPropertyName(const aText: string): string;
 
-
 implementation
 
 uses

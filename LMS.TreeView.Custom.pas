@@ -66,12 +66,9 @@ uses
 procedure TLMSCustomLMSVirtualStringTree.BeforePaint(Sender: TBaseVirtualTree;
   TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
-var
-  data1: PTreeData;
 begin
-  data1 := Sender.GetNodeData(Node);
-
-  if (Node.Index mod 2 = 1) or (data1^.node_type = ntCategory) then
+  if (Node.Index mod 2 = 1) or
+    (PTreeData(Sender.GetNodeData(Node))^.node_type = ntCategory) then
     // TargetCanvas.Brush.Color := $00F7E6D5 ;
     // else
     TargetCanvas.Brush.Color := $00FBF2EA;
@@ -140,10 +137,10 @@ procedure TLMSCustomLMSVirtualStringTree.MyGetImageIndex
 var
   data: PTreeData;
 begin
-  data := GetNodeData(Node);
-
   if (Kind <> ikstate) then
   begin
+    data := GetNodeData(Node);
+
     if (data^.node_type = ntLMS) and (Column = -1) then
       ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
         ('res_lms')

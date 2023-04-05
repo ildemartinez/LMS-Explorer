@@ -36,6 +36,7 @@ type
     procedure SetRoles(const value: string);
     function getLMS: ILMS;
     function GetOtherEnrolledCourses: TList<ICourse>;
+    function GetLastAccessFromAsString: string;
   public
     constructor Create(const LMS: ILMS; const aJSONValue: TJSONValue);
     // procedure AssignByJson(const aJsonValue: TJSONValue);
@@ -49,6 +50,7 @@ type
     property Last_Name: string read GetLastName;
     property Email: string read GetEmail;
     property Last_access: string read GetLastAccessAsString;
+    property Last_access_from: string read GetLastAccessFromAsString;
     property Roles: string read GetRoles write SetRoles;
     property Course: ICourse read GetCourse write SetCourse;
 
@@ -139,6 +141,46 @@ end;
 function TUser.GetLastAccessAsString: string;
 begin
   result := FormatDateTimeNever(flastcourseaccess);
+end;
+
+function TUser.GetLastAccessFromAsString: string;
+const
+  DaysPerWeek = 7;
+  DaysPerMonth = 30;
+var
+  DifInDays: integer;
+begin
+  if datetimetounix(flastcourseaccess) = 0 then
+    result := 'never'
+  else
+  begin
+    DifInDays := Round(Now - flastcourseaccess);
+
+    if DifInDays < DaysPerWeek then
+    begin
+      if DifInDays = 1 then
+        result := 'a day ago'
+      else if DifInDays > 1 then
+        result := IntToStr(DifInDays) + ' days ago'
+      else
+        result := 'today';
+    end
+    else if DifInDays < DaysPerMonth then
+    begin
+      if DifInDays div DaysPerWeek = 1 then
+        result := 'a week ago'
+      else
+        result := Format('%d weeks ago', [DifInDays div DaysPerWeek]);
+    end
+    else
+    begin
+      if DifInDays div DaysPerMonth = 1 then
+        result := 'a month ago'
+      else
+        result := Format('%d months ago', [DifInDays div DaysPerMonth]);
+    end;
+  end;
+
 end;
 
 function TUser.GetLastName: string;
