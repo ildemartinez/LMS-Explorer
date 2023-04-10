@@ -8,6 +8,8 @@ Features
 - Fast jumping to course and users management pages ( user profile, course admninistration )
 - Show all your Moodle courses from unique page
 
+See it in action at https://www.st4makers.com/lms-explorer/
+
 # Installation
 
 Just modify the config.ini_dist to config.ini and copy in the same executable path. Configure the host, username and password and a service if you create your own Moodle API Service Access
