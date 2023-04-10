@@ -118,9 +118,6 @@ begin
         data^.User := fLMSCourse.Users[Node.Index];
         Exclude(Node.States, vsHasChildren);
       end;
-
-      { if (data^.aLMS.autoconnect) then
-        Include(Node.States, vsExpanded); }
     end
     else
       case parentdata^.node_type of
@@ -344,50 +341,15 @@ procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: ICourse);
   begin
     with Header do
     begin
-      with Columns.add do
-      begin
-        text := 'Full name';
-        Options := Options + [coAutoSpring, coResizable, coSmartResize];
-      end;
+      Columns.Add.text := 'Full name';
+      Columns.Add.text := 'First name';
+      Columns.Add.text := 'Last name';
+      Columns.Add.text := 'Email';
+      Columns.Add.text := 'Roles';
+      Columns.Add.text := 'Last access';
+      Columns.Add.text := 'Last access from';
 
-      with Columns.add do
-      begin
-        text := 'First name';
-        Options := Options + [coAutoSpring, coResizable, coSmartResize];
-      end;
-      with Columns.add do
-      begin
-        text := 'Last name';
-        Options := Options + [coAutoSpring, coResizable, coSmartResize];
-      end;
-
-      with Columns.add do
-      begin
-        text := 'Email';
-        Options := Options + [coAutoSpring, coResizable, coEditable];
-      end;
-
-      with Columns.add do
-      begin
-        text := 'Roles';
-        Options := Options + [coAutoSpring, coResizable];
-      end;
-
-      with Columns.add do
-      begin
-        text := 'Last access';
-        Options := Options + [coAutoSpring, coResizable];
-      end;
-
-      with Columns.add do
-      begin
-        text := 'Last access from';
-        Options := Options + [coAutoSpring, coResizable];
-      end;
-
-      Options := Options + [hovisible, hoAutoSpring, hoAutoResize,
-        hoDblClickResize];
-      AutoSizeIndex := Columns.GetLastVisibleColumn;
+      Options := Options + [hovisible, hoAutoSpring, hoAutoResize];
     end;
   end;
 
@@ -401,12 +363,7 @@ begin
   // Create group column if has groups defined in course
   if HasGroups then
   begin
-    with Header do
-      with Columns.add do
-      begin
-        text := 'Group';
-        Options := Options + [coAutoSpring, coResizable, coSmartResize];
-      end;
+    Header.Columns.Add.text := 'Group';
 
     CreateColums;
 
@@ -421,8 +378,10 @@ begin
     RootNodeCount := fLMSCourse.Users.count;
   end;
 
+  // Autosize columns and se it not resizable
   Header.AutoFitColumns(false, smaAllColumns, 0);
-
+  for var k := 0 to Header.Columns.count - 1 do
+    Header.Columns[k].Options := Header.Columns[k].Options - [coResizable];
 end;
 
 end.

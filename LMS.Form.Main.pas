@@ -11,7 +11,7 @@ uses
   Vcl.PlatformDefaultStyleActnCtrls, REST.Types, REST.Client,
   Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls, Vcl.StdActns,
 
-  LMS.TreeView.Network, Vcl.AppEvnts;
+  LMS.TreeView.Network, Vcl.AppEvnts, System.ImageList, Vcl.ImgList;
 
 const
   WM_AFTER_CREATE = WM_USER + 300;
@@ -34,6 +34,7 @@ type
     TrayIcon1: TTrayIcon;
     ApplicationEvents1: TApplicationEvents;
     actExit: TAction;
+    ImageList1: TImageList;
 
     procedure edFilterChange(Sender: TObject);
     procedure actAboutExecute(Sender: TObject);

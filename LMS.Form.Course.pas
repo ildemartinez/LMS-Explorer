@@ -16,7 +16,6 @@ uses
 
 type
   TLMSCourseForm = class(TForm)
-    ActionMainMenuBar1: TActionMainMenuBar;
     ActionManager1: TActionManager;
     Action1: TAction;
     Action2: TAction;
@@ -34,6 +33,8 @@ type
     Action7: TAction;
     Action8: TAction;
     actExport: TAction;
+    ImageList2: TImageList;
+    ActionToolBar1: TActionToolBar;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);

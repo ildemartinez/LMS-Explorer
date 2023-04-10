@@ -3,14 +3,15 @@ object AboutForm: TAboutForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'About'
-  ClientHeight = 150
-  ClientWidth = 404
+  ClientHeight = 179
+  ClientWidth = 457
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poMainFormCenter
   PixelsPerInch = 96
@@ -117,16 +118,18 @@ object AboutForm: TAboutForm
   end
   object LinkLabel1: TLinkLabel
     Left = 0
-    Top = 131
-    Width = 404
+    Top = 141
+    Width = 457
     Height = 19
     Align = alBottom
     Alignment = taRightJustify
-    Caption = '<a href="https://icons8.com/">Icons by https://icons8.com/</a>'
+    Caption = 
+      '<a href="https://commons.wikimedia.org/wiki/Category:Nuvola_icon' +
+      's">Some icons by Nuvola</a>'
     TabOrder = 0
     UseVisualStyle = True
     OnLinkClick = LinkLabel1LinkClick
-    ExplicitWidth = 157
+    ExplicitWidth = 122
   end
   object LinkLabel2: TLinkLabel
     Left = 127
@@ -145,5 +148,20 @@ object AboutForm: TAboutForm
     TabOrder = 1
     UseVisualStyle = True
     OnLinkClick = LinkLabel1LinkClick
+  end
+  object LinkLabel3: TLinkLabel
+    Left = 0
+    Top = 160
+    Width = 457
+    Height = 19
+    Align = alBottom
+    Alignment = taRightJustify
+    Caption = 
+      '<a href="https://icons8.com/">Some other icons by https://icons8' +
+      '.com/</a>'
+    TabOrder = 2
+    UseVisualStyle = True
+    OnLinkClick = LinkLabel1LinkClick
+    ExplicitWidth = 221
   end
 end

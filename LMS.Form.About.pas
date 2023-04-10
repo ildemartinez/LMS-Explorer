@@ -14,6 +14,7 @@ type
     lblLMSExplorer: TLabel;
     LinkLabel1: TLinkLabel;
     LinkLabel2: TLinkLabel;
+    LinkLabel3: TLinkLabel;
     procedure LinkLabel1LinkClick(Sender: TObject; const Link: string;
       LinkType: TSysLinkType);
   end;
