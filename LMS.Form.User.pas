@@ -9,11 +9,16 @@ uses
   Vcl.StdCtrls,
 
   LMS._interface.LMS,
-  LMS.TreeView.UserCourses;
+  LMS.TreeView.UserCourses, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,
+  Vcl.PlatformDefaultStyleActnCtrls, System.Actions, Vcl.ActnList;
 
 type
   TLMSUserForm = class(TForm)
+    ActionManager1: TActionManager;
+    ActionToolBar1: TActionToolBar;
+    Action1: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Action1Execute(Sender: TObject);
   private
     fLMSUser: IUser;
     UserCoursesTreeView: TLMSUserCoursesTreeView;
@@ -26,7 +31,19 @@ type
 
 implementation
 
+uses
+  LMS.Helper.Browser;
+
 {$R *.dfm}
+
+procedure TLMSUserForm.Action1Execute(Sender: TObject);
+begin
+  for var aCourse in User.OtherEnrolledCourses do
+  begin
+
+    OpenInBrowser(aCourse);
+  end;
+end;
 
 constructor TLMSUserForm.Create(Owner: TComponent);
 begin
@@ -48,7 +65,8 @@ begin
 
   caption := fLMSUser.Full_Name;
 
-  UserCoursesTreeView.User := value; // . Courses := fLMSUser.OtherEnrolledCourses;
+  UserCoursesTreeView.User := Value;
+  // . Courses := fLMSUser.OtherEnrolledCourses;
 end;
 
 end.
