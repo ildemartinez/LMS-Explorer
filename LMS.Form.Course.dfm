@@ -25,52 +25,13 @@ object LMSCourseForm: TLMSCourseForm
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 0
-    ExplicitTop = 28
-    ExplicitWidth = 930
-    ExplicitHeight = 460
-    object TabControl1: TTabControl
-      Left = 1
-      Top = 1
-      Width = 922
-      Height = 286
-      Align = alClient
-      TabOrder = 0
-      Tabs.Strings = (
-        'Users and Groups')
-      TabIndex = 0
-      ExplicitLeft = 0
-      ExplicitTop = -4
-      ExplicitWidth = 928
-      ExplicitHeight = 356
-      object Panel1: TPanel
-        Left = 4
-        Top = 24
-        Width = 914
-        Height = 25
-        Align = alTop
-        TabOrder = 0
-        ExplicitWidth = 920
-        object Edit1: TEdit
-          Left = 1
-          Top = 1
-          Width = 313
-          Height = 23
-          Align = alLeft
-          TabOrder = 0
-          OnChange = Edit1Change
-          ExplicitHeight = 21
-        end
-      end
-    end
     object Panel3: TPanel
       Left = 1
       Top = 287
       Width = 922
       Height = 102
       Align = alBottom
-      TabOrder = 1
-      ExplicitTop = 357
-      ExplicitWidth = 928
+      TabOrder = 0
       object Memo1: TMemo
         Left = 1
         Top = 1
@@ -78,6 +39,52 @@ object LMSCourseForm: TLMSCourseForm
         Height = 100
         Align = alLeft
         TabOrder = 0
+      end
+    end
+    object PageControl1: TPageControl
+      Left = 1
+      Top = 1
+      Width = 922
+      Height = 286
+      ActivePage = TabSheet2
+      Align = alClient
+      TabOrder = 1
+      OnChange = PageControl1Change
+      object TabSheet1: TTabSheet
+        Caption = 'Users'
+        object Panel1: TPanel
+          Left = 0
+          Top = 0
+          Width = 914
+          Height = 25
+          Align = alTop
+          TabOrder = 0
+          ExplicitTop = 8
+          ExplicitWidth = 281
+          object Edit1: TEdit
+            Left = 1
+            Top = 1
+            Width = 313
+            Height = 23
+            Align = alLeft
+            TabOrder = 0
+            OnChange = Edit1Change
+            ExplicitHeight = 21
+          end
+        end
+      end
+      object TabSheet2: TTabSheet
+        Caption = 'Grade book'
+        ImageIndex = 1
+        object Memo2: TMemo
+          Left = 88
+          Top = 48
+          Width = 177
+          Height = 153
+          Lines.Strings = (
+            'Memo2')
+          TabOrder = 0
+        end
       end
     end
   end
@@ -100,8 +107,6 @@ object LMSCourseForm: TLMSCourseForm
     Font.Style = []
     ParentFont = False
     Spacing = 0
-    ExplicitTop = 44
-    ExplicitWidth = 930
   end
   object ActionManager1: TActionManager
     ActionBars = <

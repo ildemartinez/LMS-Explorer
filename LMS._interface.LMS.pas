@@ -15,6 +15,12 @@ type
   ICourse = interface;
   ICategory = interface;
 
+  IGradeItem = interface
+    ['{44E6EA75-B61B-448F-A7C5-73DF21A28C7F}']
+    function getItemname : string;
+    property ItemName : string read getItemName;
+  end;
+
   IUsersGroup = interface
     ['{586BCC1C-EA18-4D15-A788-3BF00EFD328F}']
     function getId: cardinal;
@@ -85,6 +91,9 @@ type
     procedure GetCourseRoles(aCourseRoles: TStringlist);
     function GetUserCountByRol(const aRole: string): cardinal;
     function GetCategory: ICategory;
+    function GetGradeItems : TList<IGradeItem>;
+
+    procedure GetGradeBook;
 
     property LMS: ILMS read GetLMS;
     property Category: ICategory read GetCategory;
@@ -99,6 +108,7 @@ type
     // All course groups
     property UserGroups: TList<IUsersGroup> read GetUserGroups
       write SetUserGroups;
+    property GradeItems: TList<IGradeItem> read GetGradeItems;
   end;
 
   ICategory = interface

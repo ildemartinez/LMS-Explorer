@@ -22,6 +22,7 @@ type
     fUsers: TList<IUser>;
     // All course groups
     fUserGroups: TList<IUsersGroup>;
+    fGradeItems: TList<IGradeItem>;
 
     function getFilterContent: string;
     function GetDisplayContent: string;
@@ -43,6 +44,7 @@ type
     function GetDisplayName: string;
     procedure SetDisplayName(const Value: string);
     function GetCategory: ICategory;
+    function GetGradeItems: TList<IGradeItem>;
   public
     constructor Create(const LMS: ILMS);
     destructor Destroy; override;
@@ -50,6 +52,8 @@ type
     procedure RefreshEnrolledUsers;
     procedure GetCourseRoles(aCourseRoles: TStringlist);
     function GetUserCountByRol(const aRole: string): cardinal;
+
+    procedure GetGradeBook;
 
     // Pointer to the LMS parent
     property LMS: ILMS read GetLMS;
@@ -69,7 +73,9 @@ type
 
     property Users: TList<IUser> read GetUsers write SetUsers;
     // All course groups
-    property UserGroups: TList<IUsersGroup> read GetUserGroups write SetUserGroups;
+    property UserGroups: TList<IUsersGroup> read GetUserGroups
+      write SetUserGroups;
+
   end;
 
 implementation
@@ -77,6 +83,8 @@ implementation
 uses
   System.JSON,
 
+  LMS.Helper.Log,
+  LMS._class.GradeItem,
   LMS._class.User,
   LMS._class.UsersGroup;
 
@@ -86,12 +94,14 @@ begin
 
   fUsers := TList<IUser>.Create;
   fUserGroups := TList<IUsersGroup>.Create;
+  fGradeItems := TList<IGradeItem>.Create;
 
   fLMS := LMS;
 end;
 
 destructor TLMSCourse.Destroy;
 begin
+  fGradeItems.free;
   fUserGroups.free;
   fUsers.free;
 
@@ -105,7 +115,7 @@ var
 begin
   result := nil;
 
-  for cat in flms.Categories do
+  for cat in fLMS.Categories do
   begin
     for cour in cat.Courses do
 
@@ -160,7 +170,7 @@ begin
     // log(aUsers.ToString);
     for User in aUsers do
     begin
-      aUser := TUser.Create(fLMS,User);
+      aUser := TUser.Create(fLMS, User);
       aUser.Course := self;
 
       // Get user roles
@@ -269,6 +279,23 @@ end;
 function TLMSCourse.GetFullName: string;
 begin
   result := fFullName;
+end;
+
+procedure TLMSCourse.GetGradeBook;
+var
+  aUsers, aGradeItems: TJSonArray;
+  aUser, aGradeItem: TJSONValue;
+  aGradeItemC: TGradeItem;
+begin
+  fGradeItems.Clear;
+
+  aGradeItems := fLMS.GetLMSConnection.GetUsersGradeBook(self.fid);
+
+end;
+
+function TLMSCourse.GetGradeItems: TList<IGradeItem>;
+begin
+  result := fGradeItems;
 end;
 
 function TLMSCourse.GetGroupMode: cardinal;

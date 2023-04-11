@@ -21,6 +21,10 @@ const
 
   CORE_USER = 'core_user_';
   CORE_USER_GET_USERS = CORE_USER + 'get_users';
+
+  GRADEREPORT = 'gradereport_';
+
+  GRADEREPORT_USER_GET_GRADE_ITEMS = GRADEREPORT + 'user_get_grade_items';
   // URL
 
   COURSE_VIEW = '/course/view.php?id=%d';

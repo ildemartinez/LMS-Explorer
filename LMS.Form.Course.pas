@@ -23,9 +23,6 @@ type
     Action4: TAction;
     Action5: TAction;
     Panel2: TPanel;
-    TabControl1: TTabControl;
-    Panel1: TPanel;
-    Edit1: TEdit;
     Panel3: TPanel;
     Memo1: TMemo;
     Action6: TAction;
@@ -35,6 +32,12 @@ type
     actExport: TAction;
     ImageList2: TImageList;
     ActionToolBar1: TActionToolBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    Edit1: TEdit;
+    Memo2: TMemo;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -51,6 +54,7 @@ type
     procedure Action8Update(Sender: TObject);
     procedure Action8Execute(Sender: TObject);
     procedure actExportExecute(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
   private
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: ICourse;
@@ -165,9 +169,10 @@ begin
   inherited;
 
   fUsersTreeView := TLMSCourseUsersTreeView.Create(self);
-  fUsersTreeView.parent := TabControl1;
+  fUsersTreeView.parent := TabSheet1;
   fUsersTreeView.align := alClient;
 
+  PageControl1.ActivePageIndex := 0;
 end;
 
 procedure TLMSCourseForm.Edit1Change(Sender: TObject);
@@ -186,6 +191,21 @@ begin
     [fCourse.id])), nil, nil, 0); // SW_SHOW);
 end;
 
+procedure TLMSCourseForm.PageControl1Change(Sender: TObject);
+begin
+  if PageControl1.ActivePageIndex = 1 then
+  begin
+    fCourse.GetGradeBook;
+
+    Memo1.Lines.Clear;
+    for var gradeitem in fCourse.GradeItems do
+    begin
+      //Memo1.Lines.Add(gradeitem.ItemName);
+    end;
+
+  end;
+end;
+
 procedure TLMSCourseForm.SetaCourse(const Value: ICourse);
 var
   aRole: string;
@@ -200,13 +220,13 @@ begin
   aRolesList := TStringList.Create;
   fCourse.GetCourseRoles(aRolesList);
 
-  Memo1.clear;
-  Memo1.lines.BeginUpdate;
+  Memo1.Clear;
+  Memo1.Lines.BeginUpdate;
   for aRole in aRolesList do
   begin
-    Memo1.lines.add(aRole + ' ' + fCourse.GetUserCountByRol(aRole).ToString);
+    Memo1.Lines.Add(aRole + ' ' + fCourse.GetUserCountByRol(aRole).ToString);
   end;
-  Memo1.lines.EndUpdate;
+  Memo1.Lines.EndUpdate;
 
   aRolesList.free;
 end;
@@ -214,7 +234,7 @@ end;
 procedure TLMSCourseForm.SetFilterUser(const Value: IUser);
 begin
   Edit1.text := Value.Full_Name;
-  Edit1Change(edit1);
+  Edit1Change(Edit1);
 end;
 
 end.

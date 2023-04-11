@@ -35,7 +35,6 @@ type
     procedure PrepareParams(const servicefunction: string);
     function ExecuteRequest(const servicefunction: string): TJSonArray;
     function ExecuteRequest2(const servicefunction: string): TJSonValue;
-
   public
     constructor Create(Owner: TComponent); override;
 
@@ -46,6 +45,8 @@ type
     function GetCourses: TJSonArray;
     function GetEnrolledUsersByCourseId(const courseID: integer): TJSonArray;
     function GetUserGroupsByCourseId(const courseID: integer): TJSonArray;
+
+    function GetUsersGradeBook(const courseID: integer): TJSonArray;
 
     function GetUsersByFirstName(const aValue: string): TJSonArray;
     function GetUsersByLastName(const aValue: string): TJSonArray;
@@ -374,6 +375,35 @@ begin
   else
     result := nil;
 
+end;
+
+function TLMSRestMoodle.GetUsersGradeBook(const courseID: integer): TJSonArray;
+var
+  jValue: TJSonValue;
+
+begin
+
+  if Connected then
+  begin
+    PrepareParams(GRADEREPORT_USER_GET_GRADE_ITEMS);
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'courseid';
+      value := courseId.ToString;
+    end;
+
+    jValue := ExecuteRequest2(GRADEREPORT_USER_GET_GRADE_ITEMS);
+    jValue := jValue.GetValue<TJSonArray>('usergrades');
+
+    result := jValue as TJSonArray;
+
+//    Log(result.ToString);
+  end
+  else
+    result := nil;
+
+//
 end;
 
 function TLMSRestMoodle.GetUsersByEmail(const aValue: string): TJSonArray;
