@@ -58,8 +58,6 @@ constructor TLMSUserCoursesTreeView.Create(Owner: TComponent);
 begin
   inherited;
 
-  NodeDataSize := SizeOf(TTreeData);
-
   TreeOptions.PaintOptions := TreeOptions.PaintOptions -
     [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect,
     toshowhorzgridlines, toshowvertgridlines];

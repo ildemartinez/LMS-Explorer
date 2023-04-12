@@ -166,6 +166,7 @@
         <DCCReference Include="LMS.TreeView.UserCourses.pas"/>
         <DCCReference Include="LMS.Helper.FormFactory.pas"/>
         <DCCReference Include="LMS._class.GradeItem.pas"/>
+        <DCCReference Include="LMS.TreeView.Courses.pas"/>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

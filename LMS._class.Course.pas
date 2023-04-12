@@ -17,6 +17,10 @@ type
     fshortname: string;
     fFullName: string;
     fdisplayname: string;
+    fStartDate: TDateTime;
+    fEndDate: TDateTime;
+    fTimeCreated: TDateTime;
+    fTimeModified: TDateTime;
 
     // All users enrolled in this course
     fUsers: TList<IUser>;
@@ -45,6 +49,14 @@ type
     procedure SetDisplayName(const Value: string);
     function GetCategory: ICategory;
     function GetGradeItems: TList<IGradeItem>;
+    function GetEndDate: TDateTime;
+    function GetStartDate: TDateTime;
+    function GetTimeCreated: TDateTime;
+    function GetTimeModified: TDateTime;
+    procedure SetEndDate(const Value: TDateTime);
+    procedure SetStartDate(const Value: TDateTime);
+    procedure SetTimeCreated(const Value: TDateTime);
+    procedure SetTimeModified(const Value: TDateTime);
   public
     constructor Create(const LMS: ILMS);
     destructor Destroy; override;
@@ -61,6 +73,10 @@ type
     property DisplayName: string read GetDisplayName write SetDisplayName;
     property shortname: string read GetShortName write SetShortName;
     property FullName: string read GetFullName write SetFullName;
+    property Start_Date: TDateTime read GetStartDate write SetStartDate;
+    property End_Date: TDateTime read GetEndDate write SetEndDate;
+    property Time_Created: TDateTime read GetTimeCreated write SetTimeCreated;
+    property Time_Modified: TDateTime read GetTimeModified write SetTimeModified;
 
     property Id: cardinal read getId write SetId;
     // Returns the apropiated text to show information about courses
@@ -144,6 +160,11 @@ end;
 function TLMSCourse.GetDisplayName: string;
 begin
   result := fdisplayname;
+end;
+
+function TLMSCourse.GetEndDate: TDateTime;
+begin
+  result := fEndDate;
 end;
 
 procedure TLMSCourse.RefreshEnrolledUsers;
@@ -241,6 +262,11 @@ begin
   fdisplayname := Value;
 end;
 
+procedure TLMSCourse.SetEndDate(const Value: TDateTime);
+begin
+  fEndDate := Value;
+end;
+
 procedure TLMSCourse.SetFullName(const Value: string);
 begin
   fFullName := Value;
@@ -259,6 +285,21 @@ end;
 procedure TLMSCourse.SetShortName(const Value: string);
 begin
   fshortname := Value;
+end;
+
+procedure TLMSCourse.SetStartDate(const Value: TDateTime);
+begin
+  fStartDate := Value;
+end;
+
+procedure TLMSCourse.SetTimeCreated(const Value: TDateTime);
+begin
+  fTimeCreated := Value;
+end;
+
+procedure TLMSCourse.SetTimeModified(const Value: TDateTime);
+begin
+  fTimeModified := Value;
 end;
 
 procedure TLMSCourse.SetUserGroups(const Value: TList<IUsersGroup>);
@@ -316,6 +357,21 @@ end;
 function TLMSCourse.GetShortName: string;
 begin
   result := fshortname;
+end;
+
+function TLMSCourse.GetStartDate: TDateTime;
+begin
+  result := fStartDate;
+end;
+
+function TLMSCourse.GetTimeCreated: TDateTime;
+begin
+  result := fTimeCreated;
+end;
+
+function TLMSCourse.GetTimeModified: TDateTime;
+begin
+  result := fTimeModified;
 end;
 
 function TLMSCourse.GetUserCountByRol(const aRole: string): cardinal;

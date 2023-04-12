@@ -19,6 +19,7 @@ type
 
     // All LMS categories
     fCategories: TList<ICategory>;
+    fFlatCourses: TList<ICourse>;
 
     procedure SetHost(const Value: string);
     procedure SetPassword(const Value: string);
@@ -35,6 +36,8 @@ type
     procedure SetAutoConnect(const Value: boolean);
     procedure SetCategories(const Value: TList<ICategory>);
     function GetCategories: TList<ICategory>;
+    function GetFlatCourses: TList<ICourse>;
+    procedure SetFlatCourses(const Value: TList<ICourse>);
   public
     constructor Create(Owner: TComponent); override;
 
@@ -61,12 +64,15 @@ type
 
     property Categories: TList<ICategory> read GetCategories
       write SetCategories;
+    property FlatCourses: TList<ICourse> read GetFlatCourses
+      write SetFlatCourses;
   end;
 
 implementation
 
 uses
   System.JSON,
+  System.DateUtils,
 
   LMS._class.User,
   LMS._class.Course,
@@ -102,6 +108,9 @@ begin
 
   // LMS Categories
   Categories := TList<ICategory>.Create;
+
+  // All courses in flat hiearchy
+  FlatCourses := TList<ICourse>.Create;
 end;
 
 function TLMS.GetAutoConnect: boolean;
@@ -192,17 +201,36 @@ begin
         aCourse.displayname := Course.GetValue<string>('displayname');
         aCourse.GroupMode := Course.GetValue<cardinal>('groupmode');
 
+        // if aJSONValue.TryGetValue<Int64>('lastcourseaccess', timestamp) then
+        // flastcourseaccess := unixtodatetime(timestamp);
+
+        aCourse.Start_Date :=
+          unixtodatetime(Course.GetValue<Int64>('startdate'));
+        aCourse.End_Date := unixtodatetime(Course.GetValue<Int64>('enddate'));
+        aCourse.Time_Created :=
+          unixtodatetime(Course.GetValue<Int64>('timecreated'));
+        aCourse.Time_Modified :=
+          unixtodatetime(Course.GetValue<Int64>('timemodified'));
+
         // Have to check because the category function service could not be enable
         aCourseCategory := GetCategoryById
           (Course.GetValue<cardinal>('categoryid'));
         if aCourseCategory <> nil then
           aCourseCategory.Courses.add(aCourse);
+
+        // Add course in flat hierarchy
+        FlatCourses.add(aCourse);
         //
 
       end;
     end;
   end;
 
+end;
+
+function TLMS.GetFlatCourses: TList<ICourse>;
+begin
+  result := fFlatCourses;
 end;
 
 function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
@@ -284,6 +312,11 @@ end;
 procedure TLMS.SetCategories(const Value: TList<ICategory>);
 begin
   fCategories := Value;
+end;
+
+procedure TLMS.SetFlatCourses(const Value: TList<ICourse>);
+begin
+  fFlatCourses := Value;
 end;
 
 procedure TLMS.SetHost(const Value: string);

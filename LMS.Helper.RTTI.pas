@@ -10,6 +10,9 @@ function GetPropertyValue(Instance: TObject; const PropName: string): String;
 
 implementation
 
+uses
+  System.SysUtils;
+
 var
   localContext: TRttiContext;
 
@@ -17,6 +20,7 @@ function GetPropertyValue(Instance: TObject; const PropName: string): String;
 var
   Prop: TRttiProperty;
   aValue: TValue;
+  a: double;
 begin
   Prop := localContext.GetType(Instance.ClassType).GetProperty(PropName);
   if Assigned(Prop) and Prop.IsReadable then
@@ -26,6 +30,8 @@ begin
     case aValue.Kind of
       tkUString:
         result := aValue.AsString;
+      tkFloat:
+        result := FloatToStr(aValue.AsType<double>);
     else
       result := '';
     end;

@@ -17,8 +17,8 @@ type
 
   IGradeItem = interface
     ['{44E6EA75-B61B-448F-A7C5-73DF21A28C7F}']
-    function getItemname : string;
-    property ItemName : string read getItemName;
+    function getItemname: string;
+    property ItemName: string read getItemname;
   end;
 
   IUsersGroup = interface
@@ -91,7 +91,15 @@ type
     procedure GetCourseRoles(aCourseRoles: TStringlist);
     function GetUserCountByRol(const aRole: string): cardinal;
     function GetCategory: ICategory;
-    function GetGradeItems : TList<IGradeItem>;
+    function GetGradeItems: TList<IGradeItem>;
+    function GetEndDate: TDateTime;
+    function GetStartDate: TDateTime;
+    function GetTimeCreated: TDateTime;
+    function GetTimeModified: TDateTime;
+    procedure SetEndDate(const Value: TDateTime);
+    procedure SetStartDate(const Value: TDateTime);
+    procedure SetTimeCreated(const Value: TDateTime);
+    procedure SetTimeModified(const Value: TDateTime);
 
     procedure GetGradeBook;
 
@@ -101,6 +109,10 @@ type
     property FullName: string read GetFullName write SetFullName;
     property DisplayName: string read GetDisplayName write SetDisplayName;
     property Id: cardinal read getId;
+    property StartDate: TDateTime read GetStartDate write SetStartDate;
+    property EndDate: TDateTime read GetEndDate write SetEndDate;
+    property TimeCreated: TDateTime read GetTimeCreated write SetTimeCreated;
+    property TimeModified: TDateTime read GetTimeModified write SetTimeModified;
     property GroupMode: cardinal read GetGroupMode write SetGroupMode;
     property Users: TList<IUser> read GetUsers write SetUsers;
     property FilterContent: string read GetFilterContent;
@@ -148,6 +160,9 @@ type
     function GetCategories: TList<ICategory>;
     procedure GetCategoriesFromConnection;
 
+    function GetFlatCourses: TList<ICourse>;
+    procedure SetFlatCourses(const Value: TList<ICourse>);
+
     function getId: string;
     procedure SetId(const aId: string);
 
@@ -183,6 +198,9 @@ type
     property Password: string write SetPassword;
     property Service: string write SetService;
     property Host: string read GetHost write SetHost;
+
+    property FlatCourses: TList<ICourse> read GetFlatCourses
+      write SetFlatCourses;
     property Categories: TList<ICategory> read GetCategories
       write SetCategories;
 

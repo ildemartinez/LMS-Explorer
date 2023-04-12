@@ -21,7 +21,7 @@ object LMSForm: TLMSForm
     Top = 0
     Width = 582
     Height = 336
-    ActivePage = TabSheet1
+    ActivePage = tsCourses
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -88,6 +88,10 @@ object LMSForm: TLMSForm
           OnClick = Button1Click
         end
       end
+    end
+    object tsCourses: TTabSheet
+      Caption = 'Courses'
+      ImageIndex = 2
     end
   end
   object ActionManager1: TActionManager

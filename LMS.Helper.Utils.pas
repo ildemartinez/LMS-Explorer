@@ -4,6 +4,7 @@ interface
 
 function ShadowText(const aText: string): string;
 function FormatDateTimeNever(const aDateTime: TDateTime): string;
+function FormatDateTimeBlank(const aDateTime: TDateTime): string;
 
 // Property name has underscore so for show purpose better to change it for space
 // p.e. Header column "Full name" -> property Full_name
@@ -30,6 +31,14 @@ begin
 
   end;
 
+end;
+
+function FormatDateTimeBlank(const aDateTime: TDateTime): string;
+begin
+  if datetimetounix(aDateTime) = 0 then
+    result := ''
+  else
+    result := DateTimeToStr(aDateTime);
 end;
 
 function FormatDateTimeNever(const aDateTime: TDateTime): string;

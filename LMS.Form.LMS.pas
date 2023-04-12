@@ -14,6 +14,7 @@ uses
   Generics.Collections,
 
   LMS.TreeView.Users,
+  LMS.TreeView.Courses,
   LMS._interface.LMS,
   LMS._class.LMS;
 
@@ -34,6 +35,7 @@ type
     ImageList1: TImageList;
     Action4: TAction;
     Action5: TAction;
+    tsCourses: TTabSheet;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1Change(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -47,6 +49,8 @@ type
     fLMS: ILMS;
     fUsers: TList<IUser>;
     fLMSUsersTreeView: TLMSUsersTreeView;
+    fLMSCoursesTreeView: TLMSCoursesTreeView;
+
     procedure SetTLMS(const Value: ILMS);
     { Private declarations }
   public
@@ -115,6 +119,13 @@ begin
   fLMSUsersTreeView.Parent := TabSheet1;
   fLMSUsersTreeView.Align := alClient;
   fLMSUsersTreeView.LMSUsers := fUsers;
+
+  fLMSCoursesTreeView := TLMSCoursesTreeView.Create(self);
+  fLMSCoursesTreeView.Parent := tsCourses;
+  fLMSCoursesTreeView.Align := alClient;
+
+  // fLMSCoursesTreeView.LMSUsers := fUsers;
+
 end;
 
 procedure TLMSForm.Edit1Change(Sender: TObject);
@@ -150,6 +161,8 @@ end;
 procedure TLMSForm.SetTLMS(const Value: ILMS);
 begin
   fLMS := Value;
+
+  fLMSCoursesTreeView.LMS := fLMS;
 
   caption := fLMS.Id;
 end;

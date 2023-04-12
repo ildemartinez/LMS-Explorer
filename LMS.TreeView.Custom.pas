@@ -93,12 +93,22 @@ begin
       TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
       GetPropertyValue(TObject(data2.User),
       TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
+  end
+  else if (data1.node_type = data2.node_type) and (data1.node_type = ntCourse)
+  then
+  begin
+    Result := comparetext(GetPropertyValue(TObject(data1.Course),
+      TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
+      GetPropertyValue(TObject(data2.Course),
+      TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
   end;
 end;
 
 constructor TLMSCustomLMSVirtualStringTree.Create(Owner: TComponent);
 begin
   inherited;
+
+  NodeDataSize := SizeOf(TTreeData);
 
   Images := GetGlobalImageListFromResource();
   OnGetImageIndex := MyGetImageIndex;
@@ -137,7 +147,7 @@ procedure TLMSCustomLMSVirtualStringTree.MyGetImageIndex
 var
   data: PTreeData;
 begin
-  if (Kind <> ikstate) then
+  if (Kind <> ikstate) and (Column = 0) then
   begin
     data := GetNodeData(Node);
 
