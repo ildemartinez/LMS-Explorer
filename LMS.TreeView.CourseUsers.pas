@@ -73,7 +73,7 @@ begin
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnNodeClick := NodeClick;
-  OnNodeDblClick := NodeDblClick;
+ // OnNodeDblClick := NodeDblClick;
 
 end;
 
