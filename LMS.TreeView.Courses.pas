@@ -25,6 +25,9 @@ type
 
     procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+
+  protected
+    procedure DoDblClkCourse(const Course: ICourse); override;
   public
     constructor Create(Owner: TComponent); override;
 
@@ -34,6 +37,7 @@ type
 implementation
 
 uses
+  LMS.Helper.FormFactory,
   LMS.Helper.Utils;
 
 constructor TLMSCoursesTreeView.Create(Owner: TComponent);
@@ -41,6 +45,7 @@ begin
   inherited;
 
   OnGetText := MyDoGetText;
+
 
   with Header do
   begin
@@ -56,6 +61,13 @@ begin
     AutoSizeIndex := Columns.GetLastVisibleColumn;
   end;
 
+end;
+
+procedure TLMSCoursesTreeView.DoDblClkCourse(const Course: ICourse);
+begin
+  inherited;
+
+  ViewForm(Course);
 end;
 
 procedure TLMSCoursesTreeView.DoInitNode(Parent, Node: PVirtualNode;

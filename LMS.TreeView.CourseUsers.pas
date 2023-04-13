@@ -70,19 +70,6 @@ constructor TLMSCourseUsersTreeView.Create(Owner: TComponent);
 begin
   inherited;
 
-  NodeDataSize := SizeOf(TTreeData);
-
-  TreeOptions.PaintOptions := TreeOptions.PaintOptions -
-    [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect,
-    toshowhorzgridlines, toshowvertgridlines];
-
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
-    [toFullRowSelect];
-
-  TreeOptions.AutoOptions := TreeOptions.AutoOptions + [toAutoSpanColumns];
-
-  TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
-
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnNodeClick := NodeClick;

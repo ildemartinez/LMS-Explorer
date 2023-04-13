@@ -47,6 +47,9 @@ type
       Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode;
       CellRect: TRect; var ContentRect: TRect);
 
+          procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+  protected
+    procedure DoDblClkCourse(const Course : ICourse); virtual;
   public
     constructor Create(Owner: TComponent); override;
 
@@ -110,12 +113,31 @@ begin
 
   NodeDataSize := SizeOf(TTreeData);
 
+  OnNodeDblClick := NodeDblClick;
+
   Images := GetGlobalImageListFromResource();
   OnGetImageIndex := MyGetImageIndex;
   OnCompareNodes := CompareNodes;
   OnHeaderClick := HeaderClick;
 
   OnBeforeCellPaint := BeforePaint;
+
+  TreeOptions.PaintOptions := TreeOptions.PaintOptions -
+    [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect,
+    toshowhorzgridlines, toshowvertgridlines];
+
+  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
+    [toFullRowSelect];
+
+  TreeOptions.AutoOptions := TreeOptions.AutoOptions + [toAutoSpanColumns];
+
+  TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
+
+end;
+
+procedure TLMSCustomLMSVirtualStringTree.DoDblClkCourse(const Course: ICourse);
+begin
+
 end;
 
 procedure TLMSCustomLMSVirtualStringTree.FocusSelectedNode;
@@ -167,6 +189,25 @@ begin
             ('res_groups_visible_groups');
       end;
 
+    end;
+  end;
+
+end;
+
+procedure TLMSCustomLMSVirtualStringTree.NodeDblClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
+var
+  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+  data: PTreeData;
+begin
+  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
+
+  while aVirtualNodeEnumerator.MoveNext do
+  begin
+    data := GetNodeData(aVirtualNodeEnumerator.Current);
+    case data^.node_type of
+      ntCourse:
+        DoDblClkCourse(data^.Course)
     end;
   end;
 
