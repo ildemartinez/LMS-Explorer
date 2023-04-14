@@ -20,7 +20,6 @@ function GetPropertyValue(Instance: TObject; const PropName: string): String;
 var
   Prop: TRttiProperty;
   aValue: TValue;
-  a: double;
 begin
   Prop := localContext.GetType(Instance.ClassType).GetProperty(PropName);
   if Assigned(Prop) and Prop.IsReadable then

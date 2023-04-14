@@ -47,9 +47,10 @@ type
       Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode;
       CellRect: TRect; var ContentRect: TRect);
 
-          procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+    procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   protected
-    procedure DoDblClkCourse(const Course : ICourse); virtual;
+    procedure DoDblClkCourse(const Course: ICourse); virtual;
+    procedure DoDblClkUser(const User: IUser); virtual;
   public
     constructor Create(Owner: TComponent); override;
 
@@ -140,6 +141,11 @@ begin
 
 end;
 
+procedure TLMSCustomLMSVirtualStringTree.DoDblClkUser(const User: IUser);
+begin
+
+end;
+
 procedure TLMSCustomLMSVirtualStringTree.FocusSelectedNode;
 begin
   if SelectedCount = 1 then
@@ -207,7 +213,9 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     case data^.node_type of
       ntCourse:
-        DoDblClkCourse(data^.Course)
+        DoDblClkCourse(data^.Course);
+      ntUser:
+        DoDblClkUser(data^.User);
     end;
   end;
 

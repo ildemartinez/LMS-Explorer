@@ -22,7 +22,6 @@ type
 
     procedure setLMSCourse(const Value: ICourse);
 
-    function HasGroups: boolean;
     function GetSelectedUser: IUser;
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
@@ -34,7 +33,7 @@ type
     procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
       var ChildCount: cardinal);
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
-    procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+    procedure DoDblClkUser(const User: IUser); override;
   public
     constructor Create(Owner: TComponent); override;
 
@@ -61,11 +60,6 @@ uses
   LMS.Helper.RTTI,
   LMS.Helper.FormFactory;
 
-function TLMSCourseUsersTreeView.HasGroups: boolean;
-begin
-  Result := fLMSCourse.UserGroups.count > 0;
-end;
-
 constructor TLMSCourseUsersTreeView.Create(Owner: TComponent);
 begin
   inherited;
@@ -73,8 +67,13 @@ begin
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnNodeClick := NodeClick;
- // OnNodeDblClick := NodeDblClick;
+end;
 
+procedure TLMSCourseUsersTreeView.DoDblClkUser(const User: IUser);
+begin
+  inherited;
+
+  ViewForm(User);
 end;
 
 procedure TLMSCourseUsersTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -85,73 +84,34 @@ begin
   data := GetNodeData(Node);
   parentdata := GetNodeData(Parent);
 
-  // if fAsTree then
+  if parentdata = nil then
   begin
-    if parentdata = nil then
+
+    // Has a group
+    if (LMSCourse <> nil) and (LMSCourse.UserGroups.count > 0) then
     begin
-
-      // Has a group
-      if (LMSCourse <> nil) and (LMSCourse.UserGroups.count > 0) then
-      begin
-        data^.node_type := ntGroup;
-        data^.Group := fLMSCourse.UserGroups[Node.Index];
-        Include(Node.States, vsHasChildren);
-        Include(Node.States, vsExpanded);
-      end
-      // Just users list
-      else
-      begin
-        data^.node_type := ntUser;
-        data^.User := fLMSCourse.Users[Node.Index];
-        Exclude(Node.States, vsHasChildren);
-      end;
+      data^.node_type := ntGroup;
+      data^.Group := fLMSCourse.UserGroups[Node.Index];
+      Include(Node.States, vsHasChildren);
+      Include(Node.States, vsExpanded);
     end
+    // Just users list
     else
-      case parentdata^.node_type of
-        ntGroup:
-          begin
-            data^.node_type := ntUser;
-            data^.User := parentdata.Group.UsersInGroup[Node.Index];
-            Exclude(Node.States, vsHasChildren);
-          end;
-        { data^.node_type := ntCategory;
-          data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-          data^.Category := parentdata^.aLMS.categories.items[Node.Index];
-
-          if parentdata^.aLMS.categories.count +
-          parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0
-          then
-          Node.States := Node.States + [vsHasChildren, vsExpanded];
-          end;
-        }
-      end;
-    {
-      else
-      begin
-      data^.node_type := ntCourse;
-      data^.aLMS := parentdata^.aLMS;
-      data^.Course := parentdata^.Category.fcourses
-      [Node.Index - parentdata^.Category.SubCategoriesCount];
-      end;
-      end;
-      end
-      { else
-      begin
-      if parentdata = nil then
-      begin
-      RootNodeCount := self.fCryptonetwork.count;
-
-      if RootNodeCount > 0 then
-      begin
-      data^.node_type := ntnode;
-      data^.nodedata := CryptoNetwork.nodes[Node.Index];
-      AttachObserverToSubject(self, CryptoNetwork.nodes[Node.Index]);
-      end;
-      end
-      end;
-    }
-
-  end;
+    begin
+      data^.node_type := ntUser;
+      data^.User := fLMSCourse.Users[Node.Index];
+      Exclude(Node.States, vsHasChildren);
+    end;
+  end
+  else
+    case parentdata^.node_type of
+      ntGroup:
+        begin
+          data^.node_type := ntUser;
+          data^.User := parentdata.Group.UsersInGroup[Node.Index];
+          Exclude(Node.States, vsHasChildren);
+        end;
+    end;
 end;
 
 procedure TLMSCourseUsersTreeView.FilterByText(const text: string);
@@ -195,7 +155,6 @@ begin
 
   // Please refresh
   EndUpdate;
-
 end;
 
 function TLMSCourseUsersTreeView.GetSelectedUser: IUser;
@@ -223,9 +182,6 @@ procedure TLMSCourseUsersTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   var CellText: string);
 var
   data: PTreeData;
-
-  propName: string;
-  propValue: Variant;
 begin
   data := GetNodeData(Node);
 
@@ -234,14 +190,10 @@ begin
       if Column = 0 then
         CellText := GetPropertyValue(TObject(data^.Group),
           TextToPropertyName(Header.Columns[Column].text))
-        // CellText := data^.Group.fname
       else
         CellText := '';
     ntUser:
       begin
-        // propName := TextToPropertyName(Header.Columns[Column].text);
-        // propValue := GetPropValue(TObject(data^.User), propName);
-        // CellText := VarToStr(propValue);
         CellText := GetPropertyValue(TObject(data^.User),
           TextToPropertyName(Header.Columns[Column].text));
       end;
@@ -299,24 +251,6 @@ begin
   end;
 end;
 
-procedure TLMSCourseUsersTreeView.NodeDblClick(Sender: TBaseVirtualTree;
-  const HitInfo: THitInfo);
-var
-  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
-  data: PTreeData;
-begin
-  aVirtualNodeEnumerator := SelectedNodes.GetEnumerator;
-
-  while aVirtualNodeEnumerator.MoveNext do
-  begin
-    data := GetNodeData(aVirtualNodeEnumerator.Current);
-    case data^.node_type of
-      ntUser:
-        ViewForm(data^.User)
-    end;
-  end;
-end;
-
 procedure TLMSCourseUsersTreeView.Refreshh;
 begin
   RootNodeCount := fLMSUsers.count;
@@ -348,7 +282,7 @@ begin
   Header.Columns.Clear;
 
   // Create group column if has groups defined in course
-  if HasGroups then
+  if fLMSCourse.UserGroups.count > 0 then
   begin
     Header.Columns.Add.text := 'Group';
 

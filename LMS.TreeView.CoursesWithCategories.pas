@@ -1,4 +1,4 @@
-unit LMS.TreeView.Courses;
+unit LMS.TreeView.CoursesWithCategories;
 
 interface
 
@@ -15,7 +15,7 @@ uses
   LMS._interface.LMS;
 
 type
-  TLMSCoursesTreeView = class(TLMSCustomLMSVirtualStringTree)
+  TLMSCoursesWithCategoriesTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
     fLMS: ILMS;
     procedure SetLMS(const Value: ILMS);
@@ -40,7 +40,7 @@ uses
   LMS.Helper.FormFactory,
   LMS.Helper.Utils;
 
-constructor TLMSCoursesTreeView.Create(Owner: TComponent);
+constructor TLMSCoursesWithCategoriesTreeView.Create(Owner: TComponent);
 begin
   inherited;
 
@@ -62,14 +62,14 @@ begin
 
 end;
 
-procedure TLMSCoursesTreeView.DoDblClkCourse(const Course: ICourse);
+procedure TLMSCoursesWithCategoriesTreeView.DoDblClkCourse(const Course: ICourse);
 begin
   inherited;
 
   ViewForm(Course);
 end;
 
-procedure TLMSCoursesTreeView.DoInitNode(Parent, Node: PVirtualNode;
+procedure TLMSCoursesWithCategoriesTreeView.DoInitNode(Parent, Node: PVirtualNode;
   var InitStates: TVirtualNodeInitStates);
 var
   data: PTreeData;
@@ -81,7 +81,7 @@ begin
   data^.Course := fLMS.FlatCourses[Node.Index];
 end;
 
-procedure TLMSCoursesTreeView.MyDoGetText(Sender: TBaseVirtualTree;
+procedure TLMSCoursesWithCategoriesTreeView.MyDoGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
   var CellText: string);
 var
@@ -106,7 +106,7 @@ begin
 
 end;
 
-procedure TLMSCoursesTreeView.SetLMS(const Value: ILMS);
+procedure TLMSCoursesWithCategoriesTreeView.SetLMS(const Value: ILMS);
 begin
   fLMS := Value;
 
