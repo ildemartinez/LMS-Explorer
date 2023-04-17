@@ -284,7 +284,7 @@ begin
   // Create group column if has groups defined in course
   if fLMSCourse.UserGroups.count > 0 then
   begin
-    Header.Columns.Add.text := 'Group';
+    Header.Columns.Add.text := 'Group Name';
 
     CreateColums;
 

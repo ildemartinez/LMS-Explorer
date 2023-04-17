@@ -15,7 +15,7 @@ uses
 
   LMS.TreeView.Users,
   LMS.TreeView.Courses,
-  LMS.TreeView.CoursesWithCategories,
+  LMS.TreeView.LMS,
   LMS._interface.LMS,
   LMS._class.LMS;
 
@@ -52,7 +52,7 @@ type
     fUsers: TList<IUser>;
     fLMSUsersTreeView: TLMSUsersTreeView;
     fLMSCoursesTreeView: TLMSCoursesTreeView;
-    fLMSCoursesWithCategoriesTreeView: TLMSCoursesWithCategoriesTreeView;
+    fLMSTreeView: TLMSTreeView;
 
     procedure SetTLMS(const Value: ILMS);
     { Private declarations }
@@ -127,10 +127,9 @@ begin
   fLMSCoursesTreeView.Parent := tsCourses;
   fLMSCoursesTreeView.Align := alClient;
 
-  fLMSCoursesWithCategoriesTreeView :=
-    TLMSCoursesWithCategoriesTreeView.Create(self);
-  fLMSCoursesWithCategoriesTreeView.Parent := tsCoursesWithCategories;
-  fLMSCoursesWithCategoriesTreeView.Align := alClient;
+  fLMSTreeView := TLMSTreeView.Create(self);
+  fLMSTreeView.Parent := tsCoursesWithCategories;
+  fLMSTreeView.Align := alClient;
   // fLMSCoursesTreeView.LMSUsers := fUsers;
 
 end;
@@ -170,7 +169,7 @@ begin
   fLMS := Value;
 
   fLMSCoursesTreeView.LMS := fLMS;
-  fLMSCoursesWithCategoriesTreeView.lms := flms;
+  fLMSTreeView.LMS := fLMS;
 
   caption := fLMS.Id;
 end;

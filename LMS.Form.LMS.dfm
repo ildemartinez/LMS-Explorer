@@ -89,13 +89,13 @@ object LMSForm: TLMSForm
         end
       end
     end
-    object tsCourses: TTabSheet
-      Caption = 'Courses'
-      ImageIndex = 2
-    end
     object tsCoursesWithCategories: TTabSheet
       Caption = 'Categories'
       ImageIndex = 3
+    end
+    object tsCourses: TTabSheet
+      Caption = 'Courses'
+      ImageIndex = 2
     end
   end
   object ActionManager1: TActionManager

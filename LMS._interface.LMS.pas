@@ -32,7 +32,7 @@ type
     function GetFilterContent: string;
 
     property Id: cardinal read getId write SetId;
-    property GroupName: string read GetGroupName write SetGroupName;
+    property Group_Name: string read GetGroupName write SetGroupName;
     property UsersInGroup: TList<IUser> read GetUsersInGroup
       write SetUsersInGroup;
     property FilterContent: string read GetFilterContent;

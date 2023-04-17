@@ -36,7 +36,7 @@ uses
   LMS.Helper.FormFactory in 'LMS.Helper.FormFactory.pas',
   LMS._class.GradeItem in 'LMS._class.GradeItem.pas',
   LMS.TreeView.Courses in 'LMS.TreeView.Courses.pas',
-  LMS.TreeView.CoursesWithCategories in 'LMS.TreeView.CoursesWithCategories.pas';
+  LMS.TreeView.LMS in 'LMS.TreeView.LMS.pas';
 
 {$R *.res}
 

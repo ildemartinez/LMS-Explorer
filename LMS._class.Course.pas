@@ -188,7 +188,7 @@ begin
 
   if aUsers <> nil then
   begin
-    // log(aUsers.ToString);
+     log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TUser.Create(fLMS, User);
@@ -246,7 +246,7 @@ begin
       aUserGroup := TUsersGroup.Create;
 
       aUserGroup.Id := agroup.GetValue<cardinal>('id');
-      aUserGroup.GroupName := agroup.GetValue<string>('name');
+      aUserGroup.Group_Name := agroup.GetValue<string>('name');
       { aUser.fFirstName := User.GetValue<string>('firstname');
         aUser.fLastName := User.GetValue<string>('lastname');
         aUser.fFullName := User.GetValue<string>('fullname');

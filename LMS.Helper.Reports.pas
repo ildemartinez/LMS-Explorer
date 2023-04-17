@@ -28,7 +28,7 @@ begin
     begin
       for var aGroup in aLMSCourse.UserGroups do
       begin
-        ExcelWS.fXLWS.Cells.item[aRow, 2] := aGroup.GroupName;
+        ExcelWS.fXLWS.Cells.item[aRow, 2] := aGroup.Group_Name;
         inc(aRow);
 
         for var aUser in aGroup.UsersInGroup do

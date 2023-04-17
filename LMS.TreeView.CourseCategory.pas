@@ -222,7 +222,7 @@ begin
         CellText := '';
     ntGroup:
       if Column = 1 then
-        CellText := data^.Group.GroupName
+        CellText := data^.Group.Group_Name
       else
         CellText := '';
     ntUser:

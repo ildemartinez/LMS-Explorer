@@ -213,7 +213,7 @@ var
 begin
   fCourse := Value;
 
-  Caption := fCourse.displaycontent;
+  Caption := fCourse.displaycontent + ' - courseid: '+fCourse.Id.ToString;
 
   fUsersTreeView.LMSCourse := fCourse;
 

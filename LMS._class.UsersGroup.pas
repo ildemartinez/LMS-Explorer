@@ -27,7 +27,7 @@ type
     constructor Create;
 
     property Id: cardinal read getId write SetId;
-    property GroupName: string read GetGroupName write SetGroupName;
+    property Group_Name: string read GetGroupName write SetGroupName;
     property FilterContent: string read getFilterContent;
     property UsersInGroup: TList<IUser> read GetUsersInGroup
       write SetUsersInGroup;
