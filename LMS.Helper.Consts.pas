@@ -12,6 +12,7 @@ const
   CORE_COURSE = 'core_course_';
   CORE_COURSE_GET_CATEGORIES = CORE_COURSE + 'get_categories';
   CORE_COURSE_GET_COURSES = CORE_COURSE + 'get_courses';
+  CORE_COURSE_GET_CONTENTS = CORE_COURSE + 'get_contents';
 
   CORE_ENROL = 'core_enrol_';
   CORE_ENROL_GET_ENROLLED_USERS = CORE_ENROL + 'get_enrolled_users';
@@ -43,6 +44,7 @@ const
   // admin settings
   ADMIN_SETTINGS_EXTERNALSERVICES =
     '/admin/settings.php?section=externalservices';
+  ADMIN_WEBSERVICE_DOCUMENTATION = '/admin/webservice/documentation.php';
   ADMIN_USER = '/admin/user.php';
 
 implementation

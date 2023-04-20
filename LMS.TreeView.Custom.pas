@@ -12,7 +12,8 @@ uses
   LMS._class.LMS;
 
 type
-  TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser);
+  TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser, ntSection,
+    ntModule);
 
   TTreeData = { packed } record
     aLMS: ILMS; // Pointer to LMS structure
@@ -21,6 +22,8 @@ type
     Category: ICategory;
     Group: IUsersGroup;
     node_type: TNodeTypes;
+    Section: ISection;
+    Module: IModule;
     // of
     // ntCategory:
 
@@ -195,7 +198,18 @@ begin
             ('res_groups_visible_groups');
       end;
 
+    end
+    else if (data^.node_type = ntModule) then
+    begin
+      if data^.Module.ModType = mnresource then
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+          ('res_modtype_pdf')
+      else if data^.Module.ModType = mnlabel then
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+          ('res_modtype_label');
+
     end;
+
   end;
 
 end;

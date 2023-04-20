@@ -38,15 +38,17 @@ type
     Action5: TAction;
     tsCourses: TTabSheet;
     tsCoursesWithCategories: TTabSheet;
+    Button2: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1Change(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
     procedure Action2Execute(Sender: TObject);
     procedure Action3Execute(Sender: TObject);
     procedure Action4Update(Sender: TObject);
     procedure Action4Execute(Sender: TObject);
     procedure Action5Execute(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     fLMS: ILMS;
     fUsers: TList<IUser>;
@@ -107,7 +109,12 @@ end;
 
 procedure TLMSForm.Button1Click(Sender: TObject);
 begin
-  OpenExternalServices(self.fLMS);
+  OpenExternalServices(fLMS);
+end;
+
+procedure TLMSForm.Button2Click(Sender: TObject);
+begin
+  OpenWebServiceDocumentation(fLMS);
 end;
 
 constructor TLMSForm.Create(Owner: TComponent);

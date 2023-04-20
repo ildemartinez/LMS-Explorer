@@ -46,7 +46,7 @@ object LMSCourseForm: TLMSCourseForm
       Top = 1
       Width = 922
       Height = 286
-      ActivePage = TabSheet2
+      ActivePage = tsContent
       Align = alClient
       TabOrder = 1
       OnChange = PageControl1Change
@@ -59,8 +59,6 @@ object LMSCourseForm: TLMSCourseForm
           Height = 25
           Align = alTop
           TabOrder = 0
-          ExplicitTop = 8
-          ExplicitWidth = 281
           object Edit1: TEdit
             Left = 1
             Top = 1
@@ -72,6 +70,10 @@ object LMSCourseForm: TLMSCourseForm
             ExplicitHeight = 21
           end
         end
+      end
+      object tsContent: TTabSheet
+        Caption = 'Course contents'
+        ImageIndex = 2
       end
       object TabSheet2: TTabSheet
         Caption = 'Grade book'

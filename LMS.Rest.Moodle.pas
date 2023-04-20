@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes,
-  rest.Client,
+  Rest.Client,
   System.JSON;
 
 type
@@ -47,6 +47,7 @@ type
     function GetUserGroupsByCourseId(const courseID: integer): TJSonArray;
 
     function GetUsersGradeBook(const courseID: integer): TJSonArray;
+    function GetCourseContent(const courseID: integer): TJSonArray;
 
     function GetUsersByFirstName(const aValue: string): TJSonArray;
     function GetUsersByLastName(const aValue: string): TJSonArray;
@@ -68,7 +69,7 @@ uses
   sysutils,
   System.Generics.Collections,
   Dialogs,
-  rest.Types,
+  Rest.Types,
   System.UITypes,
 
   LMS.Helper.Consts,
@@ -252,6 +253,25 @@ begin
 
 end;
 
+function TLMSRestMoodle.GetCourseContent(const courseID: integer): TJSonArray;
+begin
+  if Connected then
+  begin
+    PrepareParams(CORE_COURSE_GET_CONTENTS);
+
+    with aRestRequest.Params.AddItem do
+    begin
+      name := 'courseid';
+      value := inttostr(courseID);
+    end;
+
+    result := ExecuteRequest(CORE_COURSE_GET_CONTENTS);
+  end
+  else
+    result := nil;
+
+end;
+
 function TLMSRestMoodle.GetCourses: TJSonArray;
 begin
 
@@ -390,7 +410,7 @@ begin
     with aRestRequest.Params.AddItem do
     begin
       name := 'courseid';
-      value := courseId.ToString;
+      value := courseID.ToString;
     end;
 
     jValue := ExecuteRequest2(GRADEREPORT_USER_GET_GRADE_ITEMS);
@@ -398,12 +418,12 @@ begin
 
     result := jValue as TJSonArray;
 
-//    Log(result.ToString);
+    // Log(result.ToString);
   end
   else
     result := nil;
 
-//
+  //
 end;
 
 function TLMSRestMoodle.GetUsersByEmail(const aValue: string): TJSonArray;

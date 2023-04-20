@@ -31,6 +31,7 @@ procedure OpenEditCourseInBrowser(const aCourse: ICourse);
 
 // Services
 procedure OpenExternalServices(const aLMS: ILMS);
+procedure OpenWebServiceDocumentation(const aLMS: ILMS);
 
 implementation
 
@@ -136,6 +137,12 @@ end;
 procedure OpenEditProfileByLMS(const aLMS: ILMS; const aUser: IUser);
 begin
   ShellExecute(0, 'open', PChar(aLMS.Host + format(EDIT_PROFILE, [aUser.Id])),
+    nil, nil, 0); // SW_SHOW);
+end;
+
+procedure OpenWebServiceDocumentation(const aLMS: ILMS);
+begin
+      ShellExecute(0, 'open', PChar(aLMS.Host + ADMIN_WEBSERVICE_DOCUMENTATION),
     nil, nil, 0); // SW_SHOW);
 end;
 

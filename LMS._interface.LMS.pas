@@ -68,6 +68,30 @@ type
     property FilterContent: string read GetFilterContent;
   end;
 
+  TModType = (mnforum, mnlabel, mnresource, mnunknow);
+
+  IModule = interface
+    ['{9378D0F9-91C4-41D2-82C5-9D3596A14964}']
+    function GetName: string;
+    function GetModType: TModType;
+    procedure SetModName(const Value: string);
+    procedure SetName(const Value: string);
+
+    property Name: string read GetName write SetName;
+    property ModName: string write SetModName;
+    property ModType: TModType read GetModType;
+  end;
+
+  ISection = interface
+    ['{CD546519-E83C-4938-9903-F8BCEDB3FBA8}']
+    function GetName: string;
+    procedure SetName(const Value: string);
+    function GetModules: TList<IModule>;
+
+    property Name: string read GetName write SetName;
+    property Modules: TList<IModule> read GetModules;
+  end;
+
   ICourse = interface
     ['{5B363A62-53F5-4156-8920-D6338355446D}']
     function GetLMS: ILMS;
@@ -77,6 +101,7 @@ type
     procedure RefreshUserGroups;
     procedure RefreshEnrolledUsers;
     function GetUserGroups: TList<IUsersGroup>;
+    function GetSections: TList<ISection>;
     function GetUsers: TList<IUser>;
     procedure SetUserGroups(const Value: TList<IUsersGroup>);
     procedure SetUsers(const Value: TList<IUser>);
@@ -102,6 +127,7 @@ type
     procedure SetTimeModified(const Value: TDateTime);
 
     procedure GetGradeBook;
+    procedure GetCourseContent;
 
     property LMS: ILMS read GetLMS;
     property Category: ICategory read GetCategory;
@@ -121,6 +147,7 @@ type
     property UserGroups: TList<IUsersGroup> read GetUserGroups
       write SetUserGroups;
     property GradeItems: TList<IGradeItem> read GetGradeItems;
+    property Sections: TList<ISection> read GetSections;
   end;
 
   ICategory = interface

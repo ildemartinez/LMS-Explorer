@@ -12,6 +12,7 @@ uses
   Vcl.ActnMenus, System.ImageList, Vcl.ImgList,
 
   LMS._interface.LMS,
+  LMS.TreeView.CourseContent,
   LMS.TreeView.CourseUsers;
 
 type
@@ -38,6 +39,7 @@ type
     Panel1: TPanel;
     Edit1: TEdit;
     Memo2: TMemo;
+    tsContent: TTabSheet;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -56,6 +58,7 @@ type
     procedure actExportExecute(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
   private
+    fCourseContentTreeView: TCourseContentTreeView;
     fUsersTreeView: TLMSCourseUsersTreeView;
     fCourse: ICourse;
     procedure SetaCourse(const Value: ICourse);
@@ -172,6 +175,10 @@ begin
   fUsersTreeView.parent := TabSheet1;
   fUsersTreeView.align := alClient;
 
+  fCourseContentTreeView := TCourseContentTreeView.Create(self);
+  fCourseContentTreeView.parent := tsContent;
+  fCourseContentTreeView.align := alClient;
+
   PageControl1.ActivePageIndex := 0;
 end;
 
@@ -193,16 +200,25 @@ end;
 
 procedure TLMSCourseForm.PageControl1Change(Sender: TObject);
 begin
-  if PageControl1.ActivePageIndex = 1 then
-  begin
-    fCourse.GetGradeBook;
+  case PageControl1.ActivePageIndex of
+    0:
+      ;
+    1:
+      begin
+        fCourse.GetCourseContent;
+        fCourseContentTreeView.LMSCourse := Course;
+      end;
+    2:
+      begin
+        fCourse.GetGradeBook;
 
-    Memo1.Lines.Clear;
-    for var gradeitem in fCourse.GradeItems do
-    begin
-      //Memo1.Lines.Add(gradeitem.ItemName);
-    end;
+        Memo1.Lines.Clear;
+        for var gradeitem in fCourse.GradeItems do
+        begin
+          // Memo1.Lines.Add(gradeitem.ItemName);
+        end;
 
+      end;
   end;
 end;
 
@@ -213,7 +229,7 @@ var
 begin
   fCourse := Value;
 
-  Caption := fCourse.displaycontent + ' - courseid: '+fCourse.Id.ToString;
+  Caption := fCourse.displaycontent + ' - courseid: ' + fCourse.id.ToString;
 
   fUsersTreeView.LMSCourse := fCourse;
 

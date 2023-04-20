@@ -3,3 +3,6 @@ res_groups_no_groups BITMAP resources\no_groups.bmp
 res_groups_separate_groups BITMAP resources\separate_groups.bmp
 res_groups_visible_groups BITMAP resources\visible_groups.bmp
 
+res_modtype_pdf BITMAP resources\modtype_pdf.bmp
+res_modtype_label BITMAP resources\modtype_label.bmp
+

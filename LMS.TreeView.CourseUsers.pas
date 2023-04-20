@@ -295,7 +295,7 @@ begin
   begin
     CreateColums;
 
-    RootNodeCount := 0;
+   // RootNodeCount := 0;
     RootNodeCount := fLMSCourse.Users.count;
   end;
 

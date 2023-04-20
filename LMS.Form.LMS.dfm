@@ -21,7 +21,7 @@ object LMSForm: TLMSForm
     Top = 0
     Width = 582
     Height = 336
-    ActivePage = tsCoursesWithCategories
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -74,7 +74,7 @@ object LMSForm: TLMSForm
         Left = 0
         Top = 0
         Width = 568
-        Height = 65
+        Height = 113
         Align = alTop
         Caption = 'Service configuration '
         TabOrder = 0
@@ -86,6 +86,15 @@ object LMSForm: TLMSForm
           Caption = 'Got to LMS external service configuration'
           TabOrder = 0
           OnClick = Button1Click
+        end
+        object Button2: TButton
+          Left = 19
+          Top = 55
+          Width = 214
+          Height = 25
+          Caption = 'Got to LMS API Documentation'
+          TabOrder = 1
+          OnClick = Button2Click
         end
       end
     end

@@ -27,6 +27,7 @@ type
     // All course groups
     fUserGroups: TList<IUsersGroup>;
     fGradeItems: TList<IGradeItem>;
+    fSections: TList<ISection>;
 
     function getFilterContent: string;
     function GetDisplayContent: string;
@@ -57,6 +58,7 @@ type
     procedure SetStartDate(const Value: TDateTime);
     procedure SetTimeCreated(const Value: TDateTime);
     procedure SetTimeModified(const Value: TDateTime);
+    function GetSections: TList<ISection>;
   public
     constructor Create(const LMS: ILMS);
     destructor Destroy; override;
@@ -66,6 +68,7 @@ type
     function GetUserCountByRol(const aRole: string): cardinal;
 
     procedure GetGradeBook;
+    procedure GetCourseContent;
 
     // Pointer to the LMS parent
     property LMS: ILMS read GetLMS;
@@ -76,7 +79,8 @@ type
     property Start_Date: TDateTime read GetStartDate write SetStartDate;
     property End_Date: TDateTime read GetEndDate write SetEndDate;
     property Time_Created: TDateTime read GetTimeCreated write SetTimeCreated;
-    property Time_Modified: TDateTime read GetTimeModified write SetTimeModified;
+    property Time_Modified: TDateTime read GetTimeModified
+      write SetTimeModified;
 
     property Id: cardinal read getId write SetId;
     // Returns the apropiated text to show information about courses
@@ -102,6 +106,8 @@ uses
   LMS.Helper.Log,
   LMS._class.GradeItem,
   LMS._class.User,
+  LMS._class.Section,
+  LMS._class.Module,
   LMS._class.UsersGroup;
 
 constructor TLMSCourse.Create(const LMS: ILMS);
@@ -111,12 +117,14 @@ begin
   fUsers := TList<IUser>.Create;
   fUserGroups := TList<IUsersGroup>.Create;
   fGradeItems := TList<IGradeItem>.Create;
+  fSections := TList<ISection>.Create;
 
   fLMS := LMS;
 end;
 
 destructor TLMSCourse.Destroy;
 begin
+  fSections.free;
   fGradeItems.free;
   fUserGroups.free;
   fUsers.free;
@@ -143,13 +151,47 @@ begin
   end;
 end;
 
+procedure TLMSCourse.GetCourseContent;
+var
+  aSectionItems, aModuleItems: TJSonArray;
+  aSection: ISection;
+  aModule: IModule;
+  aJsonSection, aJsonModule: TJSONValue;
+begin
+  fSections.clear;
+
+  aSectionItems := fLMS.GetLMSConnection.GetCourseContent(fid);
+
+  for aJsonSection in aSectionItems do
+  begin
+    aSection := TSection.Create;
+
+    aSection.Name := aJsonSection.GetValue<string>('name');
+    aModuleItems := aJsonSection.GetValue<TJSonArray>('modules');
+
+    for aJsonModule in aModuleItems do
+    begin
+      aModule := tmodule.Create;
+      aModule.Name := aJsonModule.GetValue<string>('name');
+      aModule.ModName := aJsonModule.GetValue<string>('modname');
+
+      aSection.Modules.Add(aModule);
+    end;
+
+    fSections.Add(aSection);
+
+  end;
+
+  // log(aSectionItems.ToString);
+end;
+
 procedure TLMSCourse.GetCourseRoles(aCourseRoles: TStringlist);
 var
   aUser: IUser;
 begin
   for aUser in fUsers do
     if aCourseRoles.IndexOf(aUser.Roles) < 0 then
-      aCourseRoles.add(aUser.Roles);
+      aCourseRoles.Add(aUser.Roles);
 end;
 
 function TLMSCourse.GetDisplayContent: string;
@@ -182,13 +224,13 @@ begin
   // Populate user groups first
   RefreshUserGroups;
 
-  fUsers.Clear;
+  fUsers.clear;
 
   aUsers := fLMS.aLMSConnection.GetEnrolledUsersByCourseId(self.Id);
 
   if aUsers <> nil then
   begin
-     log(aUsers.ToString);
+    // log(aUsers.ToString);
     for User in aUsers do
     begin
       aUser := TUser.Create(fLMS, User);
@@ -205,7 +247,7 @@ begin
       end;
 
       // Add user to users list
-      fUsers.add(aUser);
+      fUsers.Add(aUser);
 
       // Include the user in the corresponding group
       groups := User.GetValue<TJSonArray>('groups');
@@ -218,7 +260,7 @@ begin
           for var agroup in self.fUserGroups do
           begin
             if agroup.Id = Group.GetValue<cardinal>('id') then
-              agroup.UsersInGroup.add(aUser)
+              agroup.UsersInGroup.Add(aUser)
           end;
 
         end;
@@ -234,7 +276,7 @@ var
   agroup: TJSONValue;
   aUserGroup: IUsersGroup;
 begin
-  fUserGroups.Clear;
+  fUserGroups.clear;
 
   aUserGroups := fLMS.aLMSConnection.GetUserGroupsByCourseId(self.Id);
 
@@ -251,7 +293,7 @@ begin
         aUser.fLastName := User.GetValue<string>('lastname');
         aUser.fFullName := User.GetValue<string>('fullname');
       }
-      fUserGroups.add(aUserGroup)
+      fUserGroups.Add(aUserGroup)
     end;
   end;
 
@@ -328,10 +370,9 @@ var
   aUser, aGradeItem: TJSONValue;
   aGradeItemC: TGradeItem;
 begin
-  fGradeItems.Clear;
+  fGradeItems.clear;
 
   aGradeItems := fLMS.GetLMSConnection.GetUsersGradeBook(self.fid);
-
 end;
 
 function TLMSCourse.GetGradeItems: TList<IGradeItem>;
@@ -352,6 +393,11 @@ end;
 function TLMSCourse.GetLMS: ILMS;
 begin
   result := fLMS;
+end;
+
+function TLMSCourse.GetSections: TList<ISection>;
+begin
+  result := fSections;
 end;
 
 function TLMSCourse.GetShortName: string;
