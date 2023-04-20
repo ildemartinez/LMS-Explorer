@@ -24,6 +24,9 @@ type
     fLMSCourse: ICourse;
 
     procedure setLMSCourse(const Value: ICourse);
+    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
+      var ImageIndex: System.UITypes.TImageIndex);
   protected
     procedure DoInitNode(Parent, Node: PVirtualNode;
       var InitStates: TVirtualNodeInitStates); override;
@@ -50,6 +53,7 @@ uses
   dialogs,
   ShellApi,
 
+  LMS.Helper.Images,
   LMS.Helper.Consts,
   LMS.Helper.Browser;
 
@@ -72,6 +76,7 @@ begin
 
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
+  OnGetImageIndex := MyGetImageIndex;
 end;
 
 procedure TCourseContentTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -191,6 +196,28 @@ begin
         begin
           ChildCount := data^.Section.Modules.Count;
         end;
+    end;
+  end;
+end;
+
+procedure TCourseContentTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
+  var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
+var
+  data: PTreeData;
+begin
+  if (Kind <> ikstate) and (Column = 1) then
+  begin
+    data := GetNodeData(Node);
+
+    if (data^.node_type = ntmodule) then
+    begin
+      if data^.Module.ModType = mnresource then
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+          ('res_modtype_pdf')
+      else if data^.Module.ModType = mnlabel then
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+          ('res_modtype_label');
     end;
   end;
 end;
