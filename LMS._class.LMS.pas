@@ -30,6 +30,9 @@ type
     procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
       const aFunctionName: string);
 
+    // procedure DownloadContent(const Content: IContent);
+    procedure DownloadAllCourseContent(const Course: ICourse);
+
     function GetId: string;
     procedure SetId(const aId: string);
     function GetAutoConnect: boolean;
@@ -38,6 +41,7 @@ type
     function GetCategories: TList<ICategory>;
     function GetFlatCourses: TList<ICourse>;
     procedure SetFlatCourses(const Value: TList<ICourse>);
+
   public
     constructor Create(Owner: TComponent); override;
 
@@ -73,6 +77,9 @@ implementation
 uses
   System.JSON,
   System.DateUtils,
+  System.SysUtils,
+  System.IOUtils,
+  forms,
 
   LMS._class.User,
   LMS._class.Course,
@@ -111,6 +118,39 @@ begin
 
   // All courses in flat hiearchy
   FlatCourses := TList<ICourse>.Create;
+end;
+
+procedure TLMS.DownloadAllCourseContent(const Course: ICourse);
+var
+  path: string;
+
+  aSection: ISection;
+  aModule: IModule;
+  aContent: IContent;
+
+begin
+  path := ExtractFileDir(Application.ExeName);
+
+  path := path + '\content\' + Course.LMS.Id + '\' + Course.Category.Name + '\'
+    + Course.shortname;
+
+  path := StringReplace(path, '/', '-', [rfReplaceAll]);
+
+  TDirectory.CreateDirectory(path);
+
+  for aSection in Course.Sections do
+  begin
+    for aModule in aSection.Modules do
+    begin
+      for aContent in aModule.Contents do
+      begin
+        Log(aContent.FileURL);
+
+        Course.LMS.GetLMSConnection.DownloadContent(aContent.FileURL,
+          path + '\' + aContent.FileName);
+      end;
+    end;
+  end;
 end;
 
 function TLMS.GetAutoConnect: boolean;
@@ -198,7 +238,7 @@ begin
         aCourse.Id := Course.GetValue<cardinal>('id');
         aCourse.shortname := Course.GetValue<string>('shortname');
         aCourse.FullName := Course.GetValue<string>('fullname');
-        aCourse.displayname := Course.GetValue<string>('displayname');
+        aCourse.DisplayName := Course.GetValue<string>('displayname');
         aCourse.GroupMode := Course.GetValue<cardinal>('groupmode');
 
         // if aJSONValue.TryGetValue<Int64>('lastcourseaccess', timestamp) then

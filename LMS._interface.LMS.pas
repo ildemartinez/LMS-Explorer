@@ -14,6 +14,8 @@ type
   IUser = interface;
   ICourse = interface;
   ICategory = interface;
+  IModule = interface;
+  ISection = interface;
 
   IGradeItem = interface
     ['{44E6EA75-B61B-448F-A7C5-73DF21A28C7F}']
@@ -70,16 +72,36 @@ type
 
   TModType = (mnforum, mnlabel, mnresource, mnunknow);
 
+  IContent = interface
+    ['{F74F2674-738F-4464-880F-0C2F71E092A1}']
+    function GetFileName: string;
+    procedure SetFilename(const Value: string);
+    function GetFileURL: string;
+    function GetMiMeType: string;
+    procedure SetFileURL(const Value: string);
+    procedure SetMimeType(const Value: string);
+    function GetModule : IModule;
+
+    property FileName: string read GetFileName write SetFilename;
+    property FileURL: string read GetFileURL write SetFileURL;
+    property MimeType: string read GetMiMeType write SetMimeType;
+    property Module : IModule read GetModule;
+  end;
+
   IModule = interface
     ['{9378D0F9-91C4-41D2-82C5-9D3596A14964}']
     function GetName: string;
     function GetModType: TModType;
     procedure SetModName(const Value: string);
     procedure SetName(const Value: string);
+    function GetContents: TList<IContent>;
+    function GetSection : ISection;
 
     property Name: string read GetName write SetName;
     property ModName: string write SetModName;
     property ModType: TModType read GetModType;
+    property Contents: TList<IContent> read GetContents;
+    property Section : ISection read GetSection;
   end;
 
   ISection = interface
@@ -201,6 +223,9 @@ type
 
     procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
       const aFunctionName: string);
+
+    //procedure DownloadContent(const Content : IContent);
+    procedure DownloadAllCourseContent(const Course : ICourse);
 
     // All LMS categories
     // categories: TList<TLMSCategory>;

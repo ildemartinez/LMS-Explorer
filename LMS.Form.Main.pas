@@ -31,8 +31,6 @@ type
     ActionMainMenuBar2: TActionMainMenuBar;
     edFilter: TEdit;
     Action3: TAction;
-    TrayIcon1: TTrayIcon;
-    ApplicationEvents1: TApplicationEvents;
     actExit: TAction;
     ImageList1: TImageList;
 
@@ -42,15 +40,12 @@ type
     procedure Action2Update(Sender: TObject);
     procedure Action3Update(Sender: TObject);
     procedure Action3Execute(Sender: TObject);
-    procedure ApplicationEvents1Minimize(Sender: TObject);
-    procedure TrayIcon1DblClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
+        procedure FormCreate(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     aLMSNetworkTreeView: TLMSNetworkTreeView;
 
-    procedure MinimizeToTray;
     procedure WmAfterCreate(var Msg: TMessage); message WM_AFTER_CREATE;
   public
     constructor Create(Owner: Tcomponent); override;
@@ -66,7 +61,7 @@ implementation
 uses
   inifiles,
   System.JSON,
-
+                   urlmon,
   LMS._interface.LMS,
   LMS._class.LMS,
   LMS._class.Network,
@@ -113,11 +108,6 @@ begin
   Close;
 end;
 
-procedure TMainForm.ApplicationEvents1Minimize(Sender: TObject);
-begin
-  MinimizeToTray;
-end;
-
 constructor TMainForm.Create(Owner: Tcomponent);
 begin
   inherited;
@@ -139,41 +129,12 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  if (actExit.Checked) or (DebugHook <> 0) then
-  begin
-    CanClose := true;
-  end
-  else
-  begin
-    CanClose := false;
-    MinimizeToTray;
-  end;
+  CanClose := true;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   PostMessage(self.Handle, WM_AFTER_CREATE, 0, 0);
-end;
-
-procedure TMainForm.MinimizeToTray;
-begin
-  Hide();
-  WindowState := wsMinimized;
-
-  TrayIcon1.Visible := true;
-  TrayIcon1.Animate := true;
-  TrayIcon1.ShowBalloonHint;
-
-  TrayIcon1.BalloonHint := 'LMS Explorer is minimized here';
-  TrayIcon1.BalloonTimeout := 5000;
-end;
-
-procedure TMainForm.TrayIcon1DblClick(Sender: TObject);
-begin
-  TrayIcon1.Visible := false;
-  Show();
-  WindowState := wsNormal;
-  Application.BringToFront();
 end;
 
 procedure TMainForm.WmAfterCreate(var Msg: TMessage);

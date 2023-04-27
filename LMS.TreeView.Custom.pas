@@ -13,7 +13,7 @@ uses
 
 type
   TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser, ntSection,
-    ntModule);
+    ntModule, ntContent);
 
   TTreeData = { packed } record
     aLMS: ILMS; // Pointer to LMS structure
@@ -24,6 +24,7 @@ type
     node_type: TNodeTypes;
     Section: ISection;
     Module: IModule;
+    Content: IContent;
     // of
     // ntCategory:
 

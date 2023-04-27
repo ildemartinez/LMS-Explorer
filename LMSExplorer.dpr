@@ -38,7 +38,9 @@ uses
   LMS.TreeView.Courses in 'LMS.TreeView.Courses.pas',
   LMS.TreeView.LMS in 'LMS.TreeView.LMS.pas',
   LMS.TreeView.CourseContent in 'LMS.TreeView.CourseContent.pas',
-  LMS._class.Section in 'LMS._class.Section.pas';
+  LMS._class.Section in 'LMS._class.Section.pas',
+  LMS._class.Content in 'LMS._class.Content.pas',
+  LMS._class.Module in 'LMS._class.Module.pas';
 
 {$R *.res}
 

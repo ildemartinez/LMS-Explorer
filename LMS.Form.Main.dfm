@@ -27,6 +27,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1354
     Height = 25
+    UseSystemFont = False
     ActionManager = MainActionManager
     Caption = 'ActionMainMenuBar1'
     Color = clMenuBar
@@ -35,7 +36,7 @@ object MainForm: TMainForm
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = clBlack
     Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
@@ -63,6 +64,7 @@ object MainForm: TMainForm
       Top = 22
       Width = 279
       Height = 25
+      UseSystemFont = False
       ActionManager = CoursesActionManager
       Caption = 'ActionMainMenuBar2'
       Color = clMenuBar
@@ -71,7 +73,7 @@ object MainForm: TMainForm
       ColorMap.BtnSelectedFont = clBlack
       ColorMap.UnusedColor = clWhite
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
+      Font.Color = clBlack
       Font.Height = -12
       Font.Name = 'Segoe UI'
       Font.Style = []
@@ -190,19 +192,6 @@ object MainForm: TMainForm
       OnExecute = Action3Execute
       OnUpdate = Action3Update
     end
-  end
-  object TrayIcon1: TTrayIcon
-    BalloonTitle = 'Notice'
-    BalloonTimeout = 5000
-    BalloonFlags = bfInfo
-    OnDblClick = TrayIcon1DblClick
-    Left = 472
-    Top = 72
-  end
-  object ApplicationEvents1: TApplicationEvents
-    OnMinimize = ApplicationEvents1Minimize
-    Left = 592
-    Top = 72
   end
   object ImageList1: TImageList
     ColorDepth = cd32Bit

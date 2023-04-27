@@ -102,12 +102,14 @@ implementation
 
 uses
   System.JSON,
+  System.SysUtils,
 
   LMS.Helper.Log,
   LMS._class.GradeItem,
   LMS._class.User,
   LMS._class.Section,
   LMS._class.Module,
+  LMS._class.Content,
   LMS._class.UsersGroup;
 
 constructor TLMSCourse.Create(const LMS: ILMS);
@@ -153,10 +155,13 @@ end;
 
 procedure TLMSCourse.GetCourseContent;
 var
-  aSectionItems, aModuleItems: TJSonArray;
+  aSectionItems, aModuleItems, aContentItems: TJSonArray;
   aSection: ISection;
   aModule: IModule;
-  aJsonSection, aJsonModule: TJSONValue;
+  aContent: IContent;
+  aJsonSection, aJsonModule, aJsonContent: TJSONValue;
+  aContentsInfo: TJsonObject;
+  aMimeType: string;
 begin
   fSections.clear;
 
@@ -164,21 +169,41 @@ begin
 
   for aJsonSection in aSectionItems do
   begin
-    aSection := TSection.Create;
+    aSection := TSection.Create(self);
 
     aSection.Name := aJsonSection.GetValue<string>('name');
     aModuleItems := aJsonSection.GetValue<TJSonArray>('modules');
 
     for aJsonModule in aModuleItems do
     begin
-      aModule := tmodule.Create;
+      aModule := tmodule.Create(aSection);
       aModule.Name := aJsonModule.GetValue<string>('name');
       aModule.ModName := aJsonModule.GetValue<string>('modname');
 
-      aSection.Modules.Add(aModule);
+      if aJsonModule.TryGetValue<TJsonObject>('contentsinfo', aContentsInfo)
+      then
+      begin
+        // here we have the all contents info
+      end;
+
+      if aJsonModule.TryGetValue<TJSonArray>('contents', aContentItems) then
+        for aJsonContent in aContentItems do
+        begin
+          aContent := TContent.Create(aModule);
+
+          aContent.FileName := aJsonContent.GetValue<string>('filename');
+          if aJsonContent.TryGetValue<string>('mimetype', aMimeType) then
+            aContent.MimeType := aMimeType;
+
+          aContent.fileurl := aJsonContent.GetValue<string>('fileurl');
+
+          aModule.Contents.add(aContent);
+        end;
+
+      aSection.Modules.add(aModule);
     end;
 
-    fSections.Add(aSection);
+    fSections.add(aSection);
 
   end;
 
@@ -191,12 +216,12 @@ var
 begin
   for aUser in fUsers do
     if aCourseRoles.IndexOf(aUser.Roles) < 0 then
-      aCourseRoles.Add(aUser.Roles);
+      aCourseRoles.add(aUser.Roles);
 end;
 
 function TLMSCourse.GetDisplayContent: string;
 begin
-  result := shortname + ' - ' + DisplayName;
+  result := format('%s - %s - (%d)', [shortname, DisplayName, Id]);
 end;
 
 function TLMSCourse.GetDisplayName: string;
@@ -247,7 +272,7 @@ begin
       end;
 
       // Add user to users list
-      fUsers.Add(aUser);
+      fUsers.add(aUser);
 
       // Include the user in the corresponding group
       groups := User.GetValue<TJSonArray>('groups');
@@ -260,7 +285,7 @@ begin
           for var agroup in self.fUserGroups do
           begin
             if agroup.Id = Group.GetValue<cardinal>('id') then
-              agroup.UsersInGroup.Add(aUser)
+              agroup.UsersInGroup.add(aUser)
           end;
 
         end;
@@ -293,7 +318,7 @@ begin
         aUser.fLastName := User.GetValue<string>('lastname');
         aUser.fFullName := User.GetValue<string>('fullname');
       }
-      fUserGroups.Add(aUserGroup)
+      fUserGroups.add(aUserGroup)
     end;
   end;
 
@@ -356,7 +381,7 @@ end;
 
 function TLMSCourse.getFilterContent: string;
 begin
-  result := shortname + ' ' + FullName + ' ' + self.DisplayName
+  result := shortname + ' ' + FullName + ' ' + DisplayName + ' ' + Id.ToString;
 end;
 
 function TLMSCourse.GetFullName: string;

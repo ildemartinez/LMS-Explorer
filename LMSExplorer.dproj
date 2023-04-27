@@ -170,6 +170,8 @@
         <DCCReference Include="LMS.TreeView.LMS.pas"/>
         <DCCReference Include="LMS.TreeView.CourseContent.pas"/>
         <DCCReference Include="LMS._class.Section.pas"/>
+        <DCCReference Include="LMS._class.Content.pas"/>
+        <DCCReference Include="LMS._class.Module.pas"/>
         <None Include="config.ini_dist"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

@@ -77,6 +77,7 @@ begin
   OnGetText := MyDoGetText;
   OnInitChildren := MyDoInitChildren;
   OnGetImageIndex := MyGetImageIndex;
+
 end;
 
 procedure TCourseContentTreeView.DoInitNode(Parent, Node: PVirtualNode;
@@ -102,8 +103,19 @@ begin
     data^.node_type := ntmodule;
     data^.Module := parentdata^.Section.Modules[Node.Index];
 
+    if data^.Module.Contents.Count > 0 then
+      Node.States := Node.States + [vsHasChildren, vsExpanded]
+    else
+      Exclude(Node.States, vsHasChildren);
+  end
+  else if parentdata.node_type = ntmodule then
+  begin
+    data^.node_type := ntcontent;
+    data^.content := parentdata^.Module.Contents[Node.Index];
+
     Exclude(Node.States, vsHasChildren);
   end;
+
 end;
 
 procedure TCourseContentTreeView.FilterByText(const text: string);
@@ -178,6 +190,15 @@ begin
         else
           CellText := '';
       end;
+    ntcontent:
+      begin
+        if Column = 2 then
+          CellText := data^.content.MimeType
+        else if Column = 3 then
+          CellText := data^.content.Fileurl
+        else
+          CellText := '';
+      end;
   end;
 
 end;
@@ -195,6 +216,10 @@ begin
       ntSection:
         begin
           ChildCount := data^.Section.Modules.Count;
+        end;
+      ntmodule:
+        begin
+          ChildCount := data^.Module.Contents.Count;
         end;
     end;
   end;
@@ -251,6 +276,18 @@ begin
     with Columns.add do
     begin
       text := 'Module';
+      Options := Options + [coAutoSpring, coResizable];
+    end;
+
+    with Columns.add do
+    begin
+      text := 'Content';
+      Options := Options + [coAutoSpring, coResizable];
+    end;
+
+    with Columns.add do
+    begin
+      text := 'File';
       Options := Options + [coAutoSpring, coResizable];
     end;
 

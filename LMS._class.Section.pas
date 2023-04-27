@@ -11,21 +11,24 @@ type
   TSection = class(TInterfacedObject, ISection)
   private
     fName: string;
+    fCourse: ICourse;
     fModules: TList<IModule>;
 
     function GetName: string;
     procedure SetName(const Value: string);
     function GetModules: TList<IModule>;
   public
-    constructor Create;
+    constructor Create(const Course: ICourse);
   end;
 
 implementation
 
 { TSection }
 
-constructor TSection.Create;
+constructor TSection.Create(const Course: ICourse);
 begin
+  fCourse := Course;
+
   fModules := TList<IModule>.Create;
 end;
 

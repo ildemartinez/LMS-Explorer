@@ -53,6 +53,8 @@ type
     function GetUsersByLastName(const aValue: string): TJSonArray;
     function GetUsersByEmail(const aValue: string): TJSonArray;
 
+    procedure DownloadContent(const aFilename: string; const path: string);
+
     property User: string write fuser;
     property Password: string write fpassword;
     property Service: string write fservice;
@@ -71,6 +73,7 @@ uses
   Dialogs,
   Rest.Types,
   System.UITypes,
+  urlmon,
 
   LMS.Helper.Consts,
   LMS.Helper.Log,
@@ -174,6 +177,14 @@ begin
 
   aRestRequest.Client := aRestClient;
   aRestRequest.Response := arestresponse;
+end;
+
+procedure TLMSRestMoodle.DownloadContent(const aFilename: string;
+  const path: string);
+begin
+  Log(aFilename + ' ' + path);
+  URLDownloadToFile(nil, pchar(aFilename + '&token=' + self.fToken),
+    pchar(path), 0, nil);
 end;
 
 function TLMSRestMoodle.ExecuteRequest(const servicefunction: string)

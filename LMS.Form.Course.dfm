@@ -2,8 +2,8 @@ object LMSCourseForm: TLMSCourseForm
   Left = 55
   Top = 309
   Caption = 'LMSCourseForm'
-  ClientHeight = 422
-  ClientWidth = 924
+  ClientHeight = 537
+  ClientWidth = 968
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,42 +20,26 @@ object LMSCourseForm: TLMSCourseForm
   object Panel2: TPanel
     Left = 0
     Top = 32
-    Width = 924
-    Height = 390
+    Width = 968
+    Height = 505
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 0
-    object Panel3: TPanel
-      Left = 1
-      Top = 287
-      Width = 922
-      Height = 102
-      Align = alBottom
-      TabOrder = 0
-      object Memo1: TMemo
-        Left = 1
-        Top = 1
-        Width = 185
-        Height = 100
-        Align = alLeft
-        TabOrder = 0
-      end
-    end
     object PageControl1: TPageControl
       Left = 1
       Top = 1
-      Width = 922
-      Height = 286
+      Width = 966
+      Height = 503
       ActivePage = tsContent
       Align = alClient
-      TabOrder = 1
+      TabOrder = 0
       OnChange = PageControl1Change
       object TabSheet1: TTabSheet
         Caption = 'Users'
         object Panel1: TPanel
           Left = 0
           Top = 0
-          Width = 914
+          Width = 958
           Height = 25
           Align = alTop
           TabOrder = 0
@@ -70,30 +54,49 @@ object LMSCourseForm: TLMSCourseForm
             ExplicitHeight = 21
           end
         end
+        object Memo1: TMemo
+          Left = 0
+          Top = 406
+          Width = 958
+          Height = 69
+          Align = alBottom
+          TabOrder = 1
+        end
       end
       object tsContent: TTabSheet
         Caption = 'Course contents'
         ImageIndex = 2
+        object ActionToolBar2: TActionToolBar
+          Left = 0
+          Top = 0
+          Width = 958
+          Height = 23
+          ActionManager = amCourseContent
+          Caption = 'ActionToolBar2'
+          Color = clMenuBar
+          ColorMap.DisabledFontColor = 7171437
+          ColorMap.HighlightColor = clWhite
+          ColorMap.BtnSelectedFont = clBlack
+          ColorMap.UnusedColor = clWhite
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          Spacing = 0
+        end
       end
       object TabSheet2: TTabSheet
         Caption = 'Grade book'
         ImageIndex = 1
-        object Memo2: TMemo
-          Left = 88
-          Top = 48
-          Width = 177
-          Height = 153
-          Lines.Strings = (
-            'Memo2')
-          TabOrder = 0
-        end
       end
     end
   end
   object ActionToolBar1: TActionToolBar
     Left = 0
     Top = 0
-    Width = 924
+    Width = 968
     Height = 32
     ActionManager = ActionManager1
     Caption = 'ActionToolBar1'
@@ -248,10 +251,14 @@ object LMSCourseForm: TLMSCourseForm
             ImageIndex = 2
           end>
         ActionBar = ActionToolBar1
+      end
+      item
+      end
+      item
       end>
     Images = ImageList2
-    Left = 440
-    Top = 160
+    Left = 496
+    Top = 104
     StyleName = 'Platform Default'
     object Action1: TAction
       Caption = 'Locate in LMS'
@@ -1343,5 +1350,25 @@ object LMSCourseForm: TLMSCourseForm
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000}
+  end
+  object amCourseContent: TActionManager
+    ActionBars = <
+      item
+      end
+      item
+        Items = <
+          item
+            Action = acDownloadContent
+            Caption = '&Download content'
+          end>
+        ActionBar = ActionToolBar2
+      end>
+    Left = 685
+    Top = 169
+    StyleName = 'Platform Default'
+    object acDownloadContent: TAction
+      Caption = 'Download content'
+      OnExecute = acDownloadContentExecute
+    end
   end
 end

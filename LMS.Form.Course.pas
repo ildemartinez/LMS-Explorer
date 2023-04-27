@@ -24,8 +24,6 @@ type
     Action4: TAction;
     Action5: TAction;
     Panel2: TPanel;
-    Panel3: TPanel;
-    Memo1: TMemo;
     Action6: TAction;
     ImageList1: TImageList;
     Action7: TAction;
@@ -38,8 +36,11 @@ type
     TabSheet2: TTabSheet;
     Panel1: TPanel;
     Edit1: TEdit;
-    Memo2: TMemo;
     tsContent: TTabSheet;
+    Memo1: TMemo;
+    amCourseContent: TActionManager;
+    acDownloadContent: TAction;
+    ActionToolBar2: TActionToolBar;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -57,6 +58,7 @@ type
     procedure Action8Execute(Sender: TObject);
     procedure actExportExecute(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
+    procedure acDownloadContentExecute(Sender: TObject);
   private
     fCourseContentTreeView: TCourseContentTreeView;
     fUsersTreeView: TLMSCourseUsersTreeView;
@@ -81,6 +83,11 @@ uses
   LMS.Helper.Log;
 
 {$R *.dfm}
+
+procedure TLMSCourseForm.acDownloadContentExecute(Sender: TObject);
+begin
+  Course.LMS.DownloadAllCourseContent(Course)
+end;
 
 procedure TLMSCourseForm.actExportExecute(Sender: TObject);
 begin
@@ -229,7 +236,7 @@ var
 begin
   fCourse := Value;
 
-  Caption := fCourse.displaycontent + ' - courseid: ' + fCourse.id.ToString;
+  Caption := fCourse.displaycontent;
 
   fUsersTreeView.LMSCourse := fCourse;
 
