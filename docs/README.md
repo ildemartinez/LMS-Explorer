@@ -60,12 +60,20 @@ note: do not publish your token as I am doing (this is a local Moodle private in
 And finally the exclusive functions for use in this tool<br />
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/add_functions_to_service.JPG)
 
-List of needed functions (note that you can use the installed moodle_mobile_app service if use the desired features, for others you have to create your own service):
+List of needed functions you need to enable in service functions:
 
-| Feature                            | Function                    | service           |
-| ---------------------------------- | --------------------------- | ----------------- |
-| Categories navigation and location | core_course_get_cateogories | moodle_mobile_app |
-| Courses navigation and location    | core_course_get_courses     | moodle_mobile_app |
+| Functions                           | 
+| ---------------------------------- | 
+| core_course_get_categories |
+| core_course_get_contents |
+| core_course_get_courses |
+| core_enrol_get_enrolled_users |
+| core_group_get_course_groups |
+| core_group_get_group_members |
+| core_user_get_users |
+| core_user_get_users_by_field |
+| core_webservice_get_site_info |
+| gradereport_user_get_grade_items  |
 
 # Features
 
