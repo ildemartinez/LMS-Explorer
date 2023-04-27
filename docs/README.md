@@ -40,12 +40,16 @@ At this point you have a default service "moodle_mobile_app" that can be used as
 
 You can create you own service as follows
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/add_new_external_service.JPG)
+
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/create_external-service.JPG)
+
+:warning: You should enable "Allow download files" in "Show more..." if you want the download course contents feature
 
 Once created add functions and authorised users
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/configure-external-service.JPG)
 
 Add your user
+
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/add_user.JPG)
 
 If you use the Moodle Admin, for securtiy reasons you have to create the access token from Moodle admin pane
@@ -53,7 +57,7 @@ If you use the Moodle Admin, for securtiy reasons you have to create the access 
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/admin_token_created.JPG)
 note: do not publish your token as I am doing (this is a local Moodle private instace)
 
-And finally the exclusive functions for use in this tool
+And finally the exclusive functions for use in this tool<br />
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/add_functions_to_service.JPG)
 
 List of needed functions (note that you can use the installed moodle_mobile_app service if use the desired features, for others you have to create your own service):
