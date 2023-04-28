@@ -76,7 +76,7 @@ begin
   else
   begin
     fModType := mnunknow;
-    Log(Value);
+   // Log(Value);
   end;
 
 end;

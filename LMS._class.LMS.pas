@@ -151,6 +151,7 @@ begin
       end;
     end;
   end;
+  log('Download done!!!');
 end;
 
 function TLMS.GetAutoConnect: boolean;
