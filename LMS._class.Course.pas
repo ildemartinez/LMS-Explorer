@@ -10,92 +10,80 @@ uses
 
 type
   TLMSCourse = class(TInterfacedObject, ICourse)
-  private
-    fLMS: ILMS;
-    fid: cardinal;
-    fGroupMode: cardinal;
-    fshortname: string;
-    fFullName: string;
+  strict private
     fdisplayname: string;
-    fStartDate: TDateTime;
     fEndDate: TDateTime;
+    fFullName: string;
+    fGradeItems: TList<IGradeItem>;
+    fGroupMode: cardinal;
+    fid: cardinal;
+    fLMS: ILMS;
+    fSections: TList<ISection>;
+    fshortname: string;
+    fStartDate: TDateTime;
     fTimeCreated: TDateTime;
     fTimeModified: TDateTime;
-
-    // All users enrolled in this course
-    fUsers: TList<IUser>;
     // All course groups
     fUserGroups: TList<IUsersGroup>;
-    fGradeItems: TList<IGradeItem>;
-    fSections: TList<ISection>;
-
-    function getFilterContent: string;
-    function GetDisplayContent: string;
-    function GetLMS: ILMS;
-
-    procedure RefreshUserGroups;
-    function getId: cardinal;
-    procedure SetId(const Value: cardinal);
-    function GetGroupMode: cardinal;
-    procedure SetGroupMode(const Value: cardinal);
-    function GetUserGroups: TList<IUsersGroup>;
-    function GetUsers: TList<IUser>;
-    procedure SetUserGroups(const Value: TList<IUsersGroup>);
-    procedure SetUsers(const Value: TList<IUser>);
-    function GetFullName: string;
-    function GetShortName: string;
-    procedure SetFullName(const Value: string);
-    procedure SetShortName(const Value: string);
-    function GetDisplayName: string;
-    procedure SetDisplayName(const Value: string);
+    // All users enrolled in this course
+    fUsers: TList<IUser>;
     function GetCategory: ICategory;
-    function GetGradeItems: TList<IGradeItem>;
+    function GetDisplayContent: string;
+    function GetDisplayName: string;
     function GetEndDate: TDateTime;
+    function getFilterContent: string;
+    function GetFullName: string;
+    function GetGradeItems: TList<IGradeItem>;
+    function GetGroupMode: cardinal;
+    function getId: cardinal;
+    function GetLMS: ILMS;
+    function GetSections: TList<ISection>;
+    function GetShortName: string;
     function GetStartDate: TDateTime;
     function GetTimeCreated: TDateTime;
     function GetTimeModified: TDateTime;
+    function GetUserGroups: TList<IUsersGroup>;
+    function GetUsers: TList<IUser>;
+    procedure RefreshUserGroups;
+    procedure SetDisplayName(const Value: string);
     procedure SetEndDate(const Value: TDateTime);
+    procedure SetFullName(const Value: string);
+    procedure SetGroupMode(const Value: cardinal);
+    procedure SetId(const Value: cardinal);
+    procedure SetShortName(const Value: string);
     procedure SetStartDate(const Value: TDateTime);
     procedure SetTimeCreated(const Value: TDateTime);
     procedure SetTimeModified(const Value: TDateTime);
-    function GetSections: TList<ISection>;
+    procedure SetUserGroups(const Value: TList<IUsersGroup>);
+    procedure SetUsers(const Value: TList<IUser>);
   public
     constructor Create(const LMS: ILMS);
     destructor Destroy; override;
-
-    procedure RefreshEnrolledUsers;
-    procedure GetCourseRoles(aCourseRoles: TStringlist);
-    function GetUserCountByRol(const aRole: string): cardinal;
-
-    procedure GetGradeBook;
     procedure GetCourseContent;
-
+    procedure GetCourseRoles(aCourseRoles: TStringlist);
+    procedure GetGradeBook;
+    function GetUserCountByRol(const aRole: string): cardinal;
+    procedure RefreshEnrolledUsers;
+    // Returns the apropiated text to show information about courses
+    property DisplayContent: string read GetDisplayContent;
+    property DisplayName: string read GetDisplayName write SetDisplayName;
+    property End_Date: TDateTime read GetEndDate write SetEndDate;
+    // Return the course information that can be filtered from
+    property FilterContent: string read getFilterContent;
+    property FullName: string read GetFullName write SetFullName;
+    property GroupMode: cardinal read GetGroupMode write SetGroupMode;
+    property Id: cardinal read getId write SetId;
     // Pointer to the LMS parent
     property LMS: ILMS read GetLMS;
-
-    property DisplayName: string read GetDisplayName write SetDisplayName;
     property shortname: string read GetShortName write SetShortName;
-    property FullName: string read GetFullName write SetFullName;
     property Start_Date: TDateTime read GetStartDate write SetStartDate;
-    property End_Date: TDateTime read GetEndDate write SetEndDate;
     property Time_Created: TDateTime read GetTimeCreated write SetTimeCreated;
     property Time_Modified: TDateTime read GetTimeModified
       write SetTimeModified;
-
-    property Id: cardinal read getId write SetId;
-    // Returns the apropiated text to show information about courses
-    property DisplayContent: string read GetDisplayContent;
-
-    // Return the course information that can be filtered from
-    property FilterContent: string read getFilterContent;
-
-    property GroupMode: cardinal read GetGroupMode write SetGroupMode;
-
-    property Users: TList<IUser> read GetUsers write SetUsers;
     // All course groups
     property UserGroups: TList<IUsersGroup> read GetUserGroups
       write SetUserGroups;
-
+    property Users: TList<IUser> read GetUsers write SetUsers;
   end;
 
 implementation
@@ -232,6 +220,94 @@ end;
 function TLMSCourse.GetEndDate: TDateTime;
 begin
   result := fEndDate;
+end;
+
+function TLMSCourse.getFilterContent: string;
+begin
+  result := shortname + ' ' + FullName + ' ' + DisplayName + ' ' + Id.ToString;
+end;
+
+function TLMSCourse.GetFullName: string;
+begin
+  result := fFullName;
+end;
+
+procedure TLMSCourse.GetGradeBook;
+var
+  aUsers, aGradeItems: TJSonArray;
+  aUser, aGradeItem: TJSONValue;
+  aGradeItemC: TGradeItem;
+begin
+  fGradeItems.clear;
+
+  aGradeItems := fLMS.GetLMSConnection.GetUsersGradeBook(self.fid);
+end;
+
+function TLMSCourse.GetGradeItems: TList<IGradeItem>;
+begin
+  result := fGradeItems;
+end;
+
+function TLMSCourse.GetGroupMode: cardinal;
+begin
+  result := fGroupMode;
+end;
+
+function TLMSCourse.getId: cardinal;
+begin
+  result := fid;
+end;
+
+function TLMSCourse.GetLMS: ILMS;
+begin
+  result := fLMS;
+end;
+
+function TLMSCourse.GetSections: TList<ISection>;
+begin
+  result := fSections;
+end;
+
+function TLMSCourse.GetShortName: string;
+begin
+  result := fshortname;
+end;
+
+function TLMSCourse.GetStartDate: TDateTime;
+begin
+  result := fStartDate;
+end;
+
+function TLMSCourse.GetTimeCreated: TDateTime;
+begin
+  result := fTimeCreated;
+end;
+
+function TLMSCourse.GetTimeModified: TDateTime;
+begin
+  result := fTimeModified;
+end;
+
+function TLMSCourse.GetUserCountByRol(const aRole: string): cardinal;
+var
+  aUser: IUser;
+begin
+  result := 0;
+  for aUser in fUsers do
+  begin
+    if aUser.Roles = aRole then
+      inc(result);
+  end;
+end;
+
+function TLMSCourse.GetUserGroups: TList<IUsersGroup>;
+begin
+  result := fUserGroups;
+end;
+
+function TLMSCourse.GetUsers: TList<IUser>;
+begin
+  result := fUsers;
 end;
 
 procedure TLMSCourse.RefreshEnrolledUsers;
@@ -377,94 +453,6 @@ end;
 procedure TLMSCourse.SetUsers(const Value: TList<IUser>);
 begin
   fUsers := Value;
-end;
-
-function TLMSCourse.getFilterContent: string;
-begin
-  result := shortname + ' ' + FullName + ' ' + DisplayName + ' ' + Id.ToString;
-end;
-
-function TLMSCourse.GetFullName: string;
-begin
-  result := fFullName;
-end;
-
-procedure TLMSCourse.GetGradeBook;
-var
-  aUsers, aGradeItems: TJSonArray;
-  aUser, aGradeItem: TJSONValue;
-  aGradeItemC: TGradeItem;
-begin
-  fGradeItems.clear;
-
-  aGradeItems := fLMS.GetLMSConnection.GetUsersGradeBook(self.fid);
-end;
-
-function TLMSCourse.GetGradeItems: TList<IGradeItem>;
-begin
-  result := fGradeItems;
-end;
-
-function TLMSCourse.GetGroupMode: cardinal;
-begin
-  result := fGroupMode;
-end;
-
-function TLMSCourse.getId: cardinal;
-begin
-  result := fid;
-end;
-
-function TLMSCourse.GetLMS: ILMS;
-begin
-  result := fLMS;
-end;
-
-function TLMSCourse.GetSections: TList<ISection>;
-begin
-  result := fSections;
-end;
-
-function TLMSCourse.GetShortName: string;
-begin
-  result := fshortname;
-end;
-
-function TLMSCourse.GetStartDate: TDateTime;
-begin
-  result := fStartDate;
-end;
-
-function TLMSCourse.GetTimeCreated: TDateTime;
-begin
-  result := fTimeCreated;
-end;
-
-function TLMSCourse.GetTimeModified: TDateTime;
-begin
-  result := fTimeModified;
-end;
-
-function TLMSCourse.GetUserCountByRol(const aRole: string): cardinal;
-var
-  aUser: IUser;
-begin
-  result := 0;
-  for aUser in fUsers do
-  begin
-    if aUser.Roles = aRole then
-      inc(result);
-  end;
-end;
-
-function TLMSCourse.GetUserGroups: TList<IUsersGroup>;
-begin
-  result := fUserGroups;
-end;
-
-function TLMSCourse.GetUsers: TList<IUser>;
-begin
-  result := fUsers;
 end;
 
 end.

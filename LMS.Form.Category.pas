@@ -41,9 +41,7 @@ type
     fCategoryTreeView: TLMSCategoryTreeView;
 
     procedure SetCategory(const Value: ICategory);
-    { Private declarations }
   public
-    { Public declarations }
     constructor Create(Owner: TComponent); override;
     property Category: ICategory read fCategory write SetCategory;
   end;

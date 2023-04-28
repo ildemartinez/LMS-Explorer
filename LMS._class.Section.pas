@@ -9,21 +9,21 @@ uses
 
 type
   TSection = class(TInterfacedObject, ISection)
-  private
-    fName: string;
+  strict private
     fCourse: ICourse;
     fModules: TList<IModule>;
-
+    fName: string;
+    function GetModules: TList<IModule>;
     function GetName: string;
     procedure SetName(const Value: string);
-    function GetModules: TList<IModule>;
   public
+    /// <summary>TSection.Create
+    /// </summary>
+    /// <param name="Course"> (ICourse) </param>
     constructor Create(const Course: ICourse);
   end;
 
 implementation
-
-{ TSection }
 
 constructor TSection.Create(const Course: ICourse);
 begin

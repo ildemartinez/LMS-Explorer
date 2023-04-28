@@ -10,52 +10,51 @@ uses
 
 type
   TUser = class(TInterfacedObject, IUser)
-  private
-    fLMS: ILMS;
-    fid: integer;
-    fUserName: string;
-    flastcourseaccess: TDateTime;
+  strict private
     fCourse: ICourse;
     fEmail: string;
-    fFullName: string;
     fFirstName: string;
+    fFullName: string;
+    fid: integer;
+    flastcourseaccess: TDateTime;
     fLastName: string;
-    fRoles: string;
+    fLMS: ILMS;
     fOtherEnrolledCourses: TList<ICourse>;
-    function getFilterContent: string;
-    function GetLastAccessAsString: string;
-    function GetRoles: string;
+    fRoles: string;
+    fUserName: string;
+    function GetCourse: ICourse;
     function GetEmail: string;
+    function getFilterContent: string;
     function GetFirstName: string;
     function GetFullName: string;
-    function GetLastName: string;
-    function GetCourse: ICourse;
     function GetId: integer;
+    function GetLastAccessAsString: string;
+    function GetLastAccessFromAsString: string;
+    function GetLastName: string;
+    function getLMS: ILMS;
+    function GetOtherEnrolledCourses: TList<ICourse>;
+    function GetRoles: string;
     function GetUserName: string;
     procedure SetCourse(const value: ICourse);
     procedure SetRoles(const value: string);
-    function getLMS: ILMS;
-    function GetOtherEnrolledCourses: TList<ICourse>;
-    function GetLastAccessFromAsString: string;
   public
     constructor Create(const LMS: ILMS; const aJSONValue: TJSONValue);
+    property Course: ICourse read GetCourse write SetCourse;
+    property Email: string read GetEmail;
+    property FilterContent: string read getFilterContent;
+    property First_Name: string read GetFirstName;
+    property Full_Name: string read GetFullName;
+    property Id: integer read GetId;
+    property Last_access: string read GetLastAccessAsString;
+    property Last_access_from: string read GetLastAccessFromAsString;
+    property Last_Name: string read GetLastName;
     // procedure AssignByJson(const aJsonValue: TJSONValue);
 
     // Properties for view components, do not resource
     property LMS: ILMS read getLMS;
-    property Id: integer read GetId;
-    property UserName: string read GetUserName;
-    property Full_Name: string read GetFullName;
-    property First_Name: string read GetFirstName;
-    property Last_Name: string read GetLastName;
-    property Email: string read GetEmail;
-    property Last_access: string read GetLastAccessAsString;
-    property Last_access_from: string read GetLastAccessFromAsString;
-    property Roles: string read GetRoles write SetRoles;
-    property Course: ICourse read GetCourse write SetCourse;
-
-    property FilterContent: string read getFilterContent;
     property OtherEnrolledCourses: TList<ICourse> read GetOtherEnrolledCourses;
+    property Roles: string read GetRoles write SetRoles;
+    property UserName: string read GetUserName;
   end;
 
 implementation
@@ -103,16 +102,6 @@ begin
   result := fEmail;
 end;
 
-procedure TUser.SetRoles(const value: string);
-begin
-  fRoles := value;
-end;
-
-function TUser.GetOtherEnrolledCourses: TList<ICourse>;
-begin
-  result := fOtherEnrolledCourses;
-end;
-
 function TUser.getFilterContent: string;
 begin
   result := fEmail + ' ' + fFullName;
@@ -126,11 +115,6 @@ end;
 function TUser.GetFullName: string;
 begin
   result := fFullName;
-end;
-
-procedure TUser.SetCourse(const value: ICourse);
-begin
-  fCourse := value;
 end;
 
 function TUser.GetId: integer;
@@ -193,6 +177,11 @@ begin
   result := fLMS;
 end;
 
+function TUser.GetOtherEnrolledCourses: TList<ICourse>;
+begin
+  result := fOtherEnrolledCourses;
+end;
+
 function TUser.GetRoles: string;
 begin
   result := fRoles;
@@ -201,6 +190,16 @@ end;
 function TUser.GetUserName: string;
 begin
   result := fUserName;
+end;
+
+procedure TUser.SetCourse(const value: ICourse);
+begin
+  fCourse := value;
+end;
+
+procedure TUser.SetRoles(const value: string);
+begin
+  fRoles := value;
 end;
 
 end.

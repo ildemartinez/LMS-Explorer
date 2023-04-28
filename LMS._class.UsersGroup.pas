@@ -10,27 +10,24 @@ uses
 
 type
   TUsersGroup = class(TInterfacedObject, IUsersGroup)
-  private
-    fid: cardinal;
+  strict private
     fGroupName: string;
+    fid: cardinal;
     // Users in this group
     fUsersInGroup: TList<IUser>;
-
-    function getId: cardinal;
     function getFilterContent: string;
-    function GetUsersInGroup: TList<IUser>;
-    procedure SetUsersInGroup(const Value: TList<IUser>);
-    procedure SetId(const Value: cardinal);
     function GetGroupName: string;
+    function getId: cardinal;
+    function GetUsersInGroup: TList<IUser>;
     procedure SetGroupName(const Value: string);
+    procedure SetId(const Value: cardinal);
+    procedure SetUsersInGroup(const Value: TList<IUser>);
   public
     constructor Create;
-
-    property Id: cardinal read getId write SetId;
-    property Group_Name: string read GetGroupName write SetGroupName;
     property FilterContent: string read getFilterContent;
-    property UsersInGroup: TList<IUser> read GetUsersInGroup
-      write SetUsersInGroup;
+    property Group_Name: string read GetGroupName write SetGroupName;
+    property Id: cardinal read getId write SetId;
+    property UsersInGroup: TList<IUser> read GetUsersInGroup write SetUsersInGroup;
   end;
 
 implementation

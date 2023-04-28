@@ -12,64 +12,48 @@ uses
 type
 
   TLMS = class(TComponent, ILMS)
-  private
-    fId: string;
+  strict private
     fautoconnect: boolean;
-    fConnection: TLMSRestMoodle;
-
     // All LMS categories
     fCategories: TList<ICategory>;
+    fConnection: TLMSRestMoodle;
     fFlatCourses: TList<ICourse>;
-
+    fId: string;
+    // procedure DownloadContent(const Content: IContent);
+    procedure DownloadAllCourseContent(const Course: ICourse);
+    function GetAutoConnect: boolean;
+    function GetCategories: TList<ICategory>;
+    function GetFlatCourses: TList<ICourse>;
+    function GetHost: string;
+    function GetId: string;
+    procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle; const aFunctionName: string);
+    procedure SetAutoConnect(const Value: boolean);
+    procedure SetCategories(const Value: TList<ICategory>);
+    procedure SetFlatCourses(const Value: TList<ICourse>);
     procedure SetHost(const Value: string);
+    procedure SetId(const aId: string);
     procedure SetPassword(const Value: string);
     procedure SetService(const Value: string);
     procedure SetUser(const Value: string);
-    function GetHost: string;
-
-    procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
-      const aFunctionName: string);
-
-    // procedure DownloadContent(const Content: IContent);
-    procedure DownloadAllCourseContent(const Course: ICourse);
-
-    function GetId: string;
-    procedure SetId(const aId: string);
-    function GetAutoConnect: boolean;
-    procedure SetAutoConnect(const Value: boolean);
-    procedure SetCategories(const Value: TList<ICategory>);
-    function GetCategories: TList<ICategory>;
-    function GetFlatCourses: TList<ICourse>;
-    procedure SetFlatCourses(const Value: TList<ICourse>);
-
   public
     constructor Create(Owner: TComponent); override;
-
     procedure Connect;
     function connected: boolean;
-
     function FirstLevelCategoriesCount: cardinal;
-    function GetCategoryById(const Id: cardinal): ICategory;
-    function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
-      const aFilter: string): integer;
-    function GetCourseById(const Id: cardinal): ICourse;
-
     procedure GetCategoriesFromConnection;
+    function GetCategoryById(const Id: cardinal): ICategory;
+    function GetCourseById(const Id: cardinal): ICourse;
     procedure GetCourses;
-
     function GetLMSConnection: TLMSRestMoodle;
-
-    property Id: string read GetId;
+    function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>; const aFilter: string): integer;
     property AutoConnect: boolean read GetAutoConnect write SetAutoConnect;
-    property User: string write SetUser;
+    property Categories: TList<ICategory> read GetCategories write SetCategories;
+    property FlatCourses: TList<ICourse> read GetFlatCourses write SetFlatCourses;
+    property Host: string read GetHost write SetHost;
+    property Id: string read GetId;
     property Password: string write SetPassword;
     property Service: string write SetService;
-    property Host: string read GetHost write SetHost;
-
-    property Categories: TList<ICategory> read GetCategories
-      write SetCategories;
-    property FlatCourses: TList<ICourse> read GetFlatCourses
-      write SetFlatCourses;
+    property User: string write SetUser;
   end;
 
 implementation
@@ -86,25 +70,6 @@ uses
   LMS._class.Category,
   LMS.Helper.Log;
 
-function TLMS.FirstLevelCategoriesCount: cardinal;
-begin
-  result := 0;
-
-  for var Category in Categories do
-    if Category.ParentCategory = 0 then
-      inc(result);
-end;
-
-procedure TLMS.Connect;
-begin
-  fConnection.Connect;
-end;
-
-function TLMS.connected: boolean;
-begin
-  result := fConnection.connected;
-end;
-
 constructor TLMS.Create(Owner: TComponent);
 begin
   inherited;
@@ -118,6 +83,16 @@ begin
 
   // All courses in flat hiearchy
   FlatCourses := TList<ICourse>.Create;
+end;
+
+procedure TLMS.Connect;
+begin
+  fConnection.Connect;
+end;
+
+function TLMS.connected: boolean;
+begin
+  result := fConnection.connected;
 end;
 
 procedure TLMS.DownloadAllCourseContent(const Course: ICourse);
@@ -154,9 +129,23 @@ begin
   log('Download done!!!');
 end;
 
+function TLMS.FirstLevelCategoriesCount: cardinal;
+begin
+  result := 0;
+
+  for var Category in Categories do
+    if Category.ParentCategory = 0 then
+      inc(result);
+end;
+
 function TLMS.GetAutoConnect: boolean;
 begin
   result := fautoconnect;
+end;
+
+function TLMS.GetCategories: TList<ICategory>;
+begin
+  result := fCategories;
 end;
 
 procedure TLMS.GetCategoriesFromConnection;
@@ -189,9 +178,21 @@ begin
   end;
 end;
 
-function TLMS.GetCategories: TList<ICategory>;
+function TLMS.GetCategoryById(const Id: cardinal): ICategory;
+var
+  cat: ICategory;
 begin
-  result := fCategories;
+  result := nil;
+
+  for cat in Categories do
+  begin
+    if (cat.Id = Id) then
+    begin
+      result := cat;
+      break;
+    end;
+  end;
+
 end;
 
 function TLMS.GetCourseById(const Id: cardinal): ICourse;
@@ -274,8 +275,22 @@ begin
   result := fFlatCourses;
 end;
 
-function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
-  const aFilter: string): integer;
+function TLMS.GetHost: string;
+begin
+  result := fConnection.Host;
+end;
+
+function TLMS.GetId: string;
+begin
+  result := fId;
+end;
+
+function TLMS.GetLMSConnection: TLMSRestMoodle;
+begin
+  result := fConnection;
+end;
+
+function TLMS.GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>; const aFilter: string): integer;
 var
   aUsers: TJSonArray;
   User: TJSONValue;
@@ -323,26 +338,10 @@ begin
   result := aLMSUsers.count;
 end;
 
-procedure TLMS.MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
-  const aFunctionName: string);
+procedure TLMS.MyOnFunctionNotAdded(Sender: TLMSRestMoodle; const aFunctionName: string);
 begin
   Log('error not service function not defined ' + aFunctionName +
     ' please added it in the LMS service functions');
-end;
-
-function TLMS.GetHost: string;
-begin
-  result := fConnection.Host;
-end;
-
-function TLMS.GetId: string;
-begin
-  result := fId;
-end;
-
-function TLMS.GetLMSConnection: TLMSRestMoodle;
-begin
-  result := fConnection;
 end;
 
 procedure TLMS.SetAutoConnect(const Value: boolean);
@@ -383,23 +382,6 @@ end;
 procedure TLMS.SetUser(const Value: string);
 begin
   fConnection.User := Value;
-end;
-
-function TLMS.GetCategoryById(const Id: cardinal): ICategory;
-var
-  cat: ICategory;
-begin
-  result := nil;
-
-  for cat in Categories do
-  begin
-    if (cat.Id = Id) then
-    begin
-      result := cat;
-      break;
-    end;
-  end;
-
 end;
 
 end.
