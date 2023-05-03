@@ -10,10 +10,9 @@ uses
   Generics.Collections,
   vcl.Menus,
   winapi.messages,
-
   VirtualTrees,
-  LMS.TreeView.Custom,
 
+  LMS.TreeView.Custom,
   LMS._interface.LMS;
 
 type
@@ -40,8 +39,7 @@ type
     constructor Create(Owner: TComponent); override;
 
     procedure FilterByText(const text: string);
-    procedure Refreshh;
-
+    // procedure ShowOnlyResources;
     property LMSCourse: ICourse read fLMSCourse write setLMSCourse;
   end;
 
@@ -100,13 +98,21 @@ begin
   end
   else if parentdata.node_type = ntSection then
   begin
-    data^.node_type := ntmodule;
     data^.Module := parentdata^.Section.Modules[Node.Index];
 
-    if data^.Module.Contents.Count > 0 then
-      Node.States := Node.States + [vsHasChildren, vsExpanded]
+    if data^.Module.Contents.Count = 1 then
+    begin
+      data^.node_type := ntmoduleone;
+    end
     else
-      Exclude(Node.States, vsHasChildren);
+    begin
+      data^.node_type := ntmodule;
+      if data^.Module.Contents.Count > 1 then
+
+        Node.States := Node.States + [vsHasChildren, vsExpanded]
+      else
+        Exclude(Node.States, vsHasChildren);
+    end;
   end
   else if parentdata.node_type = ntmodule then
   begin
@@ -190,6 +196,17 @@ begin
         else
           CellText := '';
       end;
+    ntmoduleone:
+      begin
+        if Column = 1 then
+          CellText := data^.Module.name
+        else if Column = 2 then
+          CellText := data^.Module.Contents[0].MimeType
+        else if Column = 3 then
+          CellText := data^.Module.Contents[0].Fileurl
+        else
+          CellText := ''
+      end;
     ntcontent:
       begin
         if Column = 2 then
@@ -197,7 +214,7 @@ begin
         else if Column = 3 then
           CellText := data^.content.Fileurl
         else
-          CellText := '';
+          CellText := data^.content.FileType;
       end;
   end;
 
@@ -243,14 +260,32 @@ begin
       else if data^.Module.ModType = mnlabel then
         ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
           ('res_modtype_label');
+    end
+    else if (data^.node_type = ntmoduleone) then
+    begin
+      if data^.Module.Contents[0].FileType = 'file' then
+      begin
+        if data^.Module.Contents[0].MimeType = 'application/pdf' then
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_modtype_pdf')
+        else if data^.Module.Contents[0].MimeType = 'application/zip' then
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_modtype_zip')
+        else if data^.Module.Contents[0].MimeType = 'text/plain' then
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_modtype_text')
+        else if data^.Module.Contents[0].MimeType = 'application/json' then
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_modtype_json')
+      end
+      else if data^.Module.Contents[0].FileType = 'url' then
+      begin
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+          ('res_modtype_url')
+      end;
     end;
-  end;
-end;
 
-procedure TCourseContentTreeView.Refreshh;
-begin
-  RootNodeCount := fLMSUsers.Count;
-  Header.AutoFitColumns(false, smaAllColumns, 0);
+  end;
 end;
 
 procedure TCourseContentTreeView.setLMSCourse(const Value: ICourse);
@@ -266,12 +301,6 @@ begin
       text := 'Section';
       Options := Options + [coAutoSpring, coResizable];
     end;
-
-    { with Columns.add do
-      begin
-      text := 'Type';
-      Options := Options + [coAutoSpring, coResizable];
-      end; }
 
     with Columns.add do
     begin
@@ -302,4 +331,58 @@ begin
 
 end;
 
+{
+  procedure TCourseContentTreeView.ShowOnlyResources;
+  var
+  aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
+  data: PTreeData;
+  aCompare: string;
+  aParent: PVirtualNode;
+  begin
+  aVirtualNodeEnumerator := initializednodes().GetEnumerator;
+
+  // Not paint until finished
+  BeginUpdate;
+
+  while aVirtualNodeEnumerator.MoveNext do
+  begin
+  data := GetNodeData(aVirtualNodeEnumerator.Current);
+  case data^.node_type of
+  ntmoduleone:
+  begin
+  IsVisible[aVirtualNodeEnumerator.Current] := true;
+  aParent := aVirtualNodeEnumerator.Current.Parent;
+  while RootNode <> aParent do
+  begin
+  IsVisible[aParent] := true;
+  aParent := aParent.Parent;
+  end;
+  end
+  else
+  IsVisible[aVirtualNodeEnumerator.Current] := false;
+
+  end;
+  {
+  if (Pos(UpperCase(text), UpperCase(aCompare)) > 0) or (text = '') then
+  begin
+  IsVisible[aVirtualNodeEnumerator.Current] := true;
+
+  aParent := aVirtualNodeEnumerator.Current.Parent;
+  while RootNode <> aParent do
+  begin
+  IsVisible[aParent] := true;
+  aParent := aParent.Parent;
+  end;
+
+  end
+  else
+  IsVisible[aVirtualNodeEnumerator.Current] := false;
+
+  end;
+
+  // Please refresh
+  EndUpdate;
+
+  end;
+}
 end.

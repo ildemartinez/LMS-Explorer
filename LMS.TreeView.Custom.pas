@@ -12,7 +12,7 @@ uses
   LMS._class.LMS;
 
 type
-  TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser, ntSection, ntModule, ntContent);
+  TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser, ntSection, ntModule, ntModuleOne, ntContent);
 
   TTreeData = { packed } record
     aLMS: ILMS; // Pointer to LMS structure

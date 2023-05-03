@@ -40,18 +40,38 @@ object LMSCourseForm: TLMSCourseForm
           Left = 0
           Top = 0
           Width = 958
-          Height = 25
+          Height = 57
           Align = alTop
           TabOrder = 0
           object Edit1: TEdit
             Left = 1
-            Top = 1
+            Top = 33
             Width = 313
             Height = 23
             Align = alLeft
             TabOrder = 0
             OnChange = Edit1Change
             ExplicitHeight = 21
+          end
+          object ActionToolBar3: TActionToolBar
+            Left = 1
+            Top = 1
+            Width = 956
+            Height = 32
+            ActionManager = ActionManager1
+            Caption = 'ActionToolBar3'
+            Color = clMenuBar
+            ColorMap.DisabledFontColor = 7171437
+            ColorMap.HighlightColor = clWhite
+            ColorMap.BtnSelectedFont = clBlack
+            ColorMap.UnusedColor = clWhite
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            Spacing = 0
           end
         end
         object Memo1: TMemo
@@ -207,19 +227,24 @@ object LMSCourseForm: TLMSCourseForm
             Action = Action5
             Caption = 'E&dit course'
             ImageIndex = 7
-          end
+          end>
+        ActionBar = ActionToolBar1
+      end
+      item
+      end
+      item
+      end
+      item
+        Items = <
           item
-            Caption = '-'
+            Action = Action7
+            Caption = '&User in course'
+            ImageIndex = 8
           end
           item
             Action = Action2
             Caption = 'C&ourse users'
             ImageIndex = 5
-          end
-          item
-            Action = Action7
-            Caption = '&User in course'
-            ImageIndex = 8
           end
           item
             Caption = '-'
@@ -238,23 +263,19 @@ object LMSCourseForm: TLMSCourseForm
             Caption = '-'
           end
           item
-            Action = Action8
-            Caption = '&Copy user email'
-            ImageIndex = 1
+            Action = actExport
+            Caption = '&Export'
+            ImageIndex = 2
           end
           item
             Caption = '-'
           end
           item
-            Action = actExport
-            Caption = '&Export'
-            ImageIndex = 2
+            Action = Action8
+            Caption = '&Copy user email'
+            ImageIndex = 1
           end>
-        ActionBar = ActionToolBar1
-      end
-      item
-      end
-      item
+        ActionBar = ActionToolBar3
       end>
     Images = ImageList2
     Left = 496

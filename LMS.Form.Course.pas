@@ -41,6 +41,7 @@ type
     amCourseContent: TActionManager;
     acDownloadContent: TAction;
     ActionToolBar2: TActionToolBar;
+    ActionToolBar3: TActionToolBar;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -212,8 +213,7 @@ begin
       ;
     1:
       begin
-        fCourse.GetCourseContent;
-        fCourseContentTreeView.LMSCourse := Course;
+
       end;
     2:
       begin
@@ -252,6 +252,9 @@ begin
   Memo1.Lines.EndUpdate;
 
   aRolesList.free;
+
+  fCourse.GetCourseContent;
+  fCourseContentTreeView.LMSCourse := Value;
 end;
 
 procedure TLMSCourseForm.SetFilterUser(const Value: IUser);

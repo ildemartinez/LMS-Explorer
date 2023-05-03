@@ -35,7 +35,8 @@ type
     property FilterContent: string read GetFilterContent;
     property Group_Name: string read GetGroupName write SetGroupName;
     property Id: cardinal read getId write SetId;
-    property UsersInGroup: TList<IUser> read GetUsersInGroup write SetUsersInGroup;
+    property UsersInGroup: TList<IUser> read GetUsersInGroup
+      write SetUsersInGroup;
   end;
 
   IUser = interface
@@ -74,10 +75,13 @@ type
     function GetFileURL: string;
     function GetMiMeType: string;
     function GetModule: IModule;
+    function GetFileType: string;
+    procedure SetFileType(const Value: string);
     procedure SetFilename(const Value: string);
     procedure SetFileURL(const Value: string);
     procedure SetMimeType(const Value: string);
     property FileName: string read GetFileName write SetFilename;
+    property FileType: string read GetFileType write SetFileType;
     property FileURL: string read GetFileURL write SetFileURL;
     property MimeType: string read GetMiMeType write SetMimeType;
     property Module: IModule read GetModule;

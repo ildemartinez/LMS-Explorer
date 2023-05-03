@@ -147,6 +147,7 @@ var
   aSection: ISection;
   aModule: IModule;
   aContent: IContent;
+  aContentFileType: string;
   aJsonSection, aJsonModule, aJsonContent: TJSONValue;
   aContentsInfo: TJsonObject;
   aMimeType: string;
@@ -178,8 +179,9 @@ begin
         for aJsonContent in aContentItems do
         begin
           aContent := TContent.Create(aModule);
-
+          aContent.FileType := aJsonContent.GetValue<string>('type');
           aContent.FileName := aJsonContent.GetValue<string>('filename');
+
           if aJsonContent.TryGetValue<string>('mimetype', aMimeType) then
             aContent.MimeType := aMimeType;
 
