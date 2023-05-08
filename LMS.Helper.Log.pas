@@ -22,7 +22,7 @@ procedure LogError(const message: string);
 begin
   MainForm.memo1.Lines.add('');
   MainForm.memo1.Lines.add('Error --------------');
-  MainForm.memo1.Lines.add('    ' + message);
+  log('    ' + message);
   MainForm.memo1.Lines.add('--------------------');
 end;
 

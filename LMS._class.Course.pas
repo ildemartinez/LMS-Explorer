@@ -78,11 +78,9 @@ type
     property shortname: string read GetShortName write SetShortName;
     property Start_Date: TDateTime read GetStartDate write SetStartDate;
     property Time_Created: TDateTime read GetTimeCreated write SetTimeCreated;
-    property Time_Modified: TDateTime read GetTimeModified
-      write SetTimeModified;
+    property Time_Modified: TDateTime read GetTimeModified write SetTimeModified;
     // All course groups
-    property UserGroups: TList<IUsersGroup> read GetUserGroups
-      write SetUserGroups;
+    property UserGroups: TList<IUsersGroup> read GetUserGroups write SetUserGroups;
     property Users: TList<IUser> read GetUsers write SetUsers;
   end;
 
@@ -169,8 +167,7 @@ begin
       aModule.Name := aJsonModule.GetValue<string>('name');
       aModule.ModName := aJsonModule.GetValue<string>('modname');
 
-      if aJsonModule.TryGetValue<TJsonObject>('contentsinfo', aContentsInfo)
-      then
+      if aJsonModule.TryGetValue<TJsonObject>('contentsinfo', aContentsInfo) then
       begin
         // here we have the all contents info
       end;
@@ -353,11 +350,8 @@ begin
       fUsers.add(aUser);
 
       // Include the user in the corresponding group
-      groups := User.GetValue<TJSonArray>('groups');
-
-      if groups <> nil then
+      if User.TryGetValue<TJSonArray>('groups', groups) then
       begin
-        // log(groups.ToString);
         for Group in groups do
         begin
           for var agroup in self.fUserGroups do
@@ -365,7 +359,6 @@ begin
             if agroup.Id = Group.GetValue<cardinal>('id') then
               agroup.UsersInGroup.add(aUser)
           end;
-
         end;
       end;
       //
