@@ -33,6 +33,7 @@ type
     Action3: TAction;
     actExit: TAction;
     ImageList1: TImageList;
+    Button1: TButton;
 
     procedure edFilterChange(Sender: TObject);
     procedure actAboutExecute(Sender: TObject);
@@ -40,8 +41,9 @@ type
     procedure Action2Update(Sender: TObject);
     procedure Action3Update(Sender: TObject);
     procedure Action3Execute(Sender: TObject);
-        procedure FormCreate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     aLMSNetworkTreeView: TLMSNetworkTreeView;
@@ -61,12 +63,13 @@ implementation
 uses
   inifiles,
   System.JSON,
-                   urlmon,
+  urlmon,
   LMS._interface.LMS,
   LMS._class.LMS,
   LMS._class.Network,
 
   LMS.Helper.Log,
+  LMS.Helper.Utils,
   LMS.Form.About;
 
 procedure TMainForm.actAboutExecute(Sender: TObject);
@@ -120,6 +123,17 @@ begin
   aLMSNetworkTreeView := TLMSNetworkTreeView.Create(self);
   aLMSNetworkTreeView.parent := Panel1;
   aLMSNetworkTreeView.Align := alClient;
+end;
+
+procedure TMainForm.Button1Click(Sender: TObject);
+begin
+
+
+  hhide := not hhide;
+
+  if hhide then Button1.caption := '*)' else
+  button1.Caption := ':)';
+
 end;
 
 procedure TMainForm.edFilterChange(Sender: TObject);

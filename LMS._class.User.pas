@@ -99,22 +99,22 @@ end;
 
 function TUser.GetEmail: string;
 begin
-  result := fEmail;
+  result := shadowtext(fEmail);
 end;
 
 function TUser.getFilterContent: string;
 begin
-  result := fEmail + ' ' + fFullName;
+  result := shadowtext(fEmail + ' ' + fFullName);
 end;
 
 function TUser.GetFirstName: string;
 begin
-  result := fFirstName;
+  result := shadowtext(fFirstName);
 end;
 
 function TUser.GetFullName: string;
 begin
-  result := fFullName;
+  result := shadowtext(fFullName);
 end;
 
 function TUser.GetId: integer;
@@ -169,7 +169,7 @@ end;
 
 function TUser.GetLastName: string;
 begin
-  result := fLastName;
+  result := shadowtext( fLastName);
 end;
 
 function TUser.getLMS: ILMS;

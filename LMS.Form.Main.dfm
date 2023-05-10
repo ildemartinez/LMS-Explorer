@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'LMS Explorer'
-  ClientHeight = 685
-  ClientWidth = 1354
+  ClientHeight = 607
+  ClientWidth = 1181
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,18 +14,22 @@ object MainForm: TMainForm
   OldCreateOrder = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  DesignSize = (
+    1181
+    607)
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 281
     Top = 25
     Width = 5
-    Height = 530
+    Height = 452
+    ExplicitHeight = 530
   end
   object ActionMainMenuBar1: TActionMainMenuBar
     Left = 0
     Top = 0
-    Width = 1354
+    Width = 1181
     Height = 25
     UseSystemFont = False
     ActionManager = MainActionManager
@@ -41,24 +45,27 @@ object MainForm: TMainForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 0
+    ExplicitWidth = 1354
   end
   object Memo1: TMemo
     Left = 0
-    Top = 555
-    Width = 1354
+    Top = 477
+    Width = 1181
     Height = 130
     Align = alBottom
     TabOrder = 1
     Visible = False
+    ExplicitTop = 555
+    ExplicitWidth = 1354
   end
   object Panel1: TPanel
     Left = 0
     Top = 25
     Width = 281
-    Height = 530
+    Height = 452
     Align = alLeft
-    Caption = 'Panel1'
     TabOrder = 2
+    ExplicitHeight = 530
     object ActionMainMenuBar2: TActionMainMenuBar
       Left = 1
       Top = 22
@@ -89,6 +96,17 @@ object MainForm: TMainForm
       TextHint = 'Filter courses'
       OnChange = edFilterChange
     end
+  end
+  object Button1: TButton
+    Left = 1115
+    Top = 31
+    Width = 58
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = '*)'
+    TabOrder = 3
+    OnClick = Button1Click
+    ExplicitLeft = 1235
   end
   object MainActionManager: TActionManager
     ActionBars = <

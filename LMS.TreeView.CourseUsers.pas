@@ -270,7 +270,7 @@ procedure TLMSCourseUsersTreeView.setLMSCourse(const Value: ICourse);
       Columns.Add.text := 'Last access';
       Columns.Add.text := 'Last access from';
 
-      Options := Options + [hovisible, hoAutoSpring, hoAutoResize];
+      Options := Options + [hoAutoResizeInclCaption, hovisible, hoAutoSpring, hoAutoResize];
     end;
   end;
 
