@@ -3,13 +3,16 @@ unit LMS.Helper.Reports;
 interface
 
 uses
+  Generics.Collections,
   LMS._interface.LMS;
 
 procedure ExportToExcel(const aLMSCourse: ICourse);
+procedure ExportToExcelCourses(const aLMS: ILMS);
 
 implementation
 
 uses
+  LMS.Helper.Utils,
   LMS.Helper.Excel;
 
 procedure ExportToExcel(const aLMSCourse: ICourse);
@@ -55,6 +58,43 @@ begin
   finally
     ExcelWS.ShowAndFinally;
   end;
+end;
+
+procedure ExportToExcelCourses(const aLMS: ILMS);
+var
+  ExcelWS: TExcelWorkSpace;
+  category: ICategory;
+  course: ICourse;
+begin
+  ExcelWS := TExcelWorkSpace.Create;
+
+  try
+    ExcelWS.fXLWS.Cells.item[1, 1] := aLMS.Id;
+
+    var
+    aRow := 5;
+    for category in aLMS.Categories do
+    begin
+
+      ExcelWS.fXLWS.Cells.item[aRow, 1] := category.Id;
+      ExcelWS.fXLWS.Cells.item[aRow, 2] := category.Name;
+      inc(aRow);
+
+      for course in category.Courses do
+      begin
+
+        ExcelWS.fXLWS.Cells.item[aRow, 2] := course.Id;
+        ExcelWS.fXLWS.Cells.item[aRow, 3] := course.DisplayName;
+        ExcelWS.fXLWS.Cells.item[aRow, 4] := FormatDateTimeBlank(course.StartDate);
+        ExcelWS.fXLWS.Cells.item[aRow, 5] := FormatDateTimeBlank(course.EndDate);
+
+        inc(aRow);
+      end;
+    end;
+  finally
+    ExcelWS.ShowAndFinally;
+  end;
+
 end;
 
 end.

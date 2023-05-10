@@ -27,6 +27,8 @@ type
     procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: cardinal);
     procedure MyDoPaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+    procedure MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect;
+      var ContentRect: TRect); override;
   public
     constructor Create(Owner: TComponent); override;
     procedure FilterByText(const text: string);
@@ -170,6 +172,18 @@ begin
   DoNodeDblClick(HitInfo);
 end;
 
+procedure TLMSNetworkTreeView.MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect;
+  var ContentRect: TRect);
+begin
+  if (PTreeData(Sender.GetNodeData(Node))^.node_type = ntLMS) then
+    // TargetCanvas.Brush.Color := $00F7E6D5 ;
+    // else
+    TargetCanvas.Brush.Color := $00FBF2EA;
+
+  TargetCanvas.FillRect(CellRect);
+
+end;
+
 procedure TLMSNetworkTreeView.MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   data: PTreeData;
@@ -227,6 +241,7 @@ begin
         else
         begin
           TargetCanvas.Font.Color := clBlack;
+          TargetCanvas.Font.Size := 10;
           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] - [fsItalic];
         end;
       end

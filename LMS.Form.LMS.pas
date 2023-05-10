@@ -39,6 +39,8 @@ type
     tsCourses: TTabSheet;
     tsCoursesWithCategories: TTabSheet;
     Button2: TButton;
+    ActionToolBar2: TActionToolBar;
+    Action6: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Edit1Change(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -47,6 +49,7 @@ type
     procedure Action4Update(Sender: TObject);
     procedure Action4Execute(Sender: TObject);
     procedure Action5Execute(Sender: TObject);
+    procedure Action6Execute(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
@@ -73,7 +76,8 @@ implementation
 uses
   System.JSON,
 
-  LMS.Helper.Browser;
+  LMS.Helper.Browser,
+  LMS.Helper.Reports;
 
 {$R *.dfm}
 
@@ -139,6 +143,11 @@ begin
   fLMSTreeView.Align := alClient;
   // fLMSCoursesTreeView.LMSUsers := fUsers;
 
+end;
+
+procedure TLMSForm.Action6Execute(Sender: TObject);
+begin
+exporttoexcelCourses(fLMS);
 end;
 
 procedure TLMSForm.Edit1Change(Sender: TObject);

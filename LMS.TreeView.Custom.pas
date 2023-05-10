@@ -38,7 +38,6 @@ type
 
   TLMSCustomLMSVirtualStringTree = class(TCustomVirtualStringTree)
   private
-    procedure BeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure CompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure HeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
@@ -46,6 +45,7 @@ type
   protected
     procedure DoDblClkCourse(const Course: ICourse); virtual;
     procedure DoDblClkUser(const User: IUser); virtual;
+    procedure MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect); virtual;
   public
     constructor Create(Owner: TComponent); override;
     // Focus a selected node in tree
@@ -73,20 +73,15 @@ begin
   OnGetImageIndex := MyGetImageIndex;
   OnCompareNodes := CompareNodes;
   OnHeaderClick := HeaderClick;
-
-  OnBeforeCellPaint := BeforePaint;
+  OnBeforeCellPaint := MyBeforePaint;
 
   TreeOptions.PaintOptions := TreeOptions.PaintOptions - [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect, toshowhorzgridlines, toshowvertgridlines];
-
   TreeOptions.SelectionOptions := TreeOptions.SelectionOptions + [toFullRowSelect];
-
   TreeOptions.AutoOptions := TreeOptions.AutoOptions + [toAutoSpanColumns];
-
   TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
-
 end;
 
-procedure TLMSCustomLMSVirtualStringTree.BeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect;
+procedure TLMSCustomLMSVirtualStringTree.MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect;
   var ContentRect: TRect);
 begin
   if (Node.Index mod 2 = 1) or (PTreeData(Sender.GetNodeData(Node))^.node_type = ntCategory) then

@@ -21,7 +21,7 @@ object LMSForm: TLMSForm
     Top = 0
     Width = 582
     Height = 336
-    ActivePage = TabSheet2
+    ActivePage = tsCourses
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -105,6 +105,26 @@ object LMSForm: TLMSForm
     object tsCourses: TTabSheet
       Caption = 'Courses'
       ImageIndex = 2
+      object ActionToolBar2: TActionToolBar
+        Left = 0
+        Top = 0
+        Width = 574
+        Height = 23
+        ActionManager = ActionManager1
+        Caption = 'ActionToolBar2'
+        Color = clMenuBar
+        ColorMap.DisabledFontColor = 7171437
+        ColorMap.HighlightColor = clWhite
+        ColorMap.BtnSelectedFont = clBlack
+        ColorMap.UnusedColor = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        Spacing = 0
+      end
     end
   end
   object ActionManager1: TActionManager
@@ -165,10 +185,22 @@ object LMSForm: TLMSForm
             Caption = 'E&dit user profile'
           end>
         ActionBar = ActionToolBar1
+      end
+      item
+      end
+      item
+      end
+      item
+        Items = <
+          item
+            Action = Action6
+            Caption = '&Export courses'
+          end>
+        ActionBar = ActionToolBar2
       end>
     Images = ImageList1
-    Left = 388
-    Top = 144
+    Left = 324
+    Top = 136
     StyleName = 'Platform Default'
     object Action1: TAction
       Caption = 'User list'
@@ -195,10 +227,14 @@ object LMSForm: TLMSForm
       OnExecute = Action5Execute
       OnUpdate = Action4Update
     end
+    object Action6: TAction
+      Caption = 'Export courses'
+      OnExecute = Action6Execute
+    end
   end
   object ImageList1: TImageList
-    Left = 148
-    Top = 152
+    Left = 228
+    Top = 136
     Bitmap = {
       494C010103000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010

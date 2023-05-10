@@ -30,7 +30,7 @@ object LMSCourseForm: TLMSCourseForm
       Top = 1
       Width = 966
       Height = 503
-      ActivePage = tsContent
+      ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
       OnChange = PageControl1Change
