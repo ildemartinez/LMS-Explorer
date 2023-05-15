@@ -9,3 +9,4 @@ res_modtype_zip BITMAP resources\modtype_zip.bmp
 res_modtype_text BITMAP resources\modtype_text.bmp
 res_modtype_json BITMAP resources\modtype_json.bmp
 res_modtype_url BITMAP resources\modtype_url.bmp
+res_modtype_folder BITMAP resources\modtype_folder.bmp

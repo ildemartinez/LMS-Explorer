@@ -42,6 +42,7 @@ type
     acDownloadContent: TAction;
     ActionToolBar2: TActionToolBar;
     ActionToolBar3: TActionToolBar;
+    actShowContent: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LinkLabel1Click(Sender: TObject);
     procedure Action1Execute(Sender: TObject);
@@ -60,6 +61,7 @@ type
     procedure actExportExecute(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure acDownloadContentExecute(Sender: TObject);
+    procedure actShowContentExecute(Sender: TObject);
   private
     fCourseContentTreeView: TCourseContentTreeView;
     fUsersTreeView: TLMSCourseUsersTreeView;
@@ -190,6 +192,18 @@ begin
   PageControl1.ActivePageIndex := 0;
 end;
 
+procedure TLMSCourseForm.actShowContentExecute(Sender: TObject);
+var
+  path: string;
+begin
+  path := ExtractFileDir(Application.ExeName);
+
+  path := path + '\content\' + Course.LMS.Id + '\' + Course.Category.Name + '\' + Course.shortname + '\';
+
+  path := StringReplace(path, '/', '-', [rfReplaceAll]);
+  OpenShell(path);
+end;
+
 procedure TLMSCourseForm.Edit1Change(Sender: TObject);
 begin
   fUsersTreeView.FilterByText(TEdit(Sender).text);
@@ -202,8 +216,7 @@ end;
 
 procedure TLMSCourseForm.LinkLabel1Click(Sender: TObject);
 begin
-  ShellExecute(0, 'open', PChar(fCourse.LMS.Host + format(COURSE_VIEW,
-    [fCourse.id])), nil, nil, 0); // SW_SHOW);
+  ShellExecute(0, 'open', PChar(fCourse.LMS.Host + format(COURSE_VIEW, [fCourse.Id])), nil, nil, 0); // SW_SHOW);
 end;
 
 procedure TLMSCourseForm.PageControl1Change(Sender: TObject);

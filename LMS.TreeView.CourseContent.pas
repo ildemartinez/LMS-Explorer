@@ -23,18 +23,13 @@ type
     fLMSCourse: ICourse;
 
     procedure setLMSCourse(const Value: ICourse);
-    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
-      var ImageIndex: System.UITypes.TImageIndex);
+    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
   protected
-    procedure DoInitNode(Parent, Node: PVirtualNode;
-      var InitStates: TVirtualNodeInitStates); override;
+    procedure DoInitNode(Parent, Node: PVirtualNode; var InitStates: TVirtualNodeInitStates); override;
 
-    procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
-    procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      var ChildCount: cardinal);
+    procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: cardinal);
   public
     constructor Create(Owner: TComponent); override;
 
@@ -61,12 +56,9 @@ begin
 
   NodeDataSize := SizeOf(TTreeData);
 
-  TreeOptions.PaintOptions := TreeOptions.PaintOptions -
-    [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect,
-    toshowhorzgridlines, toshowvertgridlines];
+  TreeOptions.PaintOptions := TreeOptions.PaintOptions - [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect, toshowhorzgridlines, toshowvertgridlines];
 
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
-    [toFullRowSelect];
+  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions + [toFullRowSelect];
 
   TreeOptions.AutoOptions := TreeOptions.AutoOptions + [toAutoSpanColumns];
 
@@ -78,8 +70,7 @@ begin
 
 end;
 
-procedure TCourseContentTreeView.DoInitNode(Parent, Node: PVirtualNode;
-  var InitStates: TVirtualNodeInitStates);
+procedure TCourseContentTreeView.DoInitNode(Parent, Node: PVirtualNode; var InitStates: TVirtualNodeInitStates);
 var
   data, parentdata: PTreeData;
 begin
@@ -163,9 +154,7 @@ begin
 
 end;
 
-procedure TCourseContentTreeView.MyDoGetText(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: string);
+procedure TCourseContentTreeView.MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   data: PTreeData;
 begin
@@ -193,6 +182,8 @@ begin
           else }
         if Column = 1 then
           CellText := data^.Module.name
+          // else if Column = 2 then
+          // CellText := data^.Module.ModType.
         else
           CellText := '';
       end;
@@ -214,14 +205,13 @@ begin
         else if Column = 3 then
           CellText := data^.content.Fileurl
         else
-          CellText := data^.content.FileType;
+          CellText := ''; // data^.content.FileType;
       end;
   end;
 
 end;
 
-procedure TCourseContentTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; var ChildCount: cardinal);
+procedure TCourseContentTreeView.MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: cardinal);
 var
   data: PTreeData;
 begin
@@ -242,9 +232,8 @@ begin
   end;
 end;
 
-procedure TCourseContentTreeView.MyGetImageIndex(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-  var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
+procedure TCourseContentTreeView.MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
+  var ImageIndex: System.UITypes.TImageIndex);
 var
   data: PTreeData;
 begin
@@ -255,33 +244,28 @@ begin
     if (data^.node_type = ntmodule) then
     begin
       if data^.Module.ModType = mnresource then
-        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-          ('res_modtype_pdf')
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_pdf')
       else if data^.Module.ModType = mnlabel then
-        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-          ('res_modtype_label');
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_label')
+      else if data^.Module.ModType = mnfolder then
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_folder')
     end
     else if (data^.node_type = ntmoduleone) then
     begin
       if data^.Module.Contents[0].FileType = 'file' then
       begin
         if data^.Module.Contents[0].MimeType = 'application/pdf' then
-          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-            ('res_modtype_pdf')
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_pdf')
         else if data^.Module.Contents[0].MimeType = 'application/zip' then
-          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-            ('res_modtype_zip')
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_zip')
         else if data^.Module.Contents[0].MimeType = 'text/plain' then
-          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-            ('res_modtype_text')
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_text')
         else if data^.Module.Contents[0].MimeType = 'application/json' then
-          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-            ('res_modtype_json')
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_json')
       end
       else if data^.Module.Contents[0].FileType = 'url' then
       begin
-        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-          ('res_modtype_url')
+        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_url')
       end;
     end;
 
@@ -320,8 +304,7 @@ begin
       Options := Options + [coAutoSpring, coResizable];
     end;
 
-    Options := Options + [hovisible, hoAutoSpring, hoAutoResize,
-      hoDblClickResize];
+    Options := Options + [hovisible, hoAutoSpring, hoAutoResize, hoDblClickResize];
     AutoSizeIndex := Columns.GetLastVisibleColumn;
   end;
 

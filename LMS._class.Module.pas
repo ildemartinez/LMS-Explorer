@@ -21,7 +21,7 @@ type
     procedure SetModName(const Value: string);
     procedure SetName(const Value: string);
     function GetContents: TList<IContent>;
-    function GetSection : ISection;
+    function GetSection: ISection;
   public
     constructor Create(const Section: ISection);
     destructor Destroy; override;
@@ -62,7 +62,7 @@ end;
 
 function TModule.GetSection: ISection;
 begin
-result := fsection;
+  result := fSection;
 end;
 
 procedure TModule.SetModName(const Value: string);
@@ -73,10 +73,12 @@ begin
     fModType := mnlabel
   else if Value = 'resource' then
     fModType := mnresource
+  else if Value = 'folder' then
+    fModType := mnfolder
   else
   begin
     fModType := mnunknow;
-   // Log(Value);
+    // Log(Value);
   end;
 
 end;

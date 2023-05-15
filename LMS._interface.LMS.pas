@@ -35,8 +35,7 @@ type
     property FilterContent: string read GetFilterContent;
     property Group_Name: string read GetGroupName write SetGroupName;
     property Id: cardinal read getId write SetId;
-    property UsersInGroup: TList<IUser> read GetUsersInGroup
-      write SetUsersInGroup;
+    property UsersInGroup: TList<IUser> read GetUsersInGroup write SetUsersInGroup;
   end;
 
   IUser = interface
@@ -67,7 +66,7 @@ type
     property UserName: string read GetUserName;
   end;
 
-  TModType = (mnforum, mnlabel, mnresource, mnunknow);
+  TModType = (mnforum, mnlabel, mnresource, mnunknow, mnfolder);
 
   IContent = interface
     ['{F74F2674-738F-4464-880F-0C2F71E092A1}']
@@ -162,8 +161,7 @@ type
     property TimeCreated: TDateTime read GetTimeCreated write SetTimeCreated;
     property TimeModified: TDateTime read GetTimeModified write SetTimeModified;
     // All course groups
-    property UserGroups: TList<IUsersGroup> read GetUserGroups
-      write SetUserGroups;
+    property UserGroups: TList<IUsersGroup> read GetUserGroups write SetUserGroups;
     property Users: TList<IUser> read GetUsers write SetUsers;
   end;
 
@@ -184,8 +182,7 @@ type
     property Id: cardinal read getId;
     property LMS: ILMS read GetLMS;
     property Name: string read GetName;
-    property ParentCategory: cardinal read GetParentCategory
-      write SetParentCategory;
+    property ParentCategory: cardinal read GetParentCategory write SetParentCategory;
     property SubCategoriesCount: cardinal read GetSubCategoriesCount;
   end;
 
@@ -215,10 +212,8 @@ type
     function GetHost: string;
     function getId: string;
     function GetLMSConnection: TLMSRestMoodle;
-    function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>;
-      const aFilter: string): integer;
-    procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle;
-      const aFunctionName: string);
+    function GetUsersByAlmostAllFields(var aLMSUsers: TList<IUser>; const aFilter: string): integer;
+    procedure MyOnFunctionNotAdded(Sender: TLMSRestMoodle; const aFunctionName: string);
     procedure SetAutoConnect(const Value: boolean);
     procedure SetCategories(const Value: TList<ICategory>);
     procedure SetFlatCourses(const Value: TList<ICourse>);
@@ -229,10 +224,8 @@ type
     procedure SetUser(const Value: string);
     property aLMSConnection: TLMSRestMoodle read GetLMSConnection;
     property AutoConnect: boolean read GetAutoConnect write SetAutoConnect;
-    property Categories: TList<ICategory> read GetCategories
-      write SetCategories;
-    property FlatCourses: TList<ICourse> read GetFlatCourses
-      write SetFlatCourses;
+    property Categories: TList<ICategory> read GetCategories write SetCategories;
+    property FlatCourses: TList<ICourse> read GetFlatCourses write SetFlatCourses;
     property Host: string read GetHost write SetHost;
     property Id: string read getId write SetId;
     property Password: string write SetPassword;

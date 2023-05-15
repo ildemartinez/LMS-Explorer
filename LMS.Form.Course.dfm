@@ -30,7 +30,7 @@ object LMSCourseForm: TLMSCourseForm
       Top = 1
       Width = 966
       Height = 503
-      ActivePage = TabSheet1
+      ActivePage = tsContent
       Align = alClient
       TabOrder = 0
       OnChange = PageControl1Change
@@ -1381,6 +1381,13 @@ object LMSCourseForm: TLMSCourseForm
           item
             Action = acDownloadContent
             Caption = '&Download content'
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Action = actShowContent
+            Caption = '&Show downloaded content'
           end>
         ActionBar = ActionToolBar2
       end>
@@ -1390,6 +1397,10 @@ object LMSCourseForm: TLMSCourseForm
     object acDownloadContent: TAction
       Caption = 'Download content'
       OnExecute = acDownloadContentExecute
+    end
+    object actShowContent: TAction
+      Caption = 'Show downloaded content'
+      OnExecute = actShowContentExecute
     end
   end
 end
