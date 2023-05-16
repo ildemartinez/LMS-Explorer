@@ -106,8 +106,7 @@ var
 begin
   path := ExtractFileDir(Application.ExeName);
 
-  path := path + '\content\' + Course.LMS.Id + '\' + Course.Category.Name + '\'
-    + Course.shortname;
+  path := path + '\content\' + Course.LMS.Id + '\' + Course.Category.Name + '\' + Course.shortname;
 
   path := StringReplace(path, '/', '-', [rfReplaceAll]);
 
@@ -121,15 +120,12 @@ begin
     begin
       for aContent in aModule.Contents do
       begin
-       // Log(aContent.FileURL);
-
-        Course.LMS.GetLMSConnection.DownloadContent(aContent.FileURL,
-          //path +
-          'c:\temp\' + aContent.FileName);
+        // Log(aContent.FileURL);
+        Course.LMS.GetLMSConnection.DownloadContent(aContent.FileURL, aContent.FileName);
       end;
     end;
   end;
-  log('Download done!!!');
+  Log('Download done!!!');
 end;
 
 function TLMS.FirstLevelCategoriesCount: cardinal;
@@ -249,17 +245,13 @@ begin
         // if aJSONValue.TryGetValue<Int64>('lastcourseaccess', timestamp) then
         // flastcourseaccess := unixtodatetime(timestamp);
 
-        aCourse.Start_Date :=
-          unixtodatetime(Course.GetValue<Int64>('startdate'));
+        aCourse.Start_Date := unixtodatetime(Course.GetValue<Int64>('startdate'));
         aCourse.End_Date := unixtodatetime(Course.GetValue<Int64>('enddate'));
-        aCourse.Time_Created :=
-          unixtodatetime(Course.GetValue<Int64>('timecreated'));
-        aCourse.Time_Modified :=
-          unixtodatetime(Course.GetValue<Int64>('timemodified'));
+        aCourse.Time_Created := unixtodatetime(Course.GetValue<Int64>('timecreated'));
+        aCourse.Time_Modified := unixtodatetime(Course.GetValue<Int64>('timemodified'));
 
         // Have to check because the category function service could not be enable
-        aCourseCategory := GetCategoryById
-          (Course.GetValue<cardinal>('categoryid'));
+        aCourseCategory := GetCategoryById(Course.GetValue<cardinal>('categoryid'));
         if aCourseCategory <> nil then
           aCourseCategory.Courses.add(aCourse);
 
@@ -343,8 +335,7 @@ end;
 
 procedure TLMS.MyOnFunctionNotAdded(Sender: TLMSRestMoodle; const aFunctionName: string);
 begin
-  Log('error not service function not defined ' + aFunctionName +
-    ' please added it in the LMS service functions');
+  Log('error not service function not defined ' + aFunctionName + ' please added it in the LMS service functions');
 end;
 
 procedure TLMS.SetAutoConnect(const Value: boolean);
