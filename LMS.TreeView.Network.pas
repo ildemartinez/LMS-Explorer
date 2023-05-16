@@ -32,7 +32,9 @@ type
   public
     constructor Create(Owner: TComponent); override;
     procedure FilterByText(const text: string);
+    procedure FullExpandLMS;
     property LMSNetwork: TLMSNetwork write SetLMSNetwork;
+
   end;
 
 implementation
@@ -44,6 +46,7 @@ uses
   ShellApi,
   generics.Collections,
 
+  LMS.Helper.Log,
   LMS.Helper.Consts,
   LMS.Helper.Browser,
   LMS.Form.LMS,
@@ -164,6 +167,32 @@ begin
   // Please refresh
   EndUpdate;
 
+end;
+
+procedure TLMSNetworkTreeView.FullExpandLMS;
+var
+  Node: PVirtualNode;
+  data: PTreeData;
+begin
+  BeginUpdate;
+  try
+    Node := GetFirst;
+    while Assigned(Node) do
+    begin
+      data := GetNodeData(Node);
+      if data^.node_type = ntLMS then
+      begin
+        if data^.aLMS.connected then
+          FullExpand(Node);
+      end;
+
+      // Selected[Node] := true;
+
+      Node := GetNextSibling(Node);
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TLMSNetworkTreeView.HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo);
@@ -344,7 +373,7 @@ procedure TLMSNetworkTreeView.SetLMSNetwork(const Value: TLMSNetwork);
 begin
   fLMSNetwork := Value;
 
-  RootNodeCount := fLMSNetwork.Count;
+  Rootnodecount := fLMSNetwork.Count;
 end;
 
 end.

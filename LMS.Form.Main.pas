@@ -122,7 +122,7 @@ end;
 
 procedure TMainForm.actExpandAllExecute(Sender: TObject);
 begin
-  aLMSNetworkTreeView.FullExpand();
+  aLMSNetworkTreeView.FullExpandLMS;
 end;
 
 constructor TMainForm.Create(Owner: Tcomponent);

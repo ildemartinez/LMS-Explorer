@@ -81,9 +81,9 @@ object MainForm: TMainForm
       Font.Height = -12
       Font.Name = 'Segoe UI'
       Font.Style = []
+      ParentShowHint = False
+      ShowHint = True
       Spacing = 0
-      ExplicitWidth = 279
-      ExplicitHeight = 25
     end
     object edFilter: TEdit
       Left = 1
@@ -94,7 +94,6 @@ object MainForm: TMainForm
       TabOrder = 1
       TextHint = 'Filter courses'
       OnChange = edFilterChange
-      ExplicitWidth = 279
     end
   end
   object Button1: TButton
