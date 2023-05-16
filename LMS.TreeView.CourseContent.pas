@@ -19,7 +19,7 @@ type
 
   TCourseContentTreeView = class(TLMSCustomLMSVirtualStringTree)
   private
-    fLMSUsers: TList<IUser>;
+//    fLMSUsers: TList<IUser>;
     fLMSCourse: ICourse;
 
     procedure setLMSCourse(const Value: ICourse);
@@ -99,8 +99,7 @@ begin
     begin
       data^.node_type := ntmodule;
       if data^.Module.Contents.Count > 1 then
-
-        Node.States := Node.States + [vsHasChildren, vsExpanded]
+        Node.States := Node.States + [vsHasChildren]
       else
         Exclude(Node.States, vsHasChildren);
     end;

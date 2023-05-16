@@ -34,6 +34,8 @@ type
     actExit: TAction;
     ImageList1: TImageList;
     Button1: TButton;
+    actCollapseAll: TAction;
+    actExpandAll: TAction;
 
     procedure edFilterChange(Sender: TObject);
     procedure actAboutExecute(Sender: TObject);
@@ -45,6 +47,8 @@ type
     procedure actExitExecute(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure actCollapseAllExecute(Sender: TObject);
+    procedure actExpandAllExecute(Sender: TObject);
   private
     aLMSNetworkTreeView: TLMSNetworkTreeView;
 
@@ -105,10 +109,20 @@ begin
   Action3.Enabled := edFilter.Text <> '';
 end;
 
+procedure TMainForm.actCollapseAllExecute(Sender: TObject);
+begin
+  self.aLMSNetworkTreeView.FullCollapse();
+end;
+
 procedure TMainForm.actExitExecute(Sender: TObject);
 begin
   actExit.Checked := true;
   Close;
+end;
+
+procedure TMainForm.actExpandAllExecute(Sender: TObject);
+begin
+  aLMSNetworkTreeView.FullExpand();
 end;
 
 constructor TMainForm.Create(Owner: Tcomponent);
@@ -128,17 +142,19 @@ end;
 procedure TMainForm.Button1Click(Sender: TObject);
 begin
 
-
   hhide := not hhide;
 
-  if hhide then Button1.caption := '*)' else
-  button1.Caption := ':)';
+  if hhide then
+    Button1.caption := '*)'
+  else
+    Button1.caption := ':)';
 
 end;
 
 procedure TMainForm.edFilterChange(Sender: TObject);
 begin
   aLMSNetworkTreeView.FilterByText(TEdit(Sender).Text);
+  actExpandAllExecute(self);
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
