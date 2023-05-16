@@ -113,6 +113,8 @@ begin
 
   TDirectory.CreateDirectory(path);
 
+  SetCurrentDir(path);
+
   for aSection in Course.Sections do
   begin
     for aModule in aSection.Modules do
@@ -122,7 +124,8 @@ begin
         Log(aContent.FileURL);
 
         Course.LMS.GetLMSConnection.DownloadContent(aContent.FileURL,
-          path + '\' + aContent.FileName);
+          //path +
+          '.\' + aContent.FileName);
       end;
     end;
   end;
