@@ -121,11 +121,11 @@ begin
     begin
       for aContent in aModule.Contents do
       begin
-        Log(aContent.FileURL);
+       // Log(aContent.FileURL);
 
         Course.LMS.GetLMSConnection.DownloadContent(aContent.FileURL,
           //path +
-          '.\' + aContent.FileName);
+          'c:\temp\' + aContent.FileName);
       end;
     end;
   end;
