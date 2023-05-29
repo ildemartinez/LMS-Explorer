@@ -181,10 +181,13 @@ end;
 
 procedure TLMSRestMoodle.DownloadContent(const aFilename: string;
   const path: string);
+var
+  downloadpath: string;
 begin
+  downloadpath := aFilename + '&token=' + self.fToken;
   Log(aFilename + ' ' + path);
-  URLDownloadToFile(nil, pchar(aFilename + '&token=' + self.fToken),
-    pchar(path), 0, nil);
+  Log(downloadpath);
+  URLDownloadToFile(nil, pchar(downloadpath), pchar(path), 0, nil);
 end;
 
 function TLMSRestMoodle.ExecuteRequest(const servicefunction: string)
