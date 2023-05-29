@@ -113,6 +113,7 @@ begin
   TDirectory.CreateDirectory(path);
 
   SetCurrentDir(path);
+  log(GetCurrentDir);
 
   for aSection in Course.Sections do
   begin

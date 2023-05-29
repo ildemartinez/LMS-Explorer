@@ -11,7 +11,8 @@ type
 
   TLMSRestMoodle = class;
 
-  TFunctionNotAddedNotifyEvent = procedure(Sender: TLMSRestMoodle; const aFunctionName: string) of object;
+  TFunctionNotAddedNotifyEvent = procedure(Sender: TLMSRestMoodle;
+    const aFunctionName: string) of object;
 
   TLMFunctionRequest = class(TRestRequest)
   public
@@ -59,7 +60,8 @@ type
     property Service: string write fservice;
     property Host: string read fhost write fhost;
 
-    property OnFunctionNotAdded: TFunctionNotAddedNotifyEvent read fFunctionNotAddedNotifyEvent write fFunctionNotAddedNotifyEvent;
+    property OnFunctionNotAdded: TFunctionNotAddedNotifyEvent
+      read fFunctionNotAddedNotifyEvent write fFunctionNotAddedNotifyEvent;
   end;
 
 implementation
@@ -99,7 +101,8 @@ begin
     if not((fpassword <> '') and (fuser <> '')) then
     begin
       var
-        LMSUserPasswordForm: TLMSUserPasswordForm := TLMSUserPasswordForm.Create(application);
+        LMSUserPasswordForm: TLMSUserPasswordForm :=
+          TLMSUserPasswordForm.Create(application);
 
       LMSUserPasswordForm.username := fuser;
       LMSUserPasswordForm.Password := fpassword;
@@ -137,9 +140,11 @@ begin
         if jValue.TryGetValue<string>('errorcode', aerrorcode) then
         begin
           if aerrorcode = 'enablewsdescription' then
-            logerror(jValue.GetValue<string>('error') + ' fix at ' + fhost + '/admin/search.php?query=enablewebservices')
+            logerror(jValue.GetValue<string>('error') + ' fix at ' + fhost +
+              '/admin/search.php?query=enablewebservices')
           else if aerrorcode = 'servicenotavailable' then
-            logerror(jValue.GetValue<string>('error') + ' maybe ' + fservice + ' is not enabled or not exists')
+            logerror(jValue.GetValue<string>('error') + ' maybe ' + fservice +
+              ' is not enabled or not exists')
           else
             logerror(aerrorcode);
 
@@ -174,11 +179,14 @@ begin
   aRestRequest.Response := arestresponse;
 end;
 
-procedure TLMSRestMoodle.DownloadContent(const aFilename: string; const path: string);
+procedure TLMSRestMoodle.DownloadContent(const aFilename: string;
+  const path: string);
 var
   ares: cardinal;
+  filename: string;
 begin
-  ares := URLDownloadToFile(nil, pchar(aFilename + '&token=' + fToken), pchar(path), 0, nil);
+  filename := aFilename + '&token=' + fToken;
+  ares := URLDownloadToFile(nil, pchar(filename), pchar(path), 0, nil);
   if ares = S_OK then
     Log('Downloaded ' + aFilename + ' to ' + path)
   else
@@ -190,7 +198,8 @@ begin
   end;
 end;
 
-function TLMSRestMoodle.ExecuteRequest(const servicefunction: string): TJSonArray;
+function TLMSRestMoodle.ExecuteRequest(const servicefunction: string)
+  : TJSonArray;
 var
   jValue: TJSonValue;
   err: string;
@@ -216,7 +225,8 @@ begin
   end;
 end;
 
-function TLMSRestMoodle.ExecuteRequest2(const servicefunction: string): TJSonValue;
+function TLMSRestMoodle.ExecuteRequest2(const servicefunction: string)
+  : TJSonValue;
 var
   jValue: TJSonValue;
   err: string;
@@ -303,7 +313,8 @@ begin
 
 end;
 
-function TLMSRestMoodle.GetEnrolledUsersByCourseId(const courseID: integer): TJSonArray;
+function TLMSRestMoodle.GetEnrolledUsersByCourseId(const courseID: integer)
+  : TJSonArray;
 begin
 
   if Connected then
@@ -323,7 +334,8 @@ begin
 
 end;
 
-function TLMSRestMoodle.GetUserGroupsByCourseId(const courseID: integer): TJSonArray;
+function TLMSRestMoodle.GetUserGroupsByCourseId(const courseID: integer)
+  : TJSonArray;
 begin
 
   if Connected then
