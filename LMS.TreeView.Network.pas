@@ -48,6 +48,7 @@ uses
 
   LMS.Helper.Log,
   LMS.Helper.Consts,
+  LMS._interface.LMS,
   LMS.Helper.Browser,
   LMS.Form.LMS,
   LMS.Helper.FormFactory,
@@ -72,6 +73,8 @@ end;
 procedure TLMSNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode; var InitStates: TVirtualNodeInitStates);
 var
   data, parentdata: PTreeData;
+  aCat: ICategory;
+  ind: cardinal;
 begin
   data := GetNodeData(Node);
   parentdata := GetNodeData(Parent);
@@ -98,13 +101,29 @@ begin
         begin
           data^.node_type := ntCategory;
           data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-          data^.Category := parentdata^.aLMS.categories.items[Node.Index];
+
+          // Search main categories (parentcategory = 0)
+          ind := 0;
+          for aCat in parentdata^.aLMS.categories do
+          begin
+            if (aCat.ParentCategory = 0) then
+            begin
+              if (ind = Node.Index) then
+              begin
+                data^.Category := aCat;
+                break;
+              end;
+
+              inc(ind)
+            end;
+          end;
 
           if (parentdata^.aLMS.categories.Count > 0) or (parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0) then
             Node.States := Node.States + [vsHasChildren, vsExpanded];
         end;
       ntCategory:
         begin
+
           // It is a category
           if Node.Index < parentdata^.Category.SubCategoriesCount then
           begin

@@ -220,6 +220,7 @@ begin
     else
       result := jValue as TJSonArray;
 
+
   finally
     screen.Cursor := crDefault;
   end;
