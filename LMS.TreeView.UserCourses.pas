@@ -50,6 +50,9 @@ uses
   dialogs,
   ShellApi,
 
+  VirtualTrees.Types,
+  VirtualTrees.BaseTree,
+
   LMS.Helper.FormFactory,
   LMS.Helper.Consts,
   LMS.Helper.Browser;

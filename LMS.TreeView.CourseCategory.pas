@@ -53,6 +53,9 @@ uses
   ShellApi,
   generics.Collections,
 
+  VirtualTrees.Types,
+  VirtualTrees.BaseTree,
+
   LMS.Helper.Consts,
   LMS.Helper.RTTI,
   LMS.Helper.Browser,

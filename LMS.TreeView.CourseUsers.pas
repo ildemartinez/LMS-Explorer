@@ -54,6 +54,9 @@ uses
   ShellApi,
   Variants, typinfo,
 
+  VirtualTrees.Types,
+  VirtualTrees.BaseTree,
+
   LMS.Helper.Consts,
   LMS.Helper.Browser,
   LMS.Helper.Utils,

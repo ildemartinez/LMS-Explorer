@@ -57,6 +57,9 @@ implementation
 uses
   System.SysUtils,
 
+  VirtualTrees.Types,
+  VirtualTrees.BaseTree,
+
   LMS.Helper.Images,
   LMS.Helper.RTTI,
   LMS.Helper.Utils;

@@ -37,6 +37,9 @@ type
 implementation
 
 uses
+  VirtualTrees.Types,
+  VirtualTrees.BaseTree,
+
   LMS.Helper.FormFactory,
   LMS.Helper.Utils;
 

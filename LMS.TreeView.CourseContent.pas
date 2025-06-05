@@ -46,6 +46,9 @@ uses
   dialogs,
   ShellApi,
 
+  VirtualTrees.Types,
+  VirtualTrees.BaseTree,
+
   LMS.Helper.Images,
   LMS.Helper.Consts,
   LMS.Helper.Browser;
