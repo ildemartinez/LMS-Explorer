@@ -106,7 +106,6 @@ begin
     5:
       CellText := FormatDateTimeBlank(data^.Course.TimeModified);
   end;
-
 end;
 
 procedure TLMSCoursesTreeView.SetLMS(const Value: ILMS);

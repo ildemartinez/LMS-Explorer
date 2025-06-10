@@ -21,14 +21,21 @@ type
     procedure NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
     procedure SetLMSNetwork(const Value: TLMSNetwork);
   protected
-    procedure DoInitNode(Parent, Node: PVirtualNode; var InitStates: TVirtualNodeInitStates); override;
-    procedure HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo); override;
-    procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
-    procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: cardinal);
-    procedure MyDoPaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+    procedure DoInitNode(Parent, Node: PVirtualNode;
+      var InitStates: TVirtualNodeInitStates); override;
+    procedure HandleMouseDblClick(var Message: TWMMouse;
+      const HitInfo: THitInfo); override;
+    procedure MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      var ChildCount: cardinal);
+    procedure MyDoPaintText(Sender: TBaseVirtualTree;
+      const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+      TextType: TVSTTextType);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
-    procedure MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect;
-      var ContentRect: TRect); override;
+    procedure MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas;
+      Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode;
+      CellRect: TRect; var ContentRect: TRect); override;
   public
     constructor Create(Owner: TComponent); override;
     procedure FilterByText(const text: string);
@@ -63,7 +70,8 @@ begin
 
   NodeDataSize := SizeOf(TTreeData);
 
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions + [toRightClickSelect];
+  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
+    [toRightClickSelect];
   // := TreeOptions.SelectionOptions +    [toRightClickSelect, tomultiselect];
 
   OnGetText := MyDoGetText;
@@ -73,16 +81,14 @@ begin
   OnPaintText := MyDoPaintText;
 end;
 
-procedure TLMSNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode; var InitStates: TVirtualNodeInitStates);
+procedure TLMSNetworkTreeView.DoInitNode(Parent, Node: PVirtualNode;
+  var InitStates: TVirtualNodeInitStates);
 var
   data, parentdata: PTreeData;
   aCat: ICategory;
   ind: cardinal;
-begin
-  data := GetNodeData(Node);
-  parentdata := GetNodeData(Parent);
 
-  if parentdata = nil then
+  procedure InitRootNode;
   begin
     data^.node_type := ntLMS;
     data^.aLMS := fLMSNetwork[Node.Index];
@@ -97,6 +103,15 @@ begin
 
     if (data^.aLMS.autoconnect) then
       Include(Node.States, vsExpanded);
+  end;
+
+begin
+  data := GetNodeData(Node);
+  parentdata := GetNodeData(Parent);
+
+  if parentdata = nil then
+  begin
+    InitRootNode;
   end
   else
     case parentdata^.node_type of
@@ -121,7 +136,9 @@ begin
             end;
           end;
 
-          if (parentdata^.aLMS.categories.Count > 0) or (parentdata^.aLMS.getcategorybyid(data^.Category.id).coursescount > 0) then
+          if (parentdata^.aLMS.categories.Count > 0) or
+            (parentdata^.aLMS.getcategorybyid(data^.Category.id)
+            .coursescount > 0) then
             Node.States := Node.States + [vsHasChildren, vsExpanded];
         end;
       ntCategory:
@@ -132,7 +149,8 @@ begin
           begin
             data^.node_type := ntCategory;
             data^.aLMS := parentdata^.aLMS; // cascade set lms (refactor)
-            data^.Category := parentdata^.aLMS.getcategorybyid(parentdata^.Category.id).categories.items[Node.Index];
+            data^.Category := parentdata^.aLMS.getcategorybyid
+              (parentdata^.Category.id).categories.items[Node.Index];
 
             if parentdata^.Category.SubCategoriesCount > 0 then
               Node.States := Node.States + [vsHasChildren, vsExpanded];
@@ -141,7 +159,8 @@ begin
           begin
             data^.node_type := ntCourse;
             data^.aLMS := parentdata^.aLMS;
-            data^.Course := parentdata^.Category.courses[Node.Index - parentdata^.Category.SubCategoriesCount];
+            data^.Course := parentdata^.Category.courses
+              [Node.Index - parentdata^.Category.SubCategoriesCount];
           end;
         end;
     end
@@ -217,14 +236,16 @@ begin
   end;
 end;
 
-procedure TLMSNetworkTreeView.HandleMouseDblClick(var Message: TWMMouse; const HitInfo: THitInfo);
+procedure TLMSNetworkTreeView.HandleMouseDblClick(var Message: TWMMouse;
+  const HitInfo: THitInfo);
 begin
   // Avoid to collapse/expand category node at dbclick
   DoNodeDblClick(HitInfo);
 end;
 
-procedure TLMSNetworkTreeView.MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect;
-  var ContentRect: TRect);
+procedure TLMSNetworkTreeView.MyBeforePaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 begin
   if (PTreeData(Sender.GetNodeData(Node))^.node_type = ntLMS) then
     // TargetCanvas.Brush.Color := $00F7E6D5 ;
@@ -235,7 +256,9 @@ begin
 
 end;
 
-procedure TLMSNetworkTreeView.MyDoGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+procedure TLMSNetworkTreeView.MyDoGetText(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
+  var CellText: string);
 var
   data: PTreeData;
 begin
@@ -251,7 +274,8 @@ begin
   end;
 end;
 
-procedure TLMSNetworkTreeView.MyDoInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: cardinal);
+procedure TLMSNetworkTreeView.MyDoInitChildren(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; var ChildCount: cardinal);
 var
   data: PTreeData;
 begin
@@ -268,14 +292,17 @@ begin
         end;
       ntCategory:
         begin
-          ChildCount := data^.Category.SubCategoriesCount + data^.Category.coursescount;
+          ChildCount := data^.Category.SubCategoriesCount +
+            data^.Category.coursescount;
         end;
     end;
 
   end;
 end;
 
-procedure TLMSNetworkTreeView.MyDoPaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType);
+procedure TLMSNetworkTreeView.MyDoPaintText(Sender: TBaseVirtualTree;
+  const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  TextType: TVSTTextType);
 var
   data: PTreeData;
 begin
@@ -287,19 +314,22 @@ begin
         if not data^.aLMS.connected then
         begin
           TargetCanvas.Font.Color := clGray;
-          TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic] - [fsBold];
+          TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
+            - [fsBold];
         end
         else
         begin
           TargetCanvas.Font.Color := clBlack;
           TargetCanvas.Font.Size := 10;
-          TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] - [fsItalic];
+          TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold] -
+            [fsItalic];
         end;
       end
   end;
 end;
 
-procedure TLMSNetworkTreeView.NodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+procedure TLMSNetworkTreeView.NodeClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;
@@ -316,19 +346,11 @@ begin
     data := GetNodeData(aVirtualNodeEnumerator.Current);
     case data^.node_type of
       ntLMS:
-        begin
-          if CtrlPressed then
-          begin
-            OpenInBrowser(data^.aLMS);
-          end
-        end;
+        if CtrlPressed then
+          OpenInBrowser(data^.aLMS);
       ntCategory:
-        begin
-          if CtrlPressed then
-          begin
-            OpenInBrowser(data^.Category);
-          end
-        end;
+        if CtrlPressed then
+          OpenInBrowser(data^.Category);
       ntCourse:
         begin
           if CtrlPressed then
@@ -366,7 +388,8 @@ end;
   TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsItalic]
   - [fsBold]; }
 
-procedure TLMSNetworkTreeView.NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+procedure TLMSNetworkTreeView.NodeDblClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;

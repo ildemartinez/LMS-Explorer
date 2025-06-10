@@ -175,10 +175,12 @@ begin
 
   case data^.node_type of
     ntSection:
-      if Column = 0 then
-        CellText := data^.Section.name
+      case Column of
+        0:
+          CellText := data^.Section.name;
       else
         CellText := '';
+      end;
     ntmodule:
       begin
         { if Column = 1 then
@@ -193,32 +195,32 @@ begin
           end;
           end
           else }
-        if Column = 1 then
-          CellText := data^.Module.name
-          // else if Column = 2 then
-          // CellText := data^.Module.ModType.
+        case Column of
+          1:
+            CellText := data^.Module.name;
         else
           CellText := '';
+        end;
       end;
     ntmoduleone:
-      begin
-        if Column = 1 then
-          CellText := data^.Module.name
-        else if Column = 2 then
-          CellText := data^.Module.Contents[0].MimeType
-        else if Column = 3 then
-          CellText := data^.Module.Contents[0].Fileurl
-        else
-          CellText := ''
+      case Column of
+        1:
+          CellText := data^.Module.name;
+        2:
+          CellText := data^.Module.Contents[0].MimeType;
+        3:
+          CellText := data^.Module.Contents[0].Fileurl;
+      else
+        CellText := ''
       end;
     ntcontent:
-      begin
-        if Column = 2 then
-          CellText := data^.content.MimeType
-        else if Column = 3 then
-          CellText := data^.content.Fileurl
-        else
-          CellText := ''; // data^.content.FileType;
+      case Column of
+        2:
+          CellText := data^.content.MimeType;
+        3:
+          CellText := data^.content.Fileurl;
+      else
+        CellText := ''; // data^.content.FileType;
       end;
   end;
 
