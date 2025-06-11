@@ -77,6 +77,8 @@ List of needed functions you need to enable in service functions:
 
 # Features
 
+* Connect several LMS environments and control it from the same place
+
 You can find a course, catogory or even a Moodle instance using the filter box
 
 ![alt text](https://raw.githubusercontent.com/ildemartinez/LMS-Explorer/main/docs/screenshots/find-course-category-moodle.jpg)
