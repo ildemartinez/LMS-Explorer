@@ -12,7 +12,8 @@ uses
   LMS._class.LMS;
 
 type
-  TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser, ntSection, ntModule, ntModuleOne, ntContent);
+  TNodeTypes = (ntLMS, ntCategory, ntCourse, ntGroup, ntUser, ntSection,
+    ntModule, ntModuleOne, ntContent);
 
   TTreeData = { packed } record
     aLMS: ILMS; // Pointer to LMS structure
@@ -38,14 +39,19 @@ type
 
   TLMSCustomLMSVirtualStringTree = class(TCustomVirtualStringTree)
   private
-    procedure CompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+    procedure CompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode;
+      Column: TColumnIndex; var Result: Integer);
     procedure HeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
-    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean; var ImageIndex: System.UITypes.TImageIndex);
+    procedure MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
+      var ImageIndex: System.UITypes.TImageIndex);
     procedure NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   protected
     procedure DoDblClkCourse(const Course: ICourse); virtual;
     procedure DoDblClkUser(const User: IUser); virtual;
-    procedure MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect); virtual;
+    procedure MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas;
+      Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode;
+      CellRect: TRect; var ContentRect: TRect); virtual;
   public
     constructor Create(Owner: TComponent); override;
     // Focus a selected node in tree
@@ -78,16 +84,21 @@ begin
   OnHeaderClick := HeaderClick;
   OnBeforeCellPaint := MyBeforePaint;
 
-  TreeOptions.PaintOptions := TreeOptions.PaintOptions - [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect, toshowhorzgridlines, toshowvertgridlines];
-  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions + [toFullRowSelect];
+  TreeOptions.PaintOptions := TreeOptions.PaintOptions -
+    [toShowRoot, toShowTreeLines, toHotTrack, tohidefocusrect,
+    toshowhorzgridlines, toshowvertgridlines];
+  TreeOptions.SelectionOptions := TreeOptions.SelectionOptions +
+    [toFullRowSelect];
   TreeOptions.AutoOptions := TreeOptions.AutoOptions + [toAutoSpanColumns];
   TreeOptions.MiscOptions := TreeOptions.MiscOptions + [toGridExtensions];
 end;
 
-procedure TLMSCustomLMSVirtualStringTree.MyBeforePaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellPaintMode: TVTCellPaintMode; CellRect: TRect;
-  var ContentRect: TRect);
+procedure TLMSCustomLMSVirtualStringTree.MyBeforePaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 begin
-  if (Node.Index mod 2 = 1) or (PTreeData(Sender.GetNodeData(Node))^.node_type = ntCategory) then
+  if (Node.Index mod 2 = 1) or
+    (PTreeData(Sender.GetNodeData(Node))^.node_type = ntCategory) then
     // TargetCanvas.Brush.Color := $00F7E6D5 ;
     // else
     TargetCanvas.Brush.Color := $00FBF2EA;
@@ -95,7 +106,8 @@ begin
   TargetCanvas.FillRect(CellRect);
 end;
 
-procedure TLMSCustomLMSVirtualStringTree.CompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+procedure TLMSCustomLMSVirtualStringTree.CompareNodes(Sender: TBaseVirtualTree;
+  Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
   data1, data2: PTreeData;
 begin
@@ -107,13 +119,18 @@ begin
 
   if (data1.node_type = data2.node_type) and (data1.node_type = ntUser) then
   begin
-    Result := comparetext(GetPropertyValue(TObject(data1.User), TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
-      GetPropertyValue(TObject(data2.User), TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
+    Result := comparetext(GetPropertyValue(TObject(data1.User),
+      TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
+      GetPropertyValue(TObject(data2.User),
+      TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
   end
-  else if (data1.node_type = data2.node_type) and (data1.node_type = ntCourse) then
+  else if (data1.node_type = data2.node_type) and (data1.node_type = ntCourse)
+  then
   begin
-    Result := comparetext(GetPropertyValue(TObject(data1.Course), TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
-      GetPropertyValue(TObject(data2.Course), TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
+    Result := comparetext(GetPropertyValue(TObject(data1.Course),
+      TextToPropertyName(header.Columns.Items[header.SortColumn].Text)),
+      GetPropertyValue(TObject(data2.Course),
+      TextToPropertyName(header.Columns.Items[header.SortColumn].Text)))
   end;
 end;
 
@@ -134,7 +151,8 @@ begin
       FocusedNode := aNode;
 end;
 
-procedure TLMSCustomLMSVirtualStringTree.HeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
+procedure TLMSCustomLMSVirtualStringTree.HeaderClick(Sender: TVTHeader;
+  HitInfo: TVTHeaderHitInfo);
 begin
   Sender.SortColumn := HitInfo.Column;
   if Sender.SortDirection = sdAscending then
@@ -148,7 +166,9 @@ begin
   InvalidateColumn(HitInfo.Column);
 end;
 
-procedure TLMSCustomLMSVirtualStringTree.MyGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: boolean;
+procedure TLMSCustomLMSVirtualStringTree.MyGetImageIndex
+  (Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
+  Column: TColumnIndex; var Ghosted: boolean;
   var ImageIndex: System.UITypes.TImageIndex);
 var
   data: PTreeData;
@@ -158,25 +178,31 @@ begin
     data := GetNodeData(Node);
 
     if (data^.node_type = ntLMS) and (Column = -1) then
-      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_lms')
+      ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+        ('res_lms')
     else if (data^.node_type = ntCourse) then // and (Column = 0) then
     begin
       case data^.Course.groupmode of
         // 0: ;
         // ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_groups_no_groups');
         1:
-          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_groups_separate_groups');
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_groups_separate_groups');
         2:
-          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_groups_visible_groups');
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_groups_visible_groups');
       end;
-
     end
     else if (data^.node_type = ntModule) then
     begin
-      if data^.Module.ModType = mnresource then
-        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_pdf')
-      else if data^.Module.ModType = mnlabel then
-        ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName('res_modtype_label');
+      case data^.Module.ModType of
+        mnresource:
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_modtype_pdf');
+        mnlabel:
+          ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
+            ('res_modtype_label');
+      end;
 
     end;
 
@@ -184,7 +210,8 @@ begin
 
 end;
 
-procedure TLMSCustomLMSVirtualStringTree.NodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+procedure TLMSCustomLMSVirtualStringTree.NodeDblClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
 var
   aVirtualNodeEnumerator: TVTVirtualNodeEnumerator;
   data: PTreeData;

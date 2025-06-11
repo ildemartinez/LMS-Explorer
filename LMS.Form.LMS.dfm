@@ -11,17 +11,15 @@ object LMSForm: TLMSForm
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsMDIChild
-  OldCreateOrder = False
   Visible = True
   OnClose = FormClose
-  PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
     Top = 0
     Width = 582
     Height = 336
-    ActivePage = TabSheet2
+    ActivePage = tsCourses
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -53,7 +51,7 @@ object LMSForm: TLMSForm
         ActionManager = ActionManager1
         Caption = 'ActionToolBar1'
         Color = clMenuBar
-        ColorMap.DisabledFontColor = 7171437
+        ColorMap.DisabledFontColor = 10461087
         ColorMap.HighlightColor = clWhite
         ColorMap.BtnSelectedFont = clBlack
         ColorMap.UnusedColor = clWhite
@@ -113,7 +111,7 @@ object LMSForm: TLMSForm
         ActionManager = ActionManager1
         Caption = 'ActionToolBar2'
         Color = clMenuBar
-        ColorMap.DisabledFontColor = 7171437
+        ColorMap.DisabledFontColor = 10461087
         ColorMap.HighlightColor = clWhite
         ColorMap.BtnSelectedFont = clBlack
         ColorMap.UnusedColor = clWhite

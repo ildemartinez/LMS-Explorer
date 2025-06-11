@@ -79,8 +79,6 @@ uses
   LMS.Helper.Log,
   LMS.Form.UserPassword;
 
-{ TLMSRestMoodle }
-
 procedure TLMSRestMoodle.Connect;
 var
   jValue: TJSonValue;
@@ -120,7 +118,7 @@ begin
     else
       ask := true;
 
-    if ask = true then
+    if ask then
     begin
 
       aItem := aRestRequest.Params.AddItem;
@@ -219,7 +217,6 @@ begin
     end
     else
       result := jValue as TJSonArray;
-
 
   finally
     screen.Cursor := crDefault;

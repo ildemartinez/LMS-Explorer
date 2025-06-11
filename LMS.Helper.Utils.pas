@@ -43,10 +43,10 @@ end;
 
 function FormatDateTimeBlank(const aDateTime: TDateTime): string;
 begin
-  if datetimetounix(aDateTime) = 0 then
-    result := ''
+  if datetimetounix(aDateTime) > 0 then
+    result := DateTimeToStr(aDateTime)
   else
-    result := DateTimeToStr(aDateTime);
+    result := '';
 end;
 
 function FormatDateTimeNever(const aDateTime: TDateTime): string;

@@ -275,25 +275,11 @@ begin
       ntmoduleone:
         begin
           if data^.Module.Contents[0].FileType = 'file' then
-          begin
-            if data^.Module.Contents[0].MimeType = 'application/pdf' then
-              ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-                ('res_modtype_pdf')
-            else if data^.Module.Contents[0].MimeType = 'application/zip' then
-              ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-                ('res_modtype_zip')
-            else if data^.Module.Contents[0].MimeType = 'text/plain' then
-              ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-                ('res_modtype_text')
-            else if data^.Module.Contents[0].MimeType = 'application/json' then
-              ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
-                ('res_modtype_json')
-          end
+            ImageIndex := GetGlobalImageListFromResource.GetImageIndexByMimeType
+              (data^.Module.Contents[0].MimeType)
           else if data^.Module.Contents[0].FileType = 'url' then
-          begin
             ImageIndex := GetGlobalImageListFromResource.GetImageIndexByName
               ('res_modtype_url')
-          end;
         end;
     end;
 
