@@ -4,9 +4,14 @@ LMS Explorer is a open source tool for Moodle administrators that deal with a lo
 
 Features
 
-- Fast locate course category and category at the LMS
-- Fast jumping to course and users management pages ( user profile, course admninistration )
-- Show all your Moodle courses from unique page
+* Connect several LMS environments and control it from the same place
+* Fast locate course category and category at the LMS
+* Fast jumping to course and users management pages ( user profile, course admninistration )
+* Show all your Moodle courses from unique page
+* Show all the course enrollments and all encrollments from any user in really fast way
+* Explore all courses resources
+* Download all course resources with just one click and locate them in Windows explorer
+* Export all course users in excel format
 
 See it in action at https://www.st4makers.com/lms-explorer/
 
